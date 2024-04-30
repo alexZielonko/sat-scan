@@ -1,0 +1,4 @@
+__pycache__
+.venv
+
+applications/space-data-collector/credentials.ini
