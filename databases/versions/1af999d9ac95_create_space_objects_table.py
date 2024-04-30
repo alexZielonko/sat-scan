@@ -22,20 +22,24 @@ TABLE_NAME = 'space_objects_catalog'
 def upgrade() -> None:
     op.create_table(
         TABLE_NAME,
-        sa.Column('sat_id', sa.String(255), nullable=False, primary_key=True),
-        sa.Column('sat_catalog_number', sa.String(255), nullable=False),
-        sa.Column('sat_name', sa.String(255), nullable=False),
-        sa.Column('file_id', sa.String(255), nullable=False),
-        sa.Column('launch_country', sa.String(255), nullable=False),
-        sa.Column('launch_site', sa.String(255), nullable=False),
-        sa.Column('launch_date', sa.String(255), nullable=False),
-        sa.Column('launch_year', sa.String(255), nullable=False),
-        sa.Column('launch_number', sa.String(255), nullable=False),
-        sa.Column('launch_piece', sa.String(255), nullable=False),
-        sa.Column('object_type', sa.String(255), nullable=False),
-        sa.Column('object_name', sa.String(255), nullable=False),
-        sa.Column('object_id', sa.String(255), nullable=False),
-        sa.Column('object_number', sa.String(255), nullable=False)
+        sa.Column('sat_id', sa.String(128), nullable=False, primary_key=True),
+        sa.Column('sat_catalog_number', sa.String(128), nullable=False),
+        sa.Column('sat_name', sa.String(128), nullable=False),
+        sa.Column('file_id', sa.String(128), nullable=False),
+        sa.Column('launch_country', sa.String(128), nullable=False),
+        sa.Column('launch_site', sa.String(128), nullable=False),
+        sa.Column('launch_date', sa.String(128), nullable=False),
+        sa.Column('launch_year', sa.String(128), nullable=False),
+        sa.Column('launch_number', sa.String(128), nullable=False),
+        sa.Column('launch_piece', sa.String(128), nullable=False),
+        sa.Column('object_type', sa.String(128), nullable=False),
+        sa.Column('object_name', sa.String(128), nullable=False),
+        sa.Column('object_id', sa.String(128), nullable=False),
+        sa.Column('object_number', sa.String(128), nullable=False),
+
+        sa.Column('date_created', sa.DateTime, nullable=False),
+        sa.Column('date_modified', sa.DateTime, nullable=False),
+
     )
     pass
 
