@@ -28,7 +28,7 @@ def publish_message(request_config: DataRequestConfig, data: Dict[str, str]) -> 
 
     connection = pika.BlockingConnection(pika.ConnectionParameters('event-collaboration-messaging'))
     channel = connection.channel()    
-    channel.queue_declare(queue='space-track-message')
+    channel.queue_declare(queue=routing_key)
     channel.basic_publish(exchange='', routing_key=routing_key, body=json.dumps(data))
     connection.close()
 

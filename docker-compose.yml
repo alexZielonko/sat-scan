@@ -5,10 +5,25 @@ services:
     image: rabbitmq:3.12
     ports:
       - "5672:5672"
+      - "15692:15692"
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+
+  data-analyzer:
+    build: ./applications/space-data-analyzer
+    restart: on-failure
+    depends_on:
+      event-collaboration-messaging:
+        condition: service_healthy
 
   data-collector:
     build: ./applications/space-data-collector
     restart: on-failure
     depends_on:
-      - event-collaboration-messaging
+      event-collaboration-messaging:
+        condition: service_healthy
 
