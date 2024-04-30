@@ -1,5 +1,12 @@
 version: '3.8'
 
 services:
+  event-collaboration-messaging:
+    image: rabbitmq:3.12
+    ports:
+      - "5672:5672"
+
   data-collector:
     build: ./applications/space-data-collector
+    depends_on:
+      - event-collaboration-messaging
