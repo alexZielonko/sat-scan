@@ -1,6 +1,6 @@
 import os
-from typing import Dict, List
 import yaml
+from typing import Dict, List
 
 class DataRequestConfig:
     def __init__(self, name, subject, request_url):
@@ -11,7 +11,7 @@ class DataRequestConfig:
 
 class ConfigurationParser:
     DATA_REQUESTS_KEY = 'space-track-requests'
-    DATA_REQUESTS_FILE_NAME = 'space_track_requests.yaml'
+    DATA_REQUESTS_FILE_NAME = 'space_track_requests.yml'
 
     def _parse_config(self) -> List[Dict[str, str]]:
       directory = os.path.dirname(__file__)
