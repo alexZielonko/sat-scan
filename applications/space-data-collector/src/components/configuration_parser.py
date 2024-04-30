@@ -16,10 +16,9 @@ class ConfigurationParser:
     def _parse_config(self) -> List[Dict[str, str]]:
       directory = os.path.dirname(__file__)
       file = os.path.join(directory, '../../' + ConfigurationParser.DATA_SOURCE_FILE_NAME)
-      
+
       with open(file) as stream:
           try:
-              print('LOADING')
               return yaml.safe_load(stream)[ConfigurationParser.DATA_SOURCE_KEY]
           except yaml.YAMLError as exception:
               print(exception)
