@@ -17,16 +17,13 @@ This application periodically pulls satellite data from external APIs and publis
 
 ```
 python3 -m venv .venv
-```
-
-```
 source .venv/bin/activate
 ```
 
 ### Installing Packages
 
 ```
-pip3 install -r requirements.txt -y
+pip3 install -r requirements.txt
 ```
 
 ## Create / Update Dependencies
