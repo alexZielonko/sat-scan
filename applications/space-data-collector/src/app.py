@@ -20,6 +20,8 @@ def get_auth_credentials(data_request_name: str) -> Dict[str, str]:
     return {'identity': username, 'password': password}
 
 if __name__ == "__main__":
+    print('👉 Running space-data-collector')
+
     parser = ConfigurationParser()
     data_requests_config = parser.run()
     

@@ -1,0 +1,25 @@
+FROM python:alpine
+
+WORKDIR /app
+
+# Create nested src directory ensure space_Track_requests.yml file resolves
+RUN mkdir /src
+
+# Copy application files
+COPY src/ ./src
+COPY credentials.ini .
+COPY space_track_requests.yml .
+COPY requirements.txt .
+
+# Setup Python virtual environment & install deps
+RUN python3 -m venv .docker_venv
+RUN source .docker_venv/bin/activate
+RUN pip3 install -r requirements.txt
+
+# Add your cron job file to the container
+ADD cronjobs /etc/cron.d/cronjobs
+RUN chmod 0644 /etc/cron.d/cronjobs
+RUN crontab /etc/cron.d/cronjobs
+
+# Start cron service
+CMD ["crond", "-f"]
