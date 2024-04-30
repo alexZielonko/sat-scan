@@ -1,5 +1,5 @@
 space-track-requests:
   - name: space-track.org
-    subject: recent_objects
+    routing_key: recent_objects
     description: Objects launched in previous 7 days, part of Space Situation Report
     request_url: https://www.space-track.org/basicspacedata/query/class/satcat/LAUNCH/%3Enow-7/CURRENT/Y/orderby/LAUNCH%20DESC/format/json

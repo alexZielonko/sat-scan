@@ -8,5 +8,7 @@ services:
 
   data-collector:
     build: ./applications/space-data-collector
+    restart: on-failure
     depends_on:
       - event-collaboration-messaging
+

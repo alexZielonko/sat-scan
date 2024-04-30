@@ -3,9 +3,9 @@ import yaml
 from typing import Dict, List
 
 class DataRequestConfig:
-    def __init__(self, name, subject, request_url):
+    def __init__(self, name, routing_key, request_url):
         self.name = name
-        self.subject = subject
+        self.routing_key = routing_key
         self.request_url = request_url
 
 
@@ -27,7 +27,7 @@ class ConfigurationParser:
         build_config_object = lambda data_request: (
             DataRequestConfig(
                 name=data_request['name'], 
-                subject=data_request['subject'],
+                routing_key=data_request['routing_key'],
                 request_url=data_request['request_url']
             )
         )
