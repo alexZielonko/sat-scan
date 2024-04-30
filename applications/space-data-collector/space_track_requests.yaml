@@ -1,4 +1,4 @@
-data-sources:
+space-track-requests:
   - name: space-track.org
     subject: recent_objects
     description: Objects launched in previous 7 days, part of Space Situation Report
