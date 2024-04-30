@@ -1,6 +1,13 @@
 version: '3.8'
 
 services:
+  api:
+    build: ./applications/sat-scan-api
+    ports: 
+      - "5000:5000"
+    links: 
+      - database
+
   database:
     image: postgres:14.3
     container_name: database

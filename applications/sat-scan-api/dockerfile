@@ -1,0 +1,19 @@
+FROM python:alpine
+
+WORKDIR /app
+
+COPY src/ .
+COPY requirements.txt .
+
+# install psycopg2 dependencies
+RUN apk update
+RUN apk add postgresql-dev gcc python3-dev musl-dev
+
+# Setup Python virtual environment & install deps
+RUN python3 -m venv .docker_venv
+RUN source .docker_venv/bin/activate
+RUN pip3 install -r requirements.txt
+
+EXPOSE 5000
+
+CMD ["python3", "run.py"]
