@@ -1,4 +1,5 @@
 __pycache__
 .venv
+.docker-data
 
 applications/space-data-collector/credentials.ini

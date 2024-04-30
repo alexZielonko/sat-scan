@@ -1,6 +1,17 @@
 version: '3.8'
 
 services:
+  database:
+    image: postgres:14.3
+    container_name: database
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "development"
+      POSTGRES_PASSWORD: "password"
+    volumes:
+      - ./.docker-data/.pg-data:/var/lib/postgresql/data
+
   event-collaboration-messaging:
     image: rabbitmq:3.12
     ports:
