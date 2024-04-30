@@ -6,7 +6,7 @@ class RecentObjectsChannel:
     connection = pika.BlockingConnection(pika.ConnectionParameters('event-collaboration-messaging'))
     channel = connection.channel()
     channel.queue_declare(queue='recent_objects')
-    channel.basic_consume(queue='recent_objects', on_message_callback=self.process_message, auto_ack=True)
+    channel.basic_consume(queue='recent_objects', on_message_callback=self._process_message, auto_ack=True)
     channel.start_consuming()
     print(' [*] Waiting for messages. To exit press CTRL+C')
 
