@@ -21,7 +21,7 @@ def get_auth_credentials(data_request_name: str) -> Dict[str, str]:
 
     return {'identity': username, 'password': password}
 
-def publish_message(request_config: DataRequestConfig, data: Dict[str, str]) -> None:
+def publish_messages(request_config: DataRequestConfig, data: Dict[str, str]) -> None:
     routing_key = request_config.routing_key
 
     print(f'Publishing message to routing_key: {routing_key}')
@@ -29,8 +29,11 @@ def publish_message(request_config: DataRequestConfig, data: Dict[str, str]) -> 
     connection = pika.BlockingConnection(pika.ConnectionParameters('event-collaboration-messaging'))
     channel = connection.channel()    
     channel.queue_declare(queue=routing_key)
-    channel.basic_publish(exchange='', routing_key=routing_key, body=json.dumps(data))
-    connection.close()
+
+    for record in data:
+        channel.basic_publish(exchange='', routing_key=routing_key, body=json.dumps(record))
+
+    connection.close()    
 
 if __name__ == "__main__":
     print('👉 Running space-data-collector')
@@ -42,7 +45,7 @@ if __name__ == "__main__":
         auth = get_auth_credentials(data_request_name=request_config.name)
         data_request = DataRequest(request_config, auth)
         data = data_request.get()
-        publish_message(request_config, data)
+        publish_messages(request_config, data)
 
     
     
