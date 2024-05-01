@@ -1,9 +1,10 @@
 FROM python:alpine
 
-WORKDIR /app
+WORKDIR /sat-scan
 
 COPY src/ .
 COPY requirements.txt .
+COPY credentials.ini .
 
 # install psycopg2 dependencies
 RUN apk update
