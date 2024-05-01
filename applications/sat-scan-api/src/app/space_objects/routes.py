@@ -1,4 +1,6 @@
+from app import db
 from flask import Flask, jsonify, request, Blueprint, Response
+from sqlalchemy import exc
 from marshmallow import ValidationError
 
 from app.space_objects.model import SpaceObject
@@ -20,7 +22,15 @@ def get_object(object_id):
 def create_object():
   try:
     valid_object = SpaceObjectSchema().load(request.get_json())
+    space_object = SpaceObject(**valid_object)
+    db.session.add(space_object)
+    db.session.commit()
     return jsonify(valid_object), 200
   except ValidationError as err:
     return jsonify(err.messages), 422
+  except exc.IntegrityError:
+    return 'Record already exists for satellite id', 409
+  except Exception as err:
+    print(err)
+    return 'Something went wrong', 500
   
