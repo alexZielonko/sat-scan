@@ -6,7 +6,6 @@ WORKDIR /app
 RUN mkdir /src
 
 # Copy application files
-COPY src/ ./src
 COPY credentials.ini .
 COPY space_track_requests.yml .
 COPY requirements.txt .
@@ -20,6 +19,8 @@ RUN pip3 install -r requirements.txt
 ADD cronjobs /etc/cron.d/cronjobs
 RUN chmod 0644 /etc/cron.d/cronjobs
 RUN crontab /etc/cron.d/cronjobs
+
+COPY src/ ./src
 
 # Start cron service
 CMD ["crond", "-f"]

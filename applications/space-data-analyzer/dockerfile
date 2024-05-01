@@ -3,12 +3,13 @@ FROM python:alpine
 WORKDIR /app
 
 # Copy application files
-COPY src/ .
 COPY requirements.txt .
 
 # Setup Python virtual environment & install deps
 RUN python3 -m venv .docker_venv
 RUN source .docker_venv/bin/activate
 RUN pip3 install -r requirements.txt
+
+COPY src/ .
 
 CMD ["python3", "app.py"]
