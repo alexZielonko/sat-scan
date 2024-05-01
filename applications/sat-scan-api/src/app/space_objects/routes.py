@@ -11,11 +11,23 @@ space_object_routes = Blueprint('space-object', __name__)
 
 @space_object_routes.route('/space-objects', methods=['GET'])
 def get_objects():
-  return jsonify({"get-all-space-objects": 'success'})
+  try:
+    raw_results = SpaceObject.query.all()
+    return list(map(lambda res: SpaceObjectSchema().dump(res), raw_results))
+  except Exception:
+    return {}, 500
 
 @space_object_routes.route('/space-objects/<string:object_id>', methods=['GET'])
 def get_object(object_id):
-  return jsonify({ 'get-space-object-endpoint': object_id})
+  try:
+    result = SpaceObject.query.get(object_id)
+
+    if result:
+      return SpaceObjectSchema().dump(result)
+    else:
+      return {}, 404
+  except Exception:
+    return {}, 500
 
 @space_object_routes.route('/space-objects', methods=['POST'])
 @require_auth
