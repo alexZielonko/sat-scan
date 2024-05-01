@@ -35,6 +35,7 @@ def create_object():
   try:
     valid_object = SpaceObjectSchema().load(request.get_json())
     space_object = SpaceObject(**valid_object)
+
     db.session.add(space_object)
     db.session.commit()
     return jsonify(valid_object), 200
@@ -42,6 +43,25 @@ def create_object():
     return jsonify(err.messages), 422
   except exc.IntegrityError:
     return 'Record already exists for satellite id', 409
+  except Exception as err:
+    print(err)
+    return 'Something went wrong', 500
+
+@space_object_routes.route('/space-objects', methods=['PUT'])
+@require_auth
+def update_object():
+  try:
+    valid_object = SpaceObjectSchema().load(request.get_json())
+    
+    SpaceObject.query.filter_by(sat_id=valid_object['sat_id']).delete()
+    
+    space_object = SpaceObject(**valid_object)
+    db.session.add(space_object)
+    db.session.commit()
+
+    return jsonify(valid_object), 200
+  except ValidationError as err:
+    return jsonify(err.messages), 422
   except Exception as err:
     print(err)
     return 'Something went wrong', 500
