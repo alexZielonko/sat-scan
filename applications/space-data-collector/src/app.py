@@ -14,7 +14,7 @@ def get_auth_credentials(data_request_name: str) -> Dict[str, str]:
     file = os.path.join(directory, '../credentials.ini')    
     
     config = configparser.ConfigParser()
-    res = config.read(file)
+    config.read(file)
 
     username = config.get(data_request_name, "username")
     password = config.get(data_request_name, "password")
