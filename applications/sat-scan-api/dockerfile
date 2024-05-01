@@ -2,7 +2,6 @@ FROM python:alpine
 
 WORKDIR /sat-scan
 
-COPY src/ .
 COPY requirements.txt .
 COPY credentials.ini .
 
@@ -15,6 +14,8 @@ RUN python3 -m venv .docker_venv
 RUN source .docker_venv/bin/activate
 RUN pip3 install -r requirements.txt
 
+COPY src/ .
+
 EXPOSE 5000
 
-CMD ["python3", "run.py"]
+CMD ["python3", "-u", "run.py"]
