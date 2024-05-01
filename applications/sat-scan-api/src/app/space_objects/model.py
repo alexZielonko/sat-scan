@@ -1,13 +1,8 @@
 from app import db
 
-class Base(db.Model):
-    __abstract__  = True
-    date_created  = db.Column(db.DateTime,  default=db.func.current_timestamp())
-    date_modified = db.Column(db.DateTime,  default=db.func.current_timestamp(),
-                                           onupdate=db.func.current_timestamp())
-
-class SpaceObject(Base):
+class SpaceObject(db.Model):
   __tablename__ = 'space_objects_catalog'
+
   sat_id = db.Column(db.String(128), nullable=False, primary_key=True)
   sat_catalog_number = db.Column(db.String(128), nullable=False)
   sat_name = db.Column(db.String(128), nullable=False)
@@ -22,3 +17,7 @@ class SpaceObject(Base):
   object_name = db.Column(db.String(128), nullable=False)
   object_id = db.Column(db.String(128), nullable=False)
   object_number = db.Column(db.String(128), nullable=False)
+
+  date_created  = db.Column(db.DateTime,  default=db.func.current_timestamp())
+  date_modified = db.Column(db.DateTime,  default=db.func.current_timestamp(),
+                                          onupdate=db.func.current_timestamp())
