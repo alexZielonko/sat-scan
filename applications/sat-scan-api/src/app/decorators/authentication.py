@@ -7,7 +7,7 @@ def require_auth(f):
     def get_auth_credentials() -> List[str]:
         try:
             directory = os.path.dirname(__file__)
-            file = os.path.join(directory, '../../credentials.ini')    
+            file = os.path.join(directory, '../../credentials.ini')
             
             config = configparser.ConfigParser()
             config.read(file)
@@ -21,13 +21,16 @@ def require_auth(f):
     @wraps(f)
     def authentication_token_check(*args, **kwargs):
         print('Authenticating request')
+        try:            
+          token = request.headers['Authorization'].split("Bearer ")[1]
 
-        token = request.headers['Authorization'].split("Bearer ")[1]
-
-        if token in keys:
-            return f(*args, **kwargs)
-        else:
-            message = jsonify(success=False, error=True)
-            return message, 401
+          if token in keys:
+              return f(*args, **kwargs)
+          else:
+              message = jsonify(success=False, error=True)
+              return message, 401
+        except Exception as err:
+            message = jsonify(success=False)
+            return message, 500
 
     return authentication_token_check
