@@ -31,6 +31,6 @@ def require_auth(f):
               return message, 401
         except Exception as err:
             message = jsonify(success=False)
-            return message, 500
+            return message, 401
 
     return authentication_token_check
