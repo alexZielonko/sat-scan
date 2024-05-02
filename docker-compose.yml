@@ -7,6 +7,11 @@ services:
       - "5000:5000"
     links: 
       - database
+    healthcheck:
+      test: curl http://localhost:5000/health-check
+      interval: 5s
+      timeout: 10s
+      retries: 5
 
   database:
     image: postgres:14.3
@@ -35,8 +40,12 @@ services:
     build: ./applications/space-data-analyzer
     restart: on-failure
     depends_on:
+      api:
+        condition: service_healthy
       event-collaboration-messaging:
         condition: service_healthy
+    links: 
+      - api
 
   data-collector:
     build: ./applications/space-data-collector
@@ -44,4 +53,3 @@ services:
     depends_on:
       event-collaboration-messaging:
         condition: service_healthy
-

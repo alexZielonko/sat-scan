@@ -11,12 +11,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@database
 # by modules and controllers
 db = SQLAlchemy(app)
 
-# Sample HTTP error handling
-@app.errorhandler(404)
-def not_found(error):
-    return '404 Error Occurred', 404
-
 from app.space_objects.routes import space_object_routes
 
 # Register blueprint(s)
 app.register_blueprint(space_object_routes)
+
+@app.route('/health-check')
+def health_check():
+  return 'Success', 200
