@@ -1,5 +1,5 @@
 from app import db
-from flask import Flask, jsonify, request, Blueprint, Response
+from flask import Flask, jsonify, request, Blueprint, Response, abort
 from sqlalchemy import exc
 from marshmallow import ValidationError
 
@@ -52,17 +52,22 @@ def create_object():
 def update_object():
   try:
     valid_object = SpaceObjectSchema().load(request.get_json())
+
+    result = SpaceObject.query.get(valid_object['sat_id'])
     
-    SpaceObject.query.filter_by(sat_id=valid_object['sat_id']).delete()
-    
-    space_object = SpaceObject(**valid_object)
-    db.session.add(space_object)
-    db.session.commit()
+    if result == None:
+      abort(400)
+
+    if result:
+      SpaceObject.query.filter_by(sat_id=valid_object['sat_id']).delete()
+      space_object = SpaceObject(**valid_object)
+      db.session.add(space_object)
+      db.session.commit()
 
     return jsonify(valid_object), 200
   except ValidationError as err:
     return jsonify(err.messages), 422
   except Exception as err:
-    print(err)
-    return 'Something went wrong', 500
+    status_code = err.code if hasattr(err, "code") else 500
+    return err, status_code
   
