@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
-import pika, sys, os, json
+import sys, os
 
-from components.recent_objects_channel import RecentObjectsChannel
+from channels.recent_objects_channel import RecentObjectsChannel
+from components.secret_manager import SecretManager
 
 def main():
     print('🏃🏻‍♂️ Space Data Analyzer is Running..')
-    RecentObjectsChannel()
-        
+    secret_manager = SecretManager()
+    RecentObjectsChannel(sat_scan_api_key=secret_manager.sat_scan_api_key)
+
 if __name__ == '__main__':
     try:
-      main()
+        main()
     except KeyboardInterrupt:
         print('Interrupted')
         try:

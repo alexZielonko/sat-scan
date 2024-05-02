@@ -4,4 +4,5 @@ __pycache__
 
 # Ignore credentials.ini configurations
 applications/sat-scan-api/credentials.ini
+applications/space-data-analyzer/credentials.ini
 applications/space-data-collector/credentials.ini
