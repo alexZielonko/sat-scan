@@ -119,6 +119,10 @@ resource "aws_lb_target_group" "sat_scan_lb_target_group" {
   protocol    = "HTTP"
   vpc_id      = aws_vpc.sat_scan_vpc.id
   target_type = "ip"
+
+  health_check {
+    path = "/health-check"
+  }
 }
 
 resource "aws_lb_listener" "sat_scan_lb_listener" {
