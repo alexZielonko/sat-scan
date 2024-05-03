@@ -16,6 +16,10 @@ app = Flask(__name__)
 # # Register blueprint(s)
 # app.register_blueprint(space_object_routes)
 
+@app.route('/')
+def home():
+  return 'Welcome to Sat Scan', 200
+
 @app.route('/health-check')
 def health_check():
   return 'Success', 200
