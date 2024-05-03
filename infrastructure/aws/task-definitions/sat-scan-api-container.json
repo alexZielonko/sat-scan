@@ -1,0 +1,43 @@
+{
+  "taskDefinitionArn": "arn:aws:ecs:us-east-2:730335620736:task-definition/sat-scan-api-family:3",
+  "containerDefinitions": [
+    {
+      "name": "sat-scan-api-family",
+      "image": "registry.gitlab.com/architect-io/artifacts/nodejs-hello-world:latest",
+      "cpu": 1024,
+      "memory": 2048,
+      "portMappings": [
+        {
+          "containerPort": 3000,
+          "hostPort": 3000,
+          "protocol": "tcp"
+        }
+      ],
+      "essential": true,
+      "environment": [],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "systemControls": []
+    }
+  ],
+  "family": "sat-scan-api-family",
+  "networkMode": "awsvpc",
+  "revision": 3,
+  "volumes": [],
+  "status": "ACTIVE",
+  "requiresAttributes": [
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    },
+    {
+      "name": "ecs.capability.task-eni"
+    }
+  ],
+  "placementConstraints": [],
+  "compatibilities": ["EC2", "FARGATE"],
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "2048",
+  "registeredAt": "2024-05-03T15:51:29.102000-05:00",
+  "registeredBy": "arn:aws:iam::730335620736:root"
+}
