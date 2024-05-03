@@ -1,5 +1,5 @@
 {
-  "taskDefinitionArn": "arn:aws:ecs:us-east-2:730335620736:task-definition/sat-scan-api-family:3",
+  "taskDefinitionArn": "arn:aws:ecs:us-east-2:730335620736:task-definition/sat-scan-api-family:4",
   "containerDefinitions": [
     {
       "name": "sat-scan-api-family",
@@ -21,11 +21,18 @@
     }
   ],
   "family": "sat-scan-api-family",
+  "executionRoleArn": "arn:aws:iam::730335620736:role/sat-scan-ecs-execution-role",
   "networkMode": "awsvpc",
-  "revision": 3,
+  "revision": 4,
   "volumes": [],
   "status": "ACTIVE",
   "requiresAttributes": [
+    {
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "name": "ecs.capability.execution-role-ecr-pull"
+    },
     {
       "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
     },
@@ -38,6 +45,6 @@
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "1024",
   "memory": "2048",
-  "registeredAt": "2024-05-03T15:51:29.102000-05:00",
+  "registeredAt": "2024-05-03T17:04:04.652000-05:00",
   "registeredBy": "arn:aws:iam::730335620736:root"
 }
