@@ -9,15 +9,6 @@ variable "vpc_cidr_block" {
   default     = "10.0.0.0/16"
 }
 
-variable "subnet_count" {
-  description = "Number of subnets"
-  type        = map(number)
-  default = {
-    public  = 1,
-    private = 2
-  }
-}
-
 // EC2 and RDS configuration settings
 variable "settings" {
   description = "Configuration settings"
