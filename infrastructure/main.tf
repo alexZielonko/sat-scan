@@ -142,7 +142,7 @@ resource "aws_ecs_task_definition" "sat_scan_ecs_task_definition" {
   container_definitions = <<DEFINITION
 [
   {
-    "image": "registry.gitlab.com/architect-io/artifacts/nodejs-hello-world:latest",
+    "image": "730335620736.dkr.ecr.us-east-2.amazonaws.com/sat-scan:latest",
     "cpu": 1024,
     "memory": 2048,
     "name": "sat-scan-api-family",
