@@ -34,6 +34,19 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Create credentials.ini
+        env:
+          SAT_SCAN_API_KEY: ${{ secrets.SAT_SCAN_API_KEY }}
+        run: |
+          cd applications/sat-scan-api
+
+          cat <<EOF > credentials.ini
+          [api-keys]
+          keys="$SAT_SCAN_API_KEY"
+          EOF
+
+          echo "Created .credentials.ini"
+
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         env:
