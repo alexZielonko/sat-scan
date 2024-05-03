@@ -149,8 +149,8 @@ resource "aws_ecs_task_definition" "sat_scan_ecs_task_definition" {
     "networkMode": "awsvpc",
     "portMappings": [
       {
-        "containerPort": 3000,
-        "hostPort": 3000
+        "containerPort": 5000,
+        "hostPort": 5000
       }
     ]
   }
@@ -164,8 +164,8 @@ resource "aws_security_group" "sat_scan_api_task_sg" {
 
   ingress {
     protocol        = "tcp"
-    from_port       = 3000
-    to_port         = 3000
+    from_port       = 5000
+    to_port         = 5000
     security_groups = [aws_security_group.sat_scan_web_sg.id]
   }
 
@@ -196,7 +196,7 @@ resource "aws_ecs_service" "ecs_api_service" {
   load_balancer {
     target_group_arn = aws_lb_target_group.sat_scan_lb_target_group.id
     container_name   = "sat-scan-api-family"
-    container_port   = 3000
+    container_port   = 5000
   }
 
   depends_on = [aws_lb_listener.sat_scan_lb_listener]
