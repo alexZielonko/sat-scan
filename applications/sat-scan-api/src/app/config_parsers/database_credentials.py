@@ -20,6 +20,9 @@ class DatabaseCredentials:
 
         if route_config["env"] == "PROD":
           db_route = f'{route_config["endpoint"]}/{route_config["name"]}'
+
+        print('Connecting to: ')
+        print(db_route)
   
         return f'{driver}://{db_user}@{db_route}'        
 
