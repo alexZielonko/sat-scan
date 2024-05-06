@@ -136,11 +136,6 @@ resource "aws_lb_listener" "sat_scan_lb_listener" {
   }
 }
 
-# data "aws_iam_role" "ecs_task_execution_role" {
-#   name = "ecsTaskExecutionRole"
-# }
-
-
 data "aws_iam_policy_document" "assume_role_policy" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -281,3 +276,10 @@ resource "aws_db_instance" "sat_scan_database" {
 
   skip_final_snapshot = var.settings.database.skip_final_snapshot
 }
+
+# Create bucket to hold uploaded routes, used during continuous deployments
+resource "aws_s3_bucket" "sat-scan-route-config" {
+  bucket = "sat-scan-route-config"
+}
+
+
