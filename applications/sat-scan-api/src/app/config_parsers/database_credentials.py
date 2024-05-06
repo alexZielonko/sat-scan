@@ -15,6 +15,9 @@ class DatabaseCredentials:
         db_user = f'{self.credentials["user"]}:{self.credentials["password"]}'
         db_route = f'{route_config["endpoint"]}/{route_config["name"]}'
 
+        print('env')
+        print(route_config['env'])
+
         if route_config["env"] == "PROD":
           db_route = f'{route_config["endpoint"]}:{route_config["port"]}/{route_config["name"]}'
   
