@@ -10,7 +10,7 @@ env:
   ECR_REPOSITORY: "sat-scan" # Amazon ECR repository name
   ECS_CLUSTER: sat-scan-cluster # Amazon ECS cluster name
   ECS_SERVICE: sat-scan-api-service # Amazon ECS service name
-  ECS_TASK_DEFINITION: ./infrastructure/aws/task-definitions/sat-scan-api-container.json
+  ECS_TASK_DEFINITION: ./infrastructure/task-definitions/aws/sat-scan-api-container.json
   CONTAINER_NAME: sat-scan-api-family # Name specified in containerDefinitions section of task definition
 
 jobs:
