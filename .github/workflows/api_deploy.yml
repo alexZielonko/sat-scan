@@ -42,7 +42,7 @@ jobs:
 
           cat <<EOF > credentials.ini
           [api-keys]
-          keys="$SAT_SCAN_API_KEY"
+          keys=$SAT_SCAN_API_KEY
 
           [database]
           database_user="$DATABASE_USER"
