@@ -21,8 +21,8 @@ load_balancer=$load_balancer
 [database]
 database_endpoint=$database_endpoint
 database_port=$database_port
-database_name="sat_scan_db"
-env="PROD"
+database_name=sat_scan_db
+env=PROD
 EOF
 
 echo "Created temporary "$OUTPUT_FILE_NAME" file"

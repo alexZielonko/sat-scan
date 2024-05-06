@@ -23,8 +23,11 @@ class DatabaseCredentials:
 
         print('Connecting to: ')
         print(db_route)
+
+        print('Full connection string')
+        print(f'{driver}://{db_user}@{db_route}')
   
-        return f'{driver}://{db_user}@{db_route}'        
+        return f'{driver}://{db_user}@{db_route}'
 
     def _get_route_config(self):
       try:
