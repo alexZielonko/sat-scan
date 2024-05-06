@@ -4,6 +4,7 @@ WORKDIR /sat-scan
 
 COPY requirements.txt .
 COPY credentials.ini .
+COPY route-config.ini .
 
 # install psycopg2 dependencies
 RUN apk update

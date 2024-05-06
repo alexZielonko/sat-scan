@@ -1,14 +1,11 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
+from app.config_parsers.database_credentials import DatabaseCredentials
+
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = DatabaseCredentials().get_db_connection_url()
 
-# Configurations
-# app.config.from_object('config')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@database/development'
-
-# Define the database object which is imported
-# by modules and controllers
 db = SQLAlchemy(app)
 
 from app.space_objects.routes import space_object_routes
