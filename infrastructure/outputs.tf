@@ -12,3 +12,9 @@ output "database_endpoint" {
 output "load_balancer_ip" {
   value = aws_lb.default.dns_name
 }
+
+output "api_public_dns" {
+  description = "The public DNS address of the Sat Scan API server"
+  value       = aws_eip.sat_scan_api_eip[0].public_dns
+  depends_on  = [aws_eip.sat_scan_api_eip]
+}

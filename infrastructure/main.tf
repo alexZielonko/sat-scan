@@ -299,3 +299,59 @@ resource "aws_s3_bucket" "sat-scan-route-config" {
 }
 
 
+// Create a data object called "ubuntu" that holds the latest
+// Ubuntu 20.04 server AMI
+data "aws_ami" "ubuntu" {
+  // We want the most recent AMI
+  most_recent = "true"
+
+  // We are filtering through the names of the AMIs. We want the 
+  // Ubuntu 20.04 server
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+  }
+
+  // We are filtering through the virtualization type to make sure
+  // we only find AMIs with a virtualization type of hvm
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  // This is the ID of the publisher that created the AMI. 
+  // The publisher of Ubuntu 20.04 LTS Focal is Canonical 
+  // and their ID is 099720109477
+  owners = ["099720109477"]
+}
+
+resource "aws_key_pair" "sat_scan_kp" {
+  key_name = "sat_scan_kp"
+
+  // Used as public key for SSH key
+  // Key created in same directory as main.tf
+  public_key = file("sat_scan_kp.pub")
+}
+
+// Create API EC2 Instance
+resource "aws_instance" "sat_scan_api" {
+  count = var.settings.api.count
+
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = var.settings.api.instance_type
+
+  subnet_id = aws_subnet.sat_scan_public_subnet[count.index].id
+  key_name  = aws_key_pair.sat_scan_kp.key_name
+
+  vpc_security_group_ids = [aws_security_group.sat_scan_web_sg.id]
+}
+
+// Create an Elastic IP for each API EC2 instance
+resource "aws_eip" "sat_scan_api_eip" {
+  count = var.settings.api.count
+
+  instance = aws_instance.sat_scan_api[count.index].id
+
+  // Place Elastic IP in the VPC
+  vpc = true
+}
