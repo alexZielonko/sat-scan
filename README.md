@@ -98,3 +98,53 @@ Consider the following if you need to create an SSH key
 ```
 ssh-keygen -t rsa -b 4096 -m pem -f sat_scan_kp && openssl rsa -in sat_scan_kp -outform pem && chmod 400 sat_scan_kp.pem
 ```
+
+## Database Migration
+
+### EC2 Setup
+
+Currently using an EC2 instance to manually apply database migration changes. A more mature system should apply database migrations alongside deployments, with the ability to rollback the migration should the deploy fail.
+
+For now, we'll maintain the system's security posture by continuing to restrict database access to within the VPC. We'll create an EC2 instance that only allows ingress SSH traffic from a local IP address. As this EC2 exists within the VPC, it can communicate with the RDS instance and apply schema changes.
+
+This represents an incremental step towards DB migration automation, as these steps can be migrated to a GitHub Action or alternative workflow as time allows.
+
+#### Copy Migrations to EC2 instance
+
+SSH into the EC2 and run `mkdir database-migration`
+
+Move the relevant migration files onto the EC2:
+
+```
+scp -r -i infrastructure/sat_scan_kp.pem alembic.ini ubuntu@ec2-18-223-42-178.us-east-2.compute.amazonaws.com:~/database-migration
+scp -r -i infrastructure/sat_scan_kp.pem ./databases ubuntu@ec2-18-223-42-178.us-east-2.compute.amazonaws.com:~/database-migration
+```
+
+Connect to EC2 instance:
+
+```
+ssh -i "infrastructure/sat_scan_kp.pem" ubuntu@ec2-18-223-42-178.us-east-2.compute.amazonaws.com
+```
+
+Install python and deps:
+
+```
+sudo apt-get update
+sudo apt install python3-pip \
+   python3.8-venv \
+   libpq-dev
+
+
+
+python3 -m venv .venv && source .venv/bin/activate
+
+pip3 install alembic psycopg2 
+```
+
+Then, edit the `alembic.ini` file to use the RDS connection string.
+
+Finally, apply the migrations:
+
+```
+alembic upgrade head
+```
