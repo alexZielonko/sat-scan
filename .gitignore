@@ -17,4 +17,4 @@ infrastructure/.terraform
 infrastructure/*.tfstate
 infrastructure/*.tfstate.*
 infrastructure/secrets.tfvars
-
+infrastructure/route-config.ini
