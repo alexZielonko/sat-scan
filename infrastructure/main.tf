@@ -158,6 +158,14 @@ resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRole_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+resource "aws_cloudwatch_log_group" "sat-scan-api-log-group" {
+  name = "sat-scan-api-log-group"
+
+  tags = {
+    Environment = "production"
+    Application = "sat-scan-api"
+  }
+}
 
 resource "aws_ecs_task_definition" "sat_scan_ecs_task_definition" {
   family                   = "sat-scan-api-family"
@@ -181,7 +189,15 @@ resource "aws_ecs_task_definition" "sat_scan_ecs_task_definition" {
         "containerPort": 5000,
         "hostPort": 5000
       }
-    ]
+    ],
+    "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+            "awslogs-group": "sat-scan-api-log-group",
+            "awslogs-region": "${var.aws_region}",
+            "awslogs-stream-prefix": "sat-scan-api"
+          }
+        }
   }
 ]
 DEFINITION
