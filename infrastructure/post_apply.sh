@@ -10,9 +10,9 @@
 S3_BUCKET_URI="s3://sat-scan-route-config"
 OUTPUT_FILE_NAME="route-config.ini"
 
-load_balancer=`terraform output -json | jq ".load_balancer_ip.value"`
-database_endpoint=`terraform output -json | jq ".database_endpoint.value.endpoint"`
-database_port=`terraform output -json | jq ".database_endpoint.value.port"`
+load_balancer=`terraform output -json | jq -r ".load_balancer_ip.value"`
+database_endpoint=`terraform output -json | jq -r ".database_endpoint.value.endpoint"`
+database_port=`terraform output -json | jq -r ".database_endpoint.value.port"`
 
 cat <<EOF > $OUTPUT_FILE_NAME
 [load_balancer]
