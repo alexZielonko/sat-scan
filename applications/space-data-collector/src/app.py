@@ -45,7 +45,7 @@ if __name__ == "__main__":
         auth = get_auth_credentials(data_request_name=request_config.name)
         data_request = DataRequest(request_config, auth)
         data = data_request.get()
-        publish_messages(request_config, data)
+        # publish_messages(request_config, data)
 
     
     
