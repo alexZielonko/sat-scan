@@ -8,8 +8,6 @@ class DatabaseCredentials:
     def __init__(self):
         self.credentials = Credentials()
         self.connection_url = self._get_db_connection_url()
-        print('Created connection url')
-        print(self.connection_url)
 
     def _get_db_connection_url(self):
         route_config = self._get_route_config()

@@ -16,9 +16,6 @@ class Credentials:
             self.api_keys = config.get('api-keys', "keys").split(" ")
             self.db_user = config.get('database', "database_user")
             self.db_pass = config.get('database', "database_password")
-
-            print('Got db user')
-            print(self.db_user)
         except Exception as err:
             print('Failed to parse credentials.ini')
             print(err)
