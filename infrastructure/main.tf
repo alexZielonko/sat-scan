@@ -289,6 +289,12 @@ resource "aws_ecs_task_definition" "sat_scan_data_collector_ecs_task_definition"
     "memory": 2048,
     "name": "sat-scan-data-collector-family",
     "networkMode": "awsvpc",
+    "portMappings": [
+      {
+        "containerPort": 5000,
+        "hostPort": 5000
+      }
+    ],
     "logConfiguration": {
           "logDriver": "awslogs",
           "options": {
@@ -302,6 +308,25 @@ resource "aws_ecs_task_definition" "sat_scan_data_collector_ecs_task_definition"
 DEFINITION
 }
 
+resource "aws_security_group" "sat_scan_data_collector_task_sg" {
+  name   = "sat_scan_data_collector_task_security_group"
+  vpc_id = aws_vpc.sat_scan_vpc.id
+
+  ingress {
+    protocol        = "tcp"
+    from_port       = 5000
+    to_port         = 5000
+    security_groups = [aws_security_group.sat_scan_web_sg.id]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_ecs_service" "ecs_data_collector_service" {
   name            = "sat-scan-data-collector-service"
   cluster         = aws_ecs_cluster.main.id
@@ -309,10 +334,19 @@ resource "aws_ecs_service" "ecs_data_collector_service" {
   desired_count   = 1
   launch_type     = "FARGATE"
 
+
   network_configuration {
-    security_groups = [aws_security_group.sat_scan_web_sg.id]
+    security_groups = [aws_security_group.sat_scan_data_collector_task_sg.id]
     subnets         = aws_subnet.sat_scan_private_subnet.*.id
   }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.sat_scan_lb_target_group.id
+    container_name   = "sat-scan-data-collector-family"
+    container_port   = 5000
+  }
+
+  depends_on = [aws_lb_listener.sat_scan_lb_listener]
 }
 
 # -----------------------------------------

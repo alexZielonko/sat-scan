@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
 import json, os, configparser, pika
+from flask import Flask
 from typing import Dict
 
 from components.data_request import DataRequest
 from components.configuration_parser import ConfigurationParser, DataRequestConfig
+
+app = Flask(__name__)
 
 def get_auth_credentials(data_request_name: str) -> Dict[str, str]:
     directory = os.path.dirname(__file__)
@@ -30,19 +33,25 @@ def publish_messages(request_config: DataRequestConfig, data: Dict[str, str]) ->
     for record in data:
         channel.basic_publish(exchange='', routing_key=routing_key, body=json.dumps(record))
 
-    connection.close()  
+    connection.close()
+
+@app.route('/health-check')
+def health_check():
+  return 'Success', 200
 
 if __name__ == "__main__":
     print('👉 Running space-data-collector')
+    app.run(host="0.0.0.0", port=5000, debug=True)
+    print("👉 Data Collector is up (🆙)")
 
     # parser = ConfigurationParser()
     # data_requests_config = parser.run()
     
     # for request_config in data_requests_config:
-        # auth = get_auth_credentials(data_request_name=request_config.name)
-        # data_request = DataRequest(request_config, auth)
-        # data = data_request.get()
-        # publish_messages(request_config, data)
+    #     auth = get_auth_credentials(data_request_name=request_config.name)
+    #     data_request = DataRequest(request_config, auth)
+    #     data = data_request.get()
+    #     # publish_messages(request_config, data)
 
     
     
