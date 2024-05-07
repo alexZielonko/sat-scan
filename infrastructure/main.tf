@@ -253,16 +253,19 @@ resource "aws_security_group" "sat_scan_db_sg" {
 
   vpc_id = aws_vpc.sat_scan_vpc.id
 
-  // Restrict RDS access to private subnet (not accessible via internet), 
+  // Restrict RDS access to private subnets (not accessible via internet),
   // no inbound/outbound rules provided
-
-  // Only allow traffic within sat scan web security group
   ingress {
-    description     = "Allow PostgreSQL traffic from only the web security group"
-    from_port       = "5432"
-    to_port         = "5432"
-    protocol        = "tcp"
-    security_groups = [aws_security_group.sat_scan_web_sg.id]
+    description = "Allow PostgreSQL traffic from only the web security group"
+    from_port   = "5432"
+    to_port     = "5432"
+    protocol    = "tcp"
+    security_groups = [
+      # EC2 - Migration support
+      aws_security_group.sat_scan_web_sg.id,
+      # API - All CRUD access
+      aws_security_group.sat_scan_api_task_sg.id
+    ]
   }
 
   tags = {
