@@ -23,4 +23,5 @@ RUN crontab /etc/cron.d/cronjobs
 COPY src/ ./src
 
 # Start cron service
-CMD ["crond", "-f"]
+# CMD ["crond", "-f"]
+CMD ["python3", "-u", "src/app.py"]
