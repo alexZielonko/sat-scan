@@ -358,3 +358,21 @@ resource "aws_eip" "sat_scan_api_eip" {
   // Place Elastic IP in the VPC
   vpc = true
 }
+
+resource "aws_mq_broker" "sat-scan-mq-broker" {
+  broker_name = "sat-scan-mq-broker"
+
+  count              = 1
+  engine_type        = "ActiveMQ"
+  engine_version     = "5.17.6"
+  storage_type       = "efs"
+  host_instance_type = "mq.t3.micro"
+  security_groups    = [aws_security_group.sat_scan_web_sg.id]
+
+  subnet_ids = [element(aws_subnet.sat_scan_public_subnet.*.id, count.index)]
+
+  user {
+    username = var.mq_username
+    password = var.mq_password
+  }
+}
