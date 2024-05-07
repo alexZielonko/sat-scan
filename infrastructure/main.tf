@@ -166,6 +166,10 @@ resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRole_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+# -----------------------------------------
+# API SETUP
+# -----------------------------------------
+
 resource "aws_cloudwatch_log_group" "sat-scan-api-log-group" {
   name = "sat-scan-api-log-group"
 
@@ -174,10 +178,6 @@ resource "aws_cloudwatch_log_group" "sat-scan-api-log-group" {
     Application = "sat-scan-api"
   }
 }
-
-# -----------------------------------------
-# API SETUP
-# -----------------------------------------
 
 resource "aws_ecs_task_definition" "sat_scan_api_ecs_task_definition" {
   family                   = "sat-scan-api-family"
@@ -262,6 +262,15 @@ resource "aws_ecs_service" "ecs_api_service" {
 # -----------------------------------------
 # Data Collector Setup
 # -----------------------------------------
+
+resource "aws_cloudwatch_log_group" "sat-scan-data-collector-log-group" {
+  name = "sat-scan-data-collector-log-group"
+
+  tags = {
+    Environment = "production"
+    Application = "sat-scan-data-collector"
+  }
+}
 
 resource "aws_ecs_task_definition" "sat_scan_data_collector_ecs_task_definition" {
   family                   = "sat-scan-data-collector-family"
