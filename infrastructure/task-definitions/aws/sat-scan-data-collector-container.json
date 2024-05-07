@@ -1,0 +1,61 @@
+{
+  "taskDefinitionArn": "arn:aws:ecs:us-east-2:730335620736:task-definition/sat-scan-data-collector-family:1",
+  "containerDefinitions": [
+    {
+      "name": "sat-scan-data-collector-family",
+      "image": "730335620736.dkr.ecr.us-east-2.amazonaws.com/sat-scan-data-collector:latest",
+      "cpu": 1024,
+      "memory": 2048,
+      "portMappings": [],
+      "essential": true,
+      "environment": [],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "sat-scan-data-collector-log-group",
+          "awslogs-region": "us-east-2",
+          "awslogs-stream-prefix": "sat-scan-data-collector"
+        }
+      },
+      "systemControls": []
+    }
+  ],
+  "family": "sat-scan-data-collector-family",
+  "executionRoleArn": "arn:aws:iam::730335620736:role/sat-scan-ecs-execution-role",
+  "networkMode": "awsvpc",
+  "revision": 1,
+  "volumes": [],
+  "status": "ACTIVE",
+  "requiresAttributes": [
+    {
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "name": "ecs.capability.execution-role-ecr-pull"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    },
+    {
+      "name": "ecs.capability.task-eni"
+    }
+  ],
+  "placementConstraints": [],
+  "compatibilities": ["EC2", "FARGATE"],
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "2048",
+  "registeredAt": "2024-05-07T13:32:12.952000-05:00",
+  "registeredBy": "arn:aws:iam::730335620736:root"
+}
