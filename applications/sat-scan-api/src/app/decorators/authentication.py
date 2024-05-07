@@ -4,7 +4,7 @@ from functools import wraps
 from app.config_parsers.credentials import Credentials
 
 def require_auth(f):
-    api_keys = Credentials().get_api_keys()
+    api_keys = Credentials().api_keys
 
     @wraps(f)
     def authentication_token_check(*args, **kwargs):

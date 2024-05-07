@@ -37,6 +37,8 @@ jobs:
       - name: Create credentials.ini
         env:
           SAT_SCAN_API_KEY: ${{ secrets.SAT_SCAN_API_KEY }}
+          DATABASE_USER: ${{ secrets.DATABASE_USER }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
         run: |
           cd applications/sat-scan-api
 

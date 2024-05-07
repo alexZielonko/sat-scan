@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from app.config_parsers.database_credentials import DatabaseCredentials
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = DatabaseCredentials().get_db_connection_url()
+app.config['SQLALCHEMY_DATABASE_URI'] = DatabaseCredentials().connection_url
 
 db = SQLAlchemy(app)
 

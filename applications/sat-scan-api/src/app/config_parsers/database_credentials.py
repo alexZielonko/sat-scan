@@ -6,27 +6,20 @@ from app.config_parsers.credentials import Credentials
     
 class DatabaseCredentials:
     def __init__(self):
-        self.credentials = Credentials().get_database_credentials()
-        self.route_config = self._get_route_config()
+        self.credentials = Credentials()
+        self.connection_url = self._get_db_connection_url()
+        print('Created connection url')
+        print(self.connection_url)
 
-    def get_db_connection_url(self):
+    def _get_db_connection_url(self):
         route_config = self._get_route_config()
         driver = 'postgresql'
-        db_user = f'{self.credentials["user"]}:{self.credentials["password"]}'
+        db_user = f'{self.credentials.db_user}:{self.credentials.db_pass}'
         db_route = f'{route_config["endpoint"]}/{route_config["name"]}'
-
-        print('env')
-        print(route_config['env'])
 
         if route_config["env"] == "PROD":
           db_route = f'{route_config["endpoint"]}/{route_config["name"]}'
 
-        print('Connecting to: ')
-        print(db_route)
-
-        print('Full connection string')
-        print(f'{driver}://{db_user}@{db_route}')
-  
         return f'{driver}://{db_user}@{db_route}'
 
     def _get_route_config(self):
