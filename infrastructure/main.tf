@@ -2,6 +2,10 @@ data "aws_availability_zones" "available_zones" {
   state = "available"
 }
 
+# -----------------------------------------
+# General VPC Networking
+# -----------------------------------------
+
 resource "aws_vpc" "sat_scan_vpc" {
   cidr_block           = var.vpc_cidr_block
   enable_dns_hostnames = true
@@ -136,6 +140,10 @@ resource "aws_lb_listener" "sat_scan_lb_listener" {
   }
 }
 
+# -----------------------------------------
+# ECS Policy Definition
+# -----------------------------------------
+
 data "aws_iam_policy_document" "assume_role_policy" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -167,7 +175,11 @@ resource "aws_cloudwatch_log_group" "sat-scan-api-log-group" {
   }
 }
 
-resource "aws_ecs_task_definition" "sat_scan_ecs_task_definition" {
+# -----------------------------------------
+# API SETUP
+# -----------------------------------------
+
+resource "aws_ecs_task_definition" "sat_scan_api_ecs_task_definition" {
   family                   = "sat-scan-api-family"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
@@ -229,7 +241,7 @@ resource "aws_ecs_cluster" "main" {
 resource "aws_ecs_service" "ecs_api_service" {
   name            = "sat-scan-api-service"
   cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.sat_scan_ecs_task_definition.arn
+  task_definition = aws_ecs_task_definition.sat_scan_api_ecs_task_definition.arn
   desired_count   = 1
   launch_type     = "FARGATE"
 
@@ -246,6 +258,57 @@ resource "aws_ecs_service" "ecs_api_service" {
 
   depends_on = [aws_lb_listener.sat_scan_lb_listener]
 }
+
+# -----------------------------------------
+# Data Collector Setup
+# -----------------------------------------
+
+resource "aws_ecs_task_definition" "sat_scan_data_collector_ecs_task_definition" {
+  family                   = "sat-scan-data-collector-family"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = 1024
+  memory                   = 2048
+
+  execution_role_arn = aws_iam_role.ecsTaskExecutionRole.arn
+
+  container_definitions = <<DEFINITION
+[
+  {
+    "image": "730335620736.dkr.ecr.us-east-2.amazonaws.com/sat-scan-data-collector:latest",
+    "cpu": 1024,
+    "memory": 2048,
+    "name": "sat-scan-data-collector-family",
+    "networkMode": "awsvpc",
+    "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+            "awslogs-group": "sat-scan-data-collector-log-group",
+            "awslogs-region": "${var.aws_region}",
+            "awslogs-stream-prefix": "sat-scan-data-collector"
+          }
+        }
+  }
+]
+DEFINITION
+}
+
+resource "aws_ecs_service" "ecs_data_collector_service" {
+  name            = "sat-scan-data-collector-service"
+  cluster         = aws_ecs_cluster.main.id
+  task_definition = aws_ecs_task_definition.sat_scan_data_collector_ecs_task_definition.arn
+  desired_count   = 1
+  launch_type     = "FARGATE"
+
+  network_configuration {
+    security_groups = [aws_security_group.sat_scan_web_sg.id]
+    subnets         = aws_subnet.sat_scan_private_subnet.*.id
+  }
+}
+
+# -----------------------------------------
+# RDS SETUP
+# -----------------------------------------
 
 resource "aws_security_group" "sat_scan_db_sg" {
   name        = "sat_scan_db_sg"
@@ -301,6 +364,9 @@ resource "aws_s3_bucket" "sat-scan-route-config" {
   bucket = "sat-scan-route-config"
 }
 
+# -----------------------------------------
+# EC2 SETUP
+# -----------------------------------------
 
 // Create a data object called "ubuntu" that holds the latest
 // Ubuntu 20.04 server AMI
@@ -358,6 +424,10 @@ resource "aws_eip" "sat_scan_api_eip" {
   // Place Elastic IP in the VPC
   vpc = true
 }
+
+# -----------------------------------------
+# Amazon MQ Broker Setup
+# -----------------------------------------
 
 resource "aws_mq_broker" "sat-scan-mq-broker" {
   broker_name = "sat-scan-mq-broker"
