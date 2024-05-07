@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 
-import json
-import os
-import configparser
-import pika
+import json, os, configparser, pika
 from typing import Dict
 
 from components.data_request import DataRequest
@@ -33,18 +30,18 @@ def publish_messages(request_config: DataRequestConfig, data: Dict[str, str]) ->
     for record in data:
         channel.basic_publish(exchange='', routing_key=routing_key, body=json.dumps(record))
 
-    connection.close()    
+    connection.close()  
 
 if __name__ == "__main__":
     print('👉 Running space-data-collector')
 
-    parser = ConfigurationParser()
-    data_requests_config = parser.run()
+    # parser = ConfigurationParser()
+    # data_requests_config = parser.run()
     
-    for request_config in data_requests_config:
-        auth = get_auth_credentials(data_request_name=request_config.name)
-        data_request = DataRequest(request_config, auth)
-        data = data_request.get()
+    # for request_config in data_requests_config:
+        # auth = get_auth_credentials(data_request_name=request_config.name)
+        # data_request = DataRequest(request_config, auth)
+        # data = data_request.get()
         # publish_messages(request_config, data)
 
     
