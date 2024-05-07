@@ -1,8 +1,20 @@
-__pycache__
+# Ignore local development caches
 .venv
 .docker-data
+__pycache__
 
 # Ignore credentials.ini configurations
 applications/sat-scan-api/credentials.ini
 applications/space-data-analyzer/credentials.ini
 applications/space-data-collector/credentials.ini
+
+# Ignore SSH keys
+*.pem
+*.pub
+
+# Terraform Directories
+infrastructure/.terraform
+infrastructure/*.tfstate
+infrastructure/*.tfstate.*
+infrastructure/secrets.tfvars
+infrastructure/route-config.ini
