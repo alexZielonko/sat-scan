@@ -3,7 +3,7 @@ name: Deploy Sat Scan API to Amazon ECS
 on:
   push:
     branches:
-      - terraform
+      - main
 
 env:
   AWS_REGION: "us-east-2"
