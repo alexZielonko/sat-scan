@@ -64,11 +64,11 @@ jobs:
           cd applications/space-data-collector
           rm -rf package
           cd function
-          pip install --target ../package -r requirements.txt
+          pip install --target ../packages -r requirements.txt
           cd ..
-
-          mv package function
-          zip -r lambda_code.zip function
+          cp -r packages/* function
+          cd function
+          zip -r lambda_code.zip .
           aws s3 cp lambda_code.zip s3://sat-scan-data-collector
 
           aws lambda update-function-code \
