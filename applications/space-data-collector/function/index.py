@@ -46,7 +46,7 @@ def get_pika_connection():
         ssl_context.set_ciphers('ECDHE+AESGCM:!ECDSA')
 
         url = f"amqps://{config.user}:{config.password}@{config.broker_id}-1.mq.{config.region}.amazonaws.com:5671"
-        # url = 'amqp://b-c34a5bef-c8f3-4052-a5e6-46ca9d0735fd-1.mq.us-east-2.amazonaws.com:5671'
+        # url = 'amqp://b-1481d37f-fdcc-40c6-b4aa-bd81be63eaef-1.mq.us-east-2.amazonaws.com:5671'
         print(f'conn url: {url}')
 
         parameters = pika.URLParameters(url)
@@ -71,7 +71,8 @@ def publish_messages(request_config: DataRequestConfig, data: Dict[str, str]) ->
     channel.queue_declare(queue=routing_key)
 
     for record in data:
-        channel.basic_publish(exchange='', routing_key=routing_key, body=json.dumps(record))
+        # channel.basic_publish(exchange='', routing_key=routing_key, body=json.dumps(record))
+        channel.basic_publish(exchange='', routing_key=routing_key, body=b'Hello World!')
 
     connection.close()
 
