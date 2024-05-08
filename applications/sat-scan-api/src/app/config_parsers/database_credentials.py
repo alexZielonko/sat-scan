@@ -31,7 +31,6 @@ class DatabaseCredentials:
           return {
               "env": config.get('database', 'env'),
               "endpoint": config.get('database', "database_endpoint"),
-              "port": config.get('database', "database_port"),
               "name": config.get('database', "database_name"),
           }
       except Exception as err:

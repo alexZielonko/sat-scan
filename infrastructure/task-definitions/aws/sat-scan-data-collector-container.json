@@ -1,9 +1,9 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:us-east-2:730335620736:task-definition/sat-scan-api-family:34",
+    "taskDefinitionArn": "arn:aws:ecs:us-east-2:730335620736:task-definition/sat-scan-data-collector-family:7",
     "containerDefinitions": [
         {
-            "name": "sat-scan-api-family",
-            "image": "730335620736.dkr.ecr.us-east-2.amazonaws.com/sat-scan:latest",
+            "name": "sat-scan-data-collector-family",
+            "image": "730335620736.dkr.ecr.us-east-2.amazonaws.com/sat-scan-data-collector:latest",
             "cpu": 1024,
             "memory": 2048,
             "portMappings": [
@@ -20,18 +20,18 @@
             "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
-                    "awslogs-group": "sat-scan-api-log-group",
+                    "awslogs-group": "sat-scan-data-collector-log-group",
                     "awslogs-region": "us-east-2",
-                    "awslogs-stream-prefix": "sat-scan-api"
+                    "awslogs-stream-prefix": "sat-scan-data-collector"
                 }
             },
             "systemControls": []
         }
     ],
-    "family": "sat-scan-api-family",
+    "family": "sat-scan-data-collector-family",
     "executionRoleArn": "arn:aws:iam::730335620736:role/sat-scan-ecs-execution-role",
     "networkMode": "awsvpc",
-    "revision": 34,
+    "revision": 7,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -67,6 +67,6 @@
     ],
     "cpu": "1024",
     "memory": "2048",
-    "registeredAt": "2024-05-07T13:32:12.978000-05:00",
+    "registeredAt": "2024-05-07T14:28:26.126000-05:00",
     "registeredBy": "arn:aws:iam::730335620736:root"
 }

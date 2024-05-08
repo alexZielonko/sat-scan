@@ -19,14 +19,25 @@ OUTPUT_FILE_NAME="route-config.ini"
 load_balancer=`terraform output -json | jq -r ".load_balancer_ip.value"`
 database_endpoint=`terraform output -json | jq -r ".database_endpoint.value.endpoint"`
 
+mq_broker_username=`terraform output -json | jq -r ".mq_broker.value[0].user[0].username"`
+mq_broker_password=`terraform output -json | jq -r ".mq_broker.value[0].user[0].password"`
+mq_broker_broker_id=`terraform output -json | jq -r ".mq_broker.value[0].id"`
+
 cat <<EOF > $OUTPUT_FILE_NAME
 [load_balancer]
 load_balancer=$load_balancer
 
 [database]
+env=PROD
 database_endpoint=$database_endpoint
 database_name=sat_scan_db
+
+[mq_broker]
 env=PROD
+rabbitmq_user=$mq_broker_username
+rabbitmq_password=$mq_broker_password
+rabbitmq_broker_id=$mq_broker_broker_id
+rabbitmq_region=us-east-2
 EOF
 
 echo "Created temporary "$OUTPUT_FILE_NAME" file"
@@ -51,7 +62,7 @@ ssh -i "sat_scan_kp.pem" ubuntu@$api_public_dns << EOF
   exit
 EOF
 
-db_name=`terraform output -json | jq -r ".database_endpoint.value.name"`
+db_name=`terraform output -json | jq -r ".database_endpoint.value.db_name"`
 db_user=`terraform output -json | jq -r ".database_endpoint.value.username"`
 db_pass=`terraform output -json | jq -r ".database_endpoint.value.password"`
 

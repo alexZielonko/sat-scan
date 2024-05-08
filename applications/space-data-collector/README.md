@@ -8,6 +8,8 @@ This application periodically pulls satellite data from external APIs and publis
 
 ## Data Sources
 
+Edit `space-data-collector/function/components/space_track_requests.yml` to add new requests for publication by the message queue.
+
 - [Space Track API](https://www.space-track.org/documentation#api)
   
 

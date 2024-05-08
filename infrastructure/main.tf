@@ -2,9 +2,14 @@ data "aws_availability_zones" "available_zones" {
   state = "available"
 }
 
+# -----------------------------------------
+# General VPC Networking
+# -----------------------------------------
+
 resource "aws_vpc" "sat_scan_vpc" {
   cidr_block           = var.vpc_cidr_block
   enable_dns_hostnames = true
+
   tags = {
     Name = "sat_scan_vpc"
   }
@@ -43,7 +48,6 @@ resource "aws_route" "internet_access" {
 
 resource "aws_eip" "gateway" {
   count      = 2
-  vpc        = true
   depends_on = [aws_internet_gateway.gateway]
 }
 
@@ -69,8 +73,8 @@ resource "aws_route_table_association" "private" {
   route_table_id = element(aws_route_table.private.*.id, count.index)
 }
 
-resource "aws_security_group" "sat_scan_web_sg" {
-  name        = "sat_scan_web_sg"
+resource "aws_security_group" "sat_scan_external_sg" {
+  name        = "sat_scan_external_sg"
   description = "Security group for sat scan vpc"
 
   vpc_id = aws_vpc.sat_scan_vpc.id
@@ -103,14 +107,44 @@ resource "aws_security_group" "sat_scan_web_sg" {
   }
 
   tags = {
-    Name = "sat_scan_web_sg"
+    Name = "sat_scan_external_sg"
+  }
+}
+
+
+resource "aws_security_group" "sat_scan_internal_sg" {
+  name        = "sat_scan_internal_sg"
+  description = "Security group for internal sat scan vpc communication"
+
+  vpc_id = aws_vpc.sat_scan_vpc.id
+
+  // Limit SSH traffic to local IP
+  ingress {
+    description = "Allow SSH from my computer"
+    from_port   = "22"
+    to_port     = "22"
+    protocol    = "tcp"
+    cidr_blocks = ["${var.local_ip}/32"]
+  }
+
+  // Allow all outbound traffic
+  egress {
+    description = "Allow all outbound traffic"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "sat_scan_internal_sg"
   }
 }
 
 resource "aws_lb" "default" {
   name            = "sat-scan-load-balancer"
   subnets         = aws_subnet.sat_scan_public_subnet.*.id
-  security_groups = [aws_security_group.sat_scan_web_sg.id]
+  security_groups = [aws_security_group.sat_scan_external_sg.id]
 }
 
 resource "aws_lb_target_group" "sat_scan_lb_target_group" {
@@ -136,6 +170,10 @@ resource "aws_lb_listener" "sat_scan_lb_listener" {
   }
 }
 
+# -----------------------------------------
+# ECS Policy Definition
+# -----------------------------------------
+
 data "aws_iam_policy_document" "assume_role_policy" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -158,6 +196,10 @@ resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRole_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+# -----------------------------------------
+# API SETUP
+# -----------------------------------------
+
 resource "aws_cloudwatch_log_group" "sat-scan-api-log-group" {
   name = "sat-scan-api-log-group"
 
@@ -167,7 +209,7 @@ resource "aws_cloudwatch_log_group" "sat-scan-api-log-group" {
   }
 }
 
-resource "aws_ecs_task_definition" "sat_scan_ecs_task_definition" {
+resource "aws_ecs_task_definition" "sat_scan_api_ecs_task_definition" {
   family                   = "sat-scan-api-family"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
@@ -211,7 +253,7 @@ resource "aws_security_group" "sat_scan_api_task_sg" {
     protocol        = "tcp"
     from_port       = 5000
     to_port         = 5000
-    security_groups = [aws_security_group.sat_scan_web_sg.id]
+    security_groups = [aws_security_group.sat_scan_external_sg.id]
   }
 
   egress {
@@ -229,7 +271,7 @@ resource "aws_ecs_cluster" "main" {
 resource "aws_ecs_service" "ecs_api_service" {
   name            = "sat-scan-api-service"
   cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.sat_scan_ecs_task_definition.arn
+  task_definition = aws_ecs_task_definition.sat_scan_api_ecs_task_definition.arn
   desired_count   = 1
   launch_type     = "FARGATE"
 
@@ -247,6 +289,42 @@ resource "aws_ecs_service" "ecs_api_service" {
   depends_on = [aws_lb_listener.sat_scan_lb_listener]
 }
 
+# -----------------------------------------
+# Data Collector SETUP
+# -----------------------------------------
+
+
+resource "aws_s3_bucket" "sat_scan_data_collector_s3" {
+  bucket = "sat-scan-data-collector"
+}
+
+module "lambda_function_in_vpc" {
+  source = "terraform-aws-modules/lambda/aws"
+
+  function_name = "data-collector-lambda"
+  description   = "Sat Scan Data Collection Cron"
+  handler       = "index.lambda_handler"
+  runtime       = "python3.8"
+  timeout       = 30
+
+  create_package = false
+  s3_existing_package = {
+    bucket = aws_s3_bucket.sat_scan_data_collector_s3.bucket
+    key    = "lambda_code.zip"
+  }
+
+  vpc_subnet_ids = aws_subnet.sat_scan_private_subnet.*.id
+  vpc_security_group_ids = [
+    aws_security_group.sat_scan_internal_sg.id,
+    aws_security_group.sat-scan-mq-broker-sg.id
+  ]
+  attach_network_policy = true
+}
+
+# -----------------------------------------
+# RDS SETUP
+# -----------------------------------------
+
 resource "aws_security_group" "sat_scan_db_sg" {
   name        = "sat_scan_db_sg"
   description = "Security group for RDS"
@@ -262,7 +340,7 @@ resource "aws_security_group" "sat_scan_db_sg" {
     protocol    = "tcp"
     security_groups = [
       # EC2 - Migration support
-      aws_security_group.sat_scan_web_sg.id,
+      aws_security_group.sat_scan_internal_sg.id,
       # API - All CRUD access
       aws_security_group.sat_scan_api_task_sg.id
     ]
@@ -301,6 +379,9 @@ resource "aws_s3_bucket" "sat-scan-route-config" {
   bucket = "sat-scan-route-config"
 }
 
+# -----------------------------------------
+# EC2 SETUP
+# -----------------------------------------
 
 // Create a data object called "ubuntu" that holds the latest
 // Ubuntu 20.04 server AMI
@@ -346,7 +427,7 @@ resource "aws_instance" "sat_scan_api" {
   subnet_id = aws_subnet.sat_scan_public_subnet[count.index].id
   key_name  = aws_key_pair.sat_scan_kp.key_name
 
-  vpc_security_group_ids = [aws_security_group.sat_scan_web_sg.id]
+  vpc_security_group_ids = [aws_security_group.sat_scan_internal_sg.id]
 }
 
 // Create an Elastic IP for each API EC2 instance
@@ -354,7 +435,54 @@ resource "aws_eip" "sat_scan_api_eip" {
   count = var.settings.api.count
 
   instance = aws_instance.sat_scan_api[count.index].id
+}
 
-  // Place Elastic IP in the VPC
-  vpc = true
+# -----------------------------------------
+# Amazon MQ Broker Setup
+# -----------------------------------------
+
+
+resource "aws_security_group" "sat-scan-mq-broker-sg" {
+  name        = "sat_scan_mq_broker_sg"
+  description = "Security group for Amazon MQ"
+
+  vpc_id = aws_vpc.sat_scan_vpc.id
+
+  // Restrict MQ Broker access to private subnets (not accessible via internet),
+  // no inbound/outbound rules provided
+  ingress {
+    description = "Allow traffic from internal SG"
+    from_port   = "5671"
+    to_port     = "5671"
+    protocol    = "tcp"
+    security_groups = [
+      aws_security_group.sat_scan_internal_sg.id,
+    ]
+  }
+
+  tags = {
+    Name = "sat_scan_mq_broker_sg"
+  }
+}
+
+resource "aws_mq_broker" "sat-scan-mq-broker" {
+  broker_name = "sat-scan-mq-broker"
+
+  count              = 1
+  engine_type        = "RabbitMQ"
+  engine_version     = "3.12.13"
+  storage_type       = "ebs"
+  host_instance_type = "mq.t3.micro"
+  security_groups    = [aws_security_group.sat-scan-mq-broker-sg.id, aws_security_group.sat_scan_internal_sg.id]
+
+  subnet_ids = [element(aws_subnet.sat_scan_private_subnet.*.id, count.index)]
+
+  user {
+    username = var.mq_username
+    password = var.mq_password
+  }
+
+  logs {
+    general = true
+  }
 }

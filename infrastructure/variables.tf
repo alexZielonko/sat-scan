@@ -40,10 +40,6 @@ variable "public_subnet_cidr_blocks" {
   ]
 }
 
-// This variable contains the CIDR blocks for
-// the public subnet. I have only included 4 
-// for this tutorial, but if you need more you
-// would add them here
 variable "private_subnet_cidr_blocks" {
   description = "Available CIDR blocks for private subnets"
   type        = list(string)
@@ -55,27 +51,33 @@ variable "private_subnet_cidr_blocks" {
   ]
 }
 
-// This variable contains your local IP address. This
-// is used when setting up the SSH rule on the
-// web security group
+# Stored in the secrets.tfvars file
 variable "local_ip" {
   description = "Local IP address"
   type        = string
   sensitive   = true
 }
 
-// This variable contains the database master user
-// We will be storing this in a secrets file
 variable "db_username" {
   description = "Database master user"
   type        = string
   sensitive   = true
 }
 
-// This variable contains the database master password
-// We will be storing this in a secrets file
 variable "db_password" {
   description = "Database master user password"
+  type        = string
+  sensitive   = true
+}
+
+variable "mq_username" {
+  description = "AWS MQ Broker User"
+  type        = string
+  sensitive   = true
+}
+
+variable "mq_password" {
+  description = "AWS MQ Broker Password"
   type        = string
   sensitive   = true
 }
