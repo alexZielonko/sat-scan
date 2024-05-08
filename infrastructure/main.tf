@@ -313,9 +313,12 @@ module "lambda_function_in_vpc" {
     key    = "lambda_code.zip"
   }
 
-  vpc_subnet_ids         = aws_subnet.sat_scan_private_subnet.*.id
-  vpc_security_group_ids = [aws_security_group.sat_scan_internal_sg.id]
-  attach_network_policy  = true
+  vpc_subnet_ids = aws_subnet.sat_scan_private_subnet.*.id
+  vpc_security_group_ids = [
+    aws_security_group.sat_scan_internal_sg.id,
+    aws_security_group.sat-scan-mq-broker-sg.id
+  ]
+  attach_network_policy = true
 }
 
 # -----------------------------------------
@@ -445,7 +448,7 @@ resource "aws_security_group" "sat-scan-mq-broker-sg" {
 
   vpc_id = aws_vpc.sat_scan_vpc.id
 
-  // Restrict RDS access to private subnets (not accessible via internet),
+  // Restrict MQ Broker access to private subnets (not accessible via internet),
   // no inbound/outbound rules provided
   ingress {
     description = "Allow traffic from internal SG"
@@ -457,6 +460,15 @@ resource "aws_security_group" "sat-scan-mq-broker-sg" {
     ]
   }
 
+  // Allow all outbound traffic
+  egress {
+    description = "Allow all outbound traffic"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   tags = {
     Name = "sat_scan_mq_broker_sg"
   }
@@ -466,11 +478,11 @@ resource "aws_mq_broker" "sat-scan-mq-broker" {
   broker_name = "sat-scan-mq-broker"
 
   count              = 1
-  engine_type        = "ActiveMQ"
-  engine_version     = "5.17.6"
-  storage_type       = "efs"
+  engine_type        = "RabbitMQ"
+  engine_version     = "3.12.13"
+  storage_type       = "ebs"
   host_instance_type = "mq.t3.micro"
-  security_groups    = [aws_security_group.sat-scan-mq-broker-sg.id]
+  security_groups    = [aws_security_group.sat-scan-mq-broker-sg.id, aws_security_group.sat_scan_internal_sg.id]
 
   subnet_ids = [element(aws_subnet.sat_scan_private_subnet.*.id, count.index)]
 
