@@ -46,9 +46,6 @@ def get_pika_connection():
         ssl_context.set_ciphers('ECDHE+AESGCM:!ECDSA')
 
         url = f"amqps://{config.user}:{config.password}@{config.broker_id}.mq.{config.region}.amazonaws.com:5671"
-        # url = 'amqp://b-1481d37f-fdcc-40c6-b4aa-bd81be63eaef-1.mq.us-east-2.amazonaws.com:5671'
-        #        amqps://sat-scan-rabbit-mq-username:xsDX8qQbGte28m9kqqF9F7ZRy_in2cg6YF@b-1481d37f-fdcc-40c6-b4aa-bd81be63eaef.mq.us-east-2.amazonaws.com:5671
-        print(f'conn url: {url}')
 
         parameters = pika.URLParameters(url)
         parameters.ssl_options = pika.SSLOptions(context=ssl_context)

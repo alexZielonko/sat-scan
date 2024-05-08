@@ -7,11 +7,6 @@ on:
 
 env:
   AWS_REGION: "us-east-2"
-  # ECR_REPOSITORY: "sat-scan" # Amazon ECR repository name
-  # ECS_CLUSTER: sat-scan-cluster # Amazon ECS cluster name
-  # ECS_SERVICE: sat-scan-data-collector-service # Amazon ECS service name
-  # ECS_TASK_DEFINITION: ./infrastructure/task-definitions/aws/sat-scan-data-collector-container.json
-  # CONTAINER_NAME: sat-scan-data-collector-family # Name specified in containerDefinitions section of task definition
 
 jobs:
   deploy:

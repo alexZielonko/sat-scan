@@ -460,15 +460,6 @@ resource "aws_security_group" "sat-scan-mq-broker-sg" {
     ]
   }
 
-  // Allow all outbound traffic
-  egress {
-    description = "Allow all outbound traffic"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
   tags = {
     Name = "sat_scan_mq_broker_sg"
   }
