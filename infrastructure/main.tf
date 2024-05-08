@@ -438,6 +438,30 @@ resource "aws_eip" "sat_scan_api_eip" {
 # Amazon MQ Broker Setup
 # -----------------------------------------
 
+
+resource "aws_security_group" "sat-scan-mq-broker-sg" {
+  name        = "sat_scan_mq_broker_sg"
+  description = "Security group for Amazon MQ"
+
+  vpc_id = aws_vpc.sat_scan_vpc.id
+
+  // Restrict RDS access to private subnets (not accessible via internet),
+  // no inbound/outbound rules provided
+  ingress {
+    description = "Allow traffic from internal SG"
+    from_port   = "5671"
+    to_port     = "5671"
+    protocol    = "tcp"
+    security_groups = [
+      aws_security_group.sat_scan_internal_sg.id,
+    ]
+  }
+
+  tags = {
+    Name = "sat_scan_mq_broker_sg"
+  }
+}
+
 resource "aws_mq_broker" "sat-scan-mq-broker" {
   broker_name = "sat-scan-mq-broker"
 
@@ -446,12 +470,16 @@ resource "aws_mq_broker" "sat-scan-mq-broker" {
   engine_version     = "5.17.6"
   storage_type       = "efs"
   host_instance_type = "mq.t3.micro"
-  security_groups    = [aws_security_group.sat_scan_internal_sg.id]
+  security_groups    = [aws_security_group.sat-scan-mq-broker-sg.id]
 
-  subnet_ids = [element(aws_subnet.sat_scan_public_subnet.*.id, count.index)]
+  subnet_ids = [element(aws_subnet.sat_scan_private_subnet.*.id, count.index)]
 
   user {
     username = var.mq_username
     password = var.mq_password
+  }
+
+  logs {
+    general = true
   }
 }
