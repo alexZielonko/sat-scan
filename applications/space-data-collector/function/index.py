@@ -71,8 +71,7 @@ def publish_messages(request_config: DataRequestConfig, data: Dict[str, str]) ->
     channel.queue_declare(queue=routing_key)
 
     for record in data:
-        # channel.basic_publish(exchange='', routing_key=routing_key, body=json.dumps(record))
-        channel.basic_publish(exchange='', routing_key=routing_key, body=b'Hello World!')
+        channel.basic_publish(exchange='', routing_key=routing_key, body=json.dumps(record))
 
     connection.close()
 
