@@ -51,7 +51,7 @@ ssh -i "sat_scan_kp.pem" ubuntu@$api_public_dns << EOF
   exit
 EOF
 
-db_name=`terraform output -json | jq -r ".database_endpoint.value.name"`
+db_name=`terraform output -json | jq -r ".database_endpoint.value.db_name"`
 db_user=`terraform output -json | jq -r ".database_endpoint.value.username"`
 db_pass=`terraform output -json | jq -r ".database_endpoint.value.password"`
 
