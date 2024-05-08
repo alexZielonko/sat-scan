@@ -310,7 +310,7 @@ module "lambda_function_in_vpc" {
   create_package = false
   s3_existing_package = {
     bucket = aws_s3_bucket.sat_scan_data_collector_s3.bucket
-    key    = "hello.zip"
+    key    = "lambda_code.zip"
   }
 
   vpc_subnet_ids         = aws_subnet.sat_scan_private_subnet.*.id

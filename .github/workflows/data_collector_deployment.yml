@@ -45,14 +45,14 @@ jobs:
 
           echo "Created .credentials.ini"
 
-      - name: Download infrastructure configuration
-        run: |
-          rm applications/space-data-collector/route-config.ini
-          aws s3 cp s3://sat-scan-route-config/route-config.ini applications/space-data-collector/route-config.ini
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_CLIENT_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_CLIENT_SECRET }}
-          AWS_DEFAULT_REGION: "us-east-2"
+      # - name: Download infrastructure configuration
+      #   run: |
+      #     rm applications/space-data-collector/route-config.ini
+      #     aws s3 cp s3://sat-scan-route-config/route-config.ini applications/space-data-collector/route-config.ini
+      #   env:
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_CLIENT_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_CLIENT_SECRET }}
+      #     AWS_DEFAULT_REGION: "us-east-2"
 
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
@@ -66,4 +66,6 @@ jobs:
           cd function
           pip install --target ../package/python -r requirements.txt
           cd ..
-          aws s3 cp function s3://sat-scan-sat-scan-data-collector
+          mv package/python function
+          zip -r lambda_code.zip function
+          aws s3 cp lambda_code.zip s3://sat-scan-data-collector
