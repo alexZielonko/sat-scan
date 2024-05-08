@@ -66,6 +66,11 @@ jobs:
           cd function
           pip install --target ../package/python -r requirements.txt
           cd ..
+
           mv package/python function
           zip -r lambda_code.zip function
           aws s3 cp lambda_code.zip s3://sat-scan-data-collector
+
+          aws lambda update-function-code \
+            --function-name  data-collector-lambda \
+            --s3-bucket sat-scan-data-collector --s3-key lambda_code.zip
