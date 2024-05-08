@@ -54,23 +54,30 @@ jobs:
       #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_CLIENT_SECRET }}
       #     AWS_DEFAULT_REGION: "us-east-2"
 
-      - name: Build, tag, and push image to Amazon ECR
+      - name: Package Data-Collector and Push to S3
         id: build-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ github.sha }}
         run: |
-          # Build docker container and push it to ECR for ECS deploy
           cd applications/space-data-collector
+
+          # Install packages
           rm -rf package
           cd function
           pip install --target ../packages -r requirements.txt
           cd ..
           cp -r packages/* function
+
+          # Copy configuration files
+          cp credentials.ini function
+          cp space_track_requests.yml function
+
+          # Zip & upload build artifact to S3
           cd function
           zip -r lambda_code.zip .
           aws s3 cp lambda_code.zip s3://sat-scan-data-collector
 
+      - name: Deploy Lambda
+        id: deploy-image
+        run: |
           aws lambda update-function-code \
             --function-name  data-collector-lambda \
             --s3-bucket sat-scan-data-collector --s3-key lambda_code.zip
