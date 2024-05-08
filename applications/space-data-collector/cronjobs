@@ -1,2 +1,0 @@
-* * * * * echo "⏳ Cron Running"
-* * * * * python3 /app/src/app.py

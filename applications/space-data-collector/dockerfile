@@ -2,9 +2,6 @@ FROM python:alpine
 
 WORKDIR /app
 
-# Create nested src directory ensure space_Track_requests.yml file resolves
-RUN mkdir /src
-
 # Copy application files
 COPY credentials.ini .
 COPY space_track_requests.yml .
@@ -20,9 +17,7 @@ ADD cronjobs /etc/cron.d/cronjobs
 RUN chmod 0644 /etc/cron.d/cronjobs
 RUN crontab /etc/cron.d/cronjobs
 
-COPY src/ ./src
-
-EXPOSE 5000
+COPY function/ .
 
 # Start cron service
 # CMD ["crond", "-f"]

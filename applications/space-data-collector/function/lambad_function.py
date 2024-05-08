@@ -35,23 +35,19 @@ def publish_messages(request_config: DataRequestConfig, data: Dict[str, str]) ->
 
     connection.close()
 
-@app.route('/health-check')
-def health_check():
-  return 'Success', 200
-
 if __name__ == "__main__":
     print('👉 Running space-data-collector')
-    app.run(host="0.0.0.0", port=5000, debug=True)
-    print("👉 Data Collector is up (🆙)")
 
-    # parser = ConfigurationParser()
-    # data_requests_config = parser.run()
+    parser = ConfigurationParser()
+    data_requests_config = parser.run()
     
-    # for request_config in data_requests_config:
-    #     auth = get_auth_credentials(data_request_name=request_config.name)
-    #     data_request = DataRequest(request_config, auth)
-    #     data = data_request.get()
-    #     # publish_messages(request_config, data)
+    for request_config in data_requests_config:
+        auth = get_auth_credentials(data_request_name=request_config.name)
+        data_request = DataRequest(request_config, auth)
+        data = data_request.get()
+        print('DATA!')
+        print(data)
+        # publish_messages(request_config, data)
 
     
     

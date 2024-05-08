@@ -15,7 +15,7 @@ class ConfigurationParser:
 
     def _parse_config(self) -> List[Dict[str, str]]:
       directory = os.path.dirname(__file__)
-      file = os.path.join(directory, '../../' + ConfigurationParser.DATA_REQUESTS_FILE_NAME)
+      file = os.path.join(directory, ConfigurationParser.DATA_REQUESTS_FILE_NAME)
 
       with open(file) as stream:
           try:
