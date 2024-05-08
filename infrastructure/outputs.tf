@@ -19,7 +19,7 @@ output "api_public_dns" {
   depends_on  = [aws_eip.sat_scan_api_eip]
 }
 
-output "mq_broker_url" {
+output "mq_broker" {
   description = "Connection information for MQ Broker"
   value       = aws_mq_broker.sat-scan-mq-broker
   sensitive   = true
