@@ -446,7 +446,7 @@ resource "aws_mq_broker" "sat-scan-mq-broker" {
   engine_version     = "5.17.6"
   storage_type       = "efs"
   host_instance_type = "mq.t3.micro"
-  security_groups    = [aws_security_group.sat_scan_external_sg.id]
+  security_groups    = [aws_security_group.sat_scan_internal_sg.id]
 
   subnet_ids = [element(aws_subnet.sat_scan_public_subnet.*.id, count.index)]
 
