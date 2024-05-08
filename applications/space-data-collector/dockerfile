@@ -3,9 +3,8 @@ FROM python:alpine
 WORKDIR /app
 
 # Copy application files
-COPY credentials.ini .
-COPY space_track_requests.yml .
-COPY requirements.txt .
+
+COPY function/requirements.txt .
 
 # Setup Python virtual environment & install deps
 RUN python3 -m venv .docker_venv
@@ -17,8 +16,11 @@ ADD cronjobs /etc/cron.d/cronjobs
 RUN chmod 0644 /etc/cron.d/cronjobs
 RUN crontab /etc/cron.d/cronjobs
 
+COPY credentials.ini .
+COPY route-config.ini .
+COPY space_track_requests.yml .
 COPY function/ .
 
 # Start cron service
 # CMD ["crond", "-f"]
-CMD ["python3", "-u", "src/app.py"]
+CMD ["python3", "-u", "docker_compose_runtime.py"]
