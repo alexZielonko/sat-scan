@@ -3,7 +3,7 @@ name: Deploy Sat Scan Data Collector to Amazon ECS
 on:
   push:
     branches:
-      - mq-broker-setup
+      - main
 
 env:
   AWS_REGION: "us-east-2"
