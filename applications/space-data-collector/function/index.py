@@ -45,10 +45,13 @@ def get_pika_connection():
         ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
         ssl_context.set_ciphers('ECDHE+AESGCM:!ECDSA')
 
-        url = f"amqps://{config.user}:{config.password}@{config.broker_id}.mq.{config.region}.amazonaws.com:5671"
+        # url = f"amqps://{config.user}:{config.password}@{config.broker_id}.mq.{config.region}.amazonaws.com:5671"
+        url = 'amqp://b-c34a5bef-c8f3-4052-a5e6-46ca9d0735fd-1.mq.us-east-2.amazonaws.com:5671'
+        print(f'conn url: {url}')
 
         parameters = pika.URLParameters(url)
         parameters.ssl_options = pika.SSLOptions(context=ssl_context)
+        parameters.heartbeat = 36000
         
         return parameters
     
@@ -88,4 +91,4 @@ def lambda_handler(event, context):
         example_data = data
         publish_messages(request_config, data)
 
-    return json.dumps(example_data)
+    # return json.dumps(example_data)
