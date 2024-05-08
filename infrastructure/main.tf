@@ -295,7 +295,8 @@ resource "aws_ecs_service" "ecs_api_service" {
 
 
 resource "aws_s3_bucket" "sat_scan_data_collector_s3" {
-  bucket = "sat-scan-data-collector"
+  bucket        = "sat-scan-data-collector"
+  force_destroy = true
 }
 
 module "lambda_function_in_vpc" {
@@ -376,7 +377,8 @@ resource "aws_db_instance" "sat_scan_database" {
 
 # Create bucket to hold uploaded routes, used during continuous deployments
 resource "aws_s3_bucket" "sat-scan-route-config" {
-  bucket = "sat-scan-route-config"
+  bucket        = "sat-scan-route-config"
+  force_destroy = true
 }
 
 # -----------------------------------------
