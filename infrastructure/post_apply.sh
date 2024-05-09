@@ -19,13 +19,13 @@ OUTPUT_FILE_NAME="route-config.ini"
 load_balancer=`terraform output -json | jq -r ".load_balancer_ip.value"`
 database_endpoint=`terraform output -json | jq -r ".database_endpoint.value.endpoint"`
 
-mq_broker_username=`terraform output -json | jq -r ".mq_broker.value[0].user[0].username"`
-mq_broker_password=`terraform output -json | jq -r ".mq_broker.value[0].user[0].password"`
+mq_broker_username=`terraform output -json | jq -r ".mq_broker_user.value.username"`
+mq_broker_password=`terraform output -json | jq -r ".mq_broker_user.value.password"`
 mq_broker_broker_id=`terraform output -json | jq -r ".mq_broker.value[0].id"`
 
 cat <<EOF > $OUTPUT_FILE_NAME
-[load_balancer]
-load_balancer=$load_balancer
+[sat-scan-api]
+base_url=$load_balancer
 
 [database]
 env=PROD
@@ -52,11 +52,11 @@ rm $OUTPUT_FILE_NAME
 
 echo "👉 Running database migrations"
 
-api_public_dns=`terraform output -json | jq -r ".api_public_dns.value"`
+ec2_dns=`terraform output -json | jq -r ".ec2_dns.value"`
 
 MIGRATION_DIRECTORY=database-migrations
 
-ssh -i "sat_scan_kp.pem" ubuntu@$api_public_dns << EOF
+ssh -i "sat_scan_kp.pem" ubuntu@$ec2_dns << EOF
   rm -rf $MIGRATION_DIRECTORY
   mkdir $MIGRATION_DIRECTORY
   exit
@@ -105,8 +105,8 @@ echo "-------------------------------------"
 echo "⏳ Transfering migration files to EC2"
 echo "-------------------------------------"
 
-scp -r -i sat_scan_kp.pem alembic.ini ubuntu@$api_public_dns:~/$MIGRATION_DIRECTORY
-scp -r -i sat_scan_kp.pem ../databases ubuntu@$api_public_dns:~/$MIGRATION_DIRECTORY
+scp -r -i sat_scan_kp.pem alembic.ini ubuntu@$ec2_dns:~/$MIGRATION_DIRECTORY
+scp -r -i sat_scan_kp.pem ../databases ubuntu@$ec2_dns:~/$MIGRATION_DIRECTORY
 
 rm alembic.ini
 
@@ -114,7 +114,7 @@ echo "-------------------------------------"
 echo "⏳ Provisioning EC2 instance & Applying Migrations"
 echo "-------------------------------------"
 
-ssh -i "sat_scan_kp.pem" ubuntu@$api_public_dns << EOF
+ssh -i "sat_scan_kp.pem" ubuntu@$ec2_dns << EOF
   sudo apt-get update
   sudo apt install -y python3-pip \
     python3.8-venv \

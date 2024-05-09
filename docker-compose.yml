@@ -9,7 +9,7 @@ services:
       - database
     healthcheck:
       test: curl http://localhost:5000/health-check
-      interval: 5s
+      interval: 10s
       timeout: 10s
       retries: 5
 
@@ -39,6 +39,8 @@ services:
   data-analyzer:
     build: ./applications/space-data-analyzer
     restart: on-failure
+    ports: 
+      - "8000:8000"    
     depends_on:
       api:
         condition: service_healthy

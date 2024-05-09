@@ -1,17 +1,16 @@
-name: Deploy Sat Scan Data Collector to Amazon ECS
+name: Data Analyzer - Continuous Deployment to ECS
 
 on:
   push:
     branches:
-      - disabled
-
+      - main
 env:
   AWS_REGION: "us-east-2"
-  ECR_REPOSITORY: "sat-scan" # Amazon ECR repository name
+  ECR_REPOSITORY: "data-analyzer-ecr-repo" # Amazon ECR repository name
   ECS_CLUSTER: sat-scan-cluster # Amazon ECS cluster name
-  ECS_SERVICE: sat-scan-data-collector-service # Amazon ECS service name
-  ECS_TASK_DEFINITION: ./infrastructure/task-definitions/aws/sat-scan-data-collector-container.json
-  CONTAINER_NAME: sat-scan-data-collector-family # Name specified in containerDefinitions section of task definition
+  ECS_SERVICE: data-analyzer-service # Amazon ECS service name
+  ECS_TASK_DEFINITION: ./infrastructure/task-definitions/aws/data-analyzer-container.json
+  CONTAINER_NAME: data-analyzer-family # Name specified in containerDefinitions section of task definition
 
 jobs:
   deploy:
@@ -30,33 +29,33 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_CLIENT_SECRET }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
       - name: Create credentials.ini
         env:
-          SPACE_TRACK_API_CLIENT: ${{ secrets.SPACE_TRACK_API_CLIENT }}
-          SPACE_TRACK_API_SECRET: ${{ secrets.SPACE_TRACK_API_SECRET }}
+          SAT_SCAN_API_KEY: ${{ secrets.SAT_SCAN_API_KEY }}
+          DATABASE_USER: ${{ secrets.DATABASE_USER }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
         run: |
-          cd applications/space-data-collector
+          cd applications/space-data-analyzer
 
           cat <<EOF > credentials.ini
-          [space-track.org]
-          username=$SPACE_TRACK_API_CLIENT
-          password=$SPACE_TRACK_API_SECRET
+          [sat-scan-api]
+          key=$SAT_SCAN_API_KEY
           EOF
 
           echo "Created .credentials.ini"
 
       - name: Download infrastructure configuration
         run: |
-          rm applications/space-data-collector/route-config.ini
-          aws s3 cp s3://sat-scan-route-config/route-config.ini applications/space-data-collector/route-config.ini
+          rm applications/space-data-analyzer/route-config.ini
+          aws s3 cp s3://sat-scan-route-config/route-config.ini applications/space-data-analyzer/route-config.ini
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_CLIENT_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_CLIENT_SECRET }}
           AWS_DEFAULT_REGION: "us-east-2"
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
@@ -65,7 +64,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           # Build docker container and push it to ECR for ECS deploy
-          cd applications/space-data-collector
+          cd applications/space-data-analyzer
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT

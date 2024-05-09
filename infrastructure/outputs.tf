@@ -13,8 +13,8 @@ output "load_balancer_ip" {
   value = aws_lb.default.dns_name
 }
 
-output "api_public_dns" {
-  description = "The public DNS address of the Sat Scan API server"
+output "ec2_dns" {
+  description = "Public DNS address of the EC2 instance (~jumpbox)"
   value       = aws_eip.sat_scan_api_eip[0].public_dns
   depends_on  = [aws_eip.sat_scan_api_eip]
 }
@@ -23,4 +23,13 @@ output "mq_broker" {
   description = "Connection information for MQ Broker"
   value       = aws_mq_broker.sat-scan-mq-broker
   sensitive   = true
+}
+
+output "mq_broker_user" {
+  description = "Connection information for MQ Broker"
+  value = {
+    username = var.mq_username
+    password = var.mq_password
+  }
+  sensitive = true
 }

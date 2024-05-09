@@ -22,5 +22,5 @@ COPY space_track_requests.yml .
 COPY function/ .
 
 # Start cron service
-# CMD ["crond", "-f"]
-CMD ["python3", "-u", "docker_compose_runtime.py"]
+CMD ["crond", "-f"]
+# CMD ["python3", "-u", "docker_compose_runtime.py"]

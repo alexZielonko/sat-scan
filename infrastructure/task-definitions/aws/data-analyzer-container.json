@@ -1,15 +1,15 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:us-east-2:730335620736:task-definition/sat-scan-data-collector-family:7",
+    "taskDefinitionArn": "arn:aws:ecs:us-east-2:730335620736:task-definition/data-analyzer-family:2",
     "containerDefinitions": [
         {
-            "name": "sat-scan-data-collector-family",
-            "image": "730335620736.dkr.ecr.us-east-2.amazonaws.com/sat-scan-data-collector:latest",
+            "name": "data-analyzer-family",
+            "image": "730335620736.dkr.ecr.us-east-2.amazonaws.com/data-analyzer-ecr-repo:latest",
             "cpu": 1024,
             "memory": 2048,
             "portMappings": [
                 {
-                    "containerPort": 5000,
-                    "hostPort": 5000,
+                    "containerPort": 8000,
+                    "hostPort": 8000,
                     "protocol": "tcp"
                 }
             ],
@@ -20,18 +20,18 @@
             "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
-                    "awslogs-group": "sat-scan-data-collector-log-group",
+                    "awslogs-group": "data-analyzer-log-group",
                     "awslogs-region": "us-east-2",
-                    "awslogs-stream-prefix": "sat-scan-data-collector"
+                    "awslogs-stream-prefix": "data-analyzer"
                 }
             },
             "systemControls": []
         }
     ],
-    "family": "sat-scan-data-collector-family",
+    "family": "data-analyzer-family",
     "executionRoleArn": "arn:aws:iam::730335620736:role/sat-scan-ecs-execution-role",
     "networkMode": "awsvpc",
-    "revision": 7,
+    "revision": 2,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -67,6 +67,6 @@
     ],
     "cpu": "1024",
     "memory": "2048",
-    "registeredAt": "2024-05-07T14:28:26.126000-05:00",
+    "registeredAt": "2024-05-09T11:34:16.597000-05:00",
     "registeredBy": "arn:aws:iam::730335620736:root"
 }
