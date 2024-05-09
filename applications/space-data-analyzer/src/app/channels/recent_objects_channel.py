@@ -1,15 +1,17 @@
 from typing import Dict
 import pika, sys, os, json, requests
 
+from app.config_parsers.route_config import RouteConfig
+
 class ResponseStatus:
   def __init__(self, success: bool):
     self.success = bool
 
 class RecentObjectsChannel:
-  BASE_API_URL = 'http://api:5000/space-objects'
+  BASE_API_URL = RouteConfig().api_url
 
   def __init__(self, sat_scan_api_key):
-    print('Starting recent_objects channel')
+    print('📡 Subscribing to recent_objects channel')
 
     self.request_headers = self._get_headers(sat_scan_api_key=sat_scan_api_key)
 
@@ -49,9 +51,12 @@ class RecentObjectsChannel:
         "object_number": message_body["OBJECT_NUMBER"],
     }
   
+  def _get_space_objects_api_path(self) -> str:
+    return f'{RecentObjectsChannel.BASE_API_URL}/space-objects'
+  
   def _has_space_object(self, satellite_id) -> bool:
       try:          
-        url = f'{RecentObjectsChannel.BASE_API_URL}/{satellite_id}'
+        url = f'{self._get_space_objects_api_path()}/{satellite_id}'
         res = requests.get(url)
         return bool(res.json()['sat_id'])
       except:
@@ -62,7 +67,7 @@ class RecentObjectsChannel:
       print(f'Updating space object: {json.dumps(space_object)}')
 
       res = requests.put(
-        RecentObjectsChannel.BASE_API_URL, 
+        self._get_space_objects_api_path(), 
         headers=self.request_headers, 
         data=json.dumps(space_object)
       )
@@ -80,7 +85,7 @@ class RecentObjectsChannel:
       print(f'Creating space object: {json.dumps(space_object)}')
 
       res = requests.post(
-        RecentObjectsChannel.BASE_API_URL, 
+        self._get_space_objects_api_path(), 
         headers=self.request_headers,
         data=json.dumps(space_object)
       )
