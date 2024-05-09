@@ -1,4 +1,4 @@
-name: Deploy Sat Scan API to Amazon ECS
+name: [API] Continuous Deployment to ECS
 
 on:
   push:

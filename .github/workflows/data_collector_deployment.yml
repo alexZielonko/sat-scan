@@ -1,4 +1,4 @@
-name: Deploy Sat Scan Data Collector to Amazon ECS
+name: [Data Collector] Continuous Deployment to Lambda
 
 on:
   push:

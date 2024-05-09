@@ -293,7 +293,6 @@ resource "aws_ecs_service" "ecs_api_service" {
 # Data Collector SETUP
 # -----------------------------------------
 
-
 resource "aws_s3_bucket" "sat_scan_data_collector_s3" {
   bucket        = "sat-scan-data-collector"
   force_destroy = true
@@ -321,6 +320,102 @@ module "lambda_function_in_vpc" {
   ]
   attach_network_policy = true
 }
+
+# -----------------------------------------
+# Data Analyzer SETUP
+# -----------------------------------------
+
+resource "aws_ecr_repository" "data_analyzer_ecr_repo" {
+  name         = "data-analyzer-ecr-repo"
+  force_delete = true
+}
+
+resource "aws_cloudwatch_log_group" "data-analyzer-log-group" {
+  name = "data-analyzer-log-group"
+
+  tags = {
+    Environment = "production"
+    Application = "sat-scan-data-analyzer"
+  }
+}
+
+
+resource "aws_ecs_task_definition" "data_analyzer_ecs_task_definition" {
+  family                   = "data-analyzer-family"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = 1024
+  memory                   = 2048
+
+  execution_role_arn = aws_iam_role.ecsTaskExecutionRole.arn
+
+  container_definitions = <<DEFINITION
+[
+  {
+    "image": "730335620736.dkr.ecr.us-east-2.amazonaws.com/data-analyzer-ecr-repo:latest",
+    "cpu": 1024,
+    "memory": 2048,
+    "name": "data-analyzer-family",
+    "networkMode": "awsvpc",
+    "portMappings": [
+      {
+        "containerPort": 8000,
+        "hostPort": 8000
+      }
+    ],
+    "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+            "awslogs-group": "data-analyzer-log-group",
+            "awslogs-region": "${var.aws_region}",
+            "awslogs-stream-prefix": "data-analyzer"
+          }
+        }
+  }
+]
+DEFINITION
+}
+
+resource "aws_security_group" "data_analyzer_task_sg" {
+  name   = "data_analyzer_task_sg"
+  vpc_id = aws_vpc.sat_scan_vpc.id
+
+  ingress {
+    protocol        = "tcp"
+    from_port       = 8000
+    to_port         = 8000
+    security_groups = [aws_security_group.sat_scan_internal_sg.id]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_ecs_service" "ecs_data_analyzer_service" {
+  name            = "data-analyzer-service"
+  cluster         = aws_ecs_cluster.main.id
+  task_definition = aws_ecs_task_definition.data_analyzer_ecs_task_definition.arn
+  desired_count   = 1
+  launch_type     = "FARGATE"
+
+  network_configuration {
+    security_groups = [aws_security_group.data_analyzer_task_sg.id]
+    subnets         = aws_subnet.sat_scan_private_subnet.*.id
+  }
+
+  # load_balancer {
+  #   target_group_arn = aws_lb_target_group.sat_scan_lb_target_group.id
+  #   container_name   = "data-analyzer-family"
+  #   container_port   = 5000
+  # }
+
+  # depends_on = [aws_lb_listener.sat_scan_lb_listener]
+}
+
 
 # -----------------------------------------
 # RDS SETUP
