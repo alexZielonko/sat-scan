@@ -1,21 +1,28 @@
 from typing import Dict
-import pika, sys, os, json, requests
+import pika, ssl, os, json, requests
 
+from app.config_parsers.credentials import Credentials
 from app.config_parsers.route_config import RouteConfig
+
+route_config = RouteConfig()
 
 class ResponseStatus:
   def __init__(self, success: bool):
     self.success = bool
 
 class RecentObjectsChannel:
-  BASE_API_URL = RouteConfig().api_url
+  BASE_API_URL = route_config.api_url
 
   def __init__(self, sat_scan_api_key):
     print('📡 Subscribing to recent_objects channel')
 
+    self.credentials = Credentials()
+
     self.request_headers = self._get_headers(sat_scan_api_key=sat_scan_api_key)
 
-    connection = pika.BlockingConnection(pika.ConnectionParameters('event-collaboration-messaging'))
+    connection_parameters = self.get_pika_connection_parameters()
+    connection = pika.BlockingConnection(connection_parameters)
+
     channel = connection.channel()
     channel.queue_declare(queue='recent_objects')
     channel.basic_consume(
@@ -26,6 +33,24 @@ class RecentObjectsChannel:
     channel.start_consuming()
     
     print('Waiting for recent_objects messages')
+
+  def get_pika_connection_parameters(self):
+    config = route_config.mq_broker
+
+    if config.env == 'PROD':
+        # SSL Context for TLS configuration of Amazon MQ for RabbitMQ
+        ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+        ssl_context.set_ciphers('ECDHE+AESGCM:!ECDSA')
+
+        url = f"amqps://{config.user}:{config.password}@{config.broker_id}.mq.{config.region}.amazonaws.com:5671"
+
+        parameters = pika.URLParameters(url)
+        parameters.ssl_options = pika.SSLOptions(context=ssl_context)
+        
+        return parameters
+    
+    docker_compose_instance_name = 'event-collaboration-messaging'
+    return pika.ConnectionParameters(docker_compose_instance_name)
 
   def _get_headers(self, sat_scan_api_key) -> Dict[str, str]:
     return {

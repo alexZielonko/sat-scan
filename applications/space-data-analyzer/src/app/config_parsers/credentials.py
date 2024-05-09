@@ -1,6 +1,6 @@
 import configparser, os
 from typing import List, Dict
-    
+
 class Credentials:
     def __init__(self):
         self._parse_config()

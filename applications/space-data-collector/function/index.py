@@ -37,7 +37,7 @@ def get_auth_credentials(data_request_name: str) -> Dict[str, str]:
 
     return {'identity': username, 'password': password}
 
-def get_pika_connection():
+def get_pika_connection_parameters():
     config = MqBrokerConfig()
 
     if config.env == 'PROD':
@@ -60,7 +60,7 @@ def publish_messages(request_config: DataRequestConfig, data: Dict[str, str]) ->
 
     print(f'👉 Publishing message to routing_key: {routing_key}')
 
-    connection_parameters = get_pika_connection()
+    connection_parameters = get_pika_connection_parameters()
 
     connection = pika.BlockingConnection(connection_parameters)
     channel = connection.channel()    
