@@ -3,7 +3,7 @@ name: Data Collector - Continuous Deployment to Lambda
 on:
   push:
     branches:
-      - main
+      - debug-rabbit-mq
 
 env:
   AWS_REGION: "us-east-2"
