@@ -1,3 +1,4 @@
+import traceback
 from typing import Dict
 import pika, ssl, os, json, requests
 
@@ -18,10 +19,13 @@ class RecentObjectsChannel:
       print('📡 Subscribing to recent_objects channel')
 
       self.credentials = Credentials()
-
       self.request_headers = self._get_headers(sat_scan_api_key=sat_scan_api_key)
 
       connection_parameters = self.get_pika_connection_parameters()
+
+      print('CONNECTION PARAMS')
+      print(connection_parameters)
+
       connection = pika.BlockingConnection(connection_parameters)
 
       channel = connection.channel()
@@ -34,9 +38,9 @@ class RecentObjectsChannel:
       channel.start_consuming()
       
       print('Waiting for recent_objects messages')
-    except Exception as err:
+    except Exception:
       print('Failed to create recent objects channel')
-      raise Exception(str(err))
+      traceback.print_exc()
 
   def get_pika_connection_parameters(self):
     print('GETTING PIKA CONNECTION PARAMS')
