@@ -97,6 +97,8 @@ class RecentObjectsChannel:
         res = requests.get(url)
         return bool(res.json()['sat_id'])
       except:
+         print('Failed to get space object')
+         traceback.print_exc()
          return False
   
   def _update_space_object(self, space_object) -> ResponseStatus:
@@ -114,7 +116,8 @@ class RecentObjectsChannel:
       else:
         return ResponseStatus(False)
     except Exception as err:
-      print(err)
+      print('Failed to update space object')
+      traceback.print_exc()
       return ResponseStatus(False)
     
   def _create_space_object(self, space_object) -> ResponseStatus:
@@ -132,7 +135,8 @@ class RecentObjectsChannel:
       else:
         return ResponseStatus(False)
     except Exception as err:
-      print(err)
+      print('Failed to create space object')
+      traceback.print_exc()
       return ResponseStatus(False)
   
   def _create_or_update(self, space_object) -> ResponseStatus:
