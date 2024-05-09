@@ -24,3 +24,12 @@ output "mq_broker" {
   value       = aws_mq_broker.sat-scan-mq-broker
   sensitive   = true
 }
+
+output "mq_broker_user" {
+  description = "Connection information for MQ Broker"
+  value = {
+    username = var.mq_username
+    password = var.mq_password
+  }
+  sensitive = true
+}

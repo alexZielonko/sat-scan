@@ -19,8 +19,8 @@ OUTPUT_FILE_NAME="route-config.ini"
 load_balancer=`terraform output -json | jq -r ".load_balancer_ip.value"`
 database_endpoint=`terraform output -json | jq -r ".database_endpoint.value.endpoint"`
 
-mq_broker_username=`terraform output -json | jq -r ".mq_broker.value[0].user[0].username"`
-mq_broker_password=`terraform output -json | jq -r ".mq_broker.value[0].user[0].password"`
+mq_broker_username=`terraform output -json | jq -r ".mq_broker_user.value.username"`
+mq_broker_password=`terraform output -json | jq -r ".mq_broker_user.value.password"`
 mq_broker_broker_id=`terraform output -json | jq -r ".mq_broker.value[0].id"`
 
 cat <<EOF > $OUTPUT_FILE_NAME
