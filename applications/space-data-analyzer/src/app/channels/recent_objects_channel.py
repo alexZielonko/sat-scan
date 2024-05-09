@@ -154,6 +154,7 @@ class RecentObjectsChannel:
       response_status = self._create_or_update(space_object=formatted_body)
 
       if response_status.success:
+        print('Acknowledging message processing success')
         ch.basic_ack(delivery_tag = method.delivery_tag)
     except Exception:
       print('Failed to process message')
