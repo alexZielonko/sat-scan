@@ -142,13 +142,16 @@ class RecentObjectsChannel:
       return self._create_space_object(space_object)
 
   def _process_message(self, ch, method, properties, message_body):
-    print("Processing message: %r" % message_body)
+    try:
+      print("Processing message: %r" % message_body)
 
-    message_body = json.loads(message_body)
-    formatted_body = self._normalize_message_body(message_body=message_body)
-    response_status = self._create_or_update(space_object=formatted_body)
+      message_body = json.loads(message_body)
+      formatted_body = self._normalize_message_body(message_body=message_body)
+      response_status = self._create_or_update(space_object=formatted_body)
 
-    if response_status.success:
-      ch.basic_ack(delivery_tag = method.delivery_tag)
-    
+      if response_status.success:
+        ch.basic_ack(delivery_tag = method.delivery_tag)
+    except Exception:
+      print('Failed to process message')
+      traceback.print_exc()
 
