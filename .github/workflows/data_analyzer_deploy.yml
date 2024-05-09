@@ -35,7 +35,7 @@ jobs:
           DATABASE_USER: ${{ secrets.DATABASE_USER }}
           DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
         run: |
-          cd applications/sat-scan-api
+          cd applications/space-data-analyzer
 
           cat <<EOF > credentials.ini
           [sat-scan-api]
