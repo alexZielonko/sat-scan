@@ -410,10 +410,13 @@ resource "aws_security_group" "data_analyzer_task_sg" {
   vpc_id = aws_vpc.sat_scan_vpc.id
 
   ingress {
-    protocol        = "tcp"
-    from_port       = 8000
-    to_port         = 8000
-    security_groups = [aws_security_group.sat_scan_internal_sg.id]
+    protocol  = "tcp"
+    from_port = 8000
+    to_port   = 8000
+    security_groups = [
+      aws_security_group.sat-scan-mq-broker-sg.id,
+      aws_security_group.sat_scan_internal_sg.id
+    ]
   }
 
   egress {
@@ -599,7 +602,10 @@ resource "aws_mq_broker" "sat-scan-mq-broker" {
   engine_version     = "3.12.13"
   storage_type       = "ebs"
   host_instance_type = "mq.t3.micro"
-  security_groups    = [aws_security_group.sat-scan-mq-broker-sg.id, aws_security_group.sat_scan_internal_sg.id]
+  security_groups = [
+    aws_security_group.sat-scan-mq-broker-sg.id,
+    aws_security_group.sat_scan_internal_sg.id
+  ]
 
   subnet_ids = [element(aws_subnet.sat_scan_private_subnet.*.id, count.index)]
 
