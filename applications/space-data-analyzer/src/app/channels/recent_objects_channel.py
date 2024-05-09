@@ -14,25 +14,29 @@ class RecentObjectsChannel:
   BASE_API_URL = route_config.api_url
 
   def __init__(self, sat_scan_api_key):
-    print('📡 Subscribing to recent_objects channel')
+    try:
+      print('📡 Subscribing to recent_objects channel')
 
-    self.credentials = Credentials()
+      self.credentials = Credentials()
 
-    self.request_headers = self._get_headers(sat_scan_api_key=sat_scan_api_key)
+      self.request_headers = self._get_headers(sat_scan_api_key=sat_scan_api_key)
 
-    connection_parameters = self.get_pika_connection_parameters()
-    connection = pika.BlockingConnection(connection_parameters)
+      connection_parameters = self.get_pika_connection_parameters()
+      connection = pika.BlockingConnection(connection_parameters)
 
-    channel = connection.channel()
-    channel.queue_declare(queue='recent_objects')
-    channel.basic_consume(
-      queue='recent_objects', 
-      on_message_callback=self._process_message, 
-      auto_ack=False
-    )
-    channel.start_consuming()
-    
-    print('Waiting for recent_objects messages')
+      channel = connection.channel()
+      channel.queue_declare(queue='recent_objects')
+      channel.basic_consume(
+        queue='recent_objects', 
+        on_message_callback=self._process_message, 
+        auto_ack=False
+      )
+      channel.start_consuming()
+      
+      print('Waiting for recent_objects messages')
+    except Exception as err:
+      print('Failed to create recent objects channel')
+      print(err)
 
   def get_pika_connection_parameters(self):
     print('GETTING PIKA CONNECTION PARAMS')
