@@ -1,4 +1,4 @@
-name: [Data Analyzer] Continuous Deployment to ECS
+name: Data Analyzer - Continuous Deployment to ECS
 
 on:
   push:

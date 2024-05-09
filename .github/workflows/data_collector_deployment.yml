@@ -1,4 +1,4 @@
-name: [Data Collector] Continuous Deployment to Lambda
+name: Data Collector - Continuous Deployment to Lambda
 
 on:
   push:
