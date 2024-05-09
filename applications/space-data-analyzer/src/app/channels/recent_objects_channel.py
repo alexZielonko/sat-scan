@@ -35,6 +35,7 @@ class RecentObjectsChannel:
     print('Waiting for recent_objects messages')
 
   def get_pika_connection_parameters(self):
+    print('GETTING PIKA CONNECTION PARAMS')
     config = route_config.mq_broker
 
     if config.env == 'PROD':
@@ -43,6 +44,9 @@ class RecentObjectsChannel:
         ssl_context.set_ciphers('ECDHE+AESGCM:!ECDSA')
 
         url = f"amqps://{config.user}:{config.password}@{config.broker_id}.mq.{config.region}.amazonaws.com:5671"
+
+        print('PIKE CONNECTION URL')
+        print(url)
 
         parameters = pika.URLParameters(url)
         parameters.ssl_options = pika.SSLOptions(context=ssl_context)
