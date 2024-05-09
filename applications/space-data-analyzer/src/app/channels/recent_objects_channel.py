@@ -36,7 +36,7 @@ class RecentObjectsChannel:
       print('Waiting for recent_objects messages')
     except Exception as err:
       print('Failed to create recent objects channel')
-      raise Exception(err)
+      raise Exception(str(err))
 
   def get_pika_connection_parameters(self):
     print('GETTING PIKA CONNECTION PARAMS')
