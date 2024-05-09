@@ -85,6 +85,12 @@ aws ecs describe-task-definition \
    --query taskDefinition > infrastructure/task-definitions/aws/sat-scan-api-container.json
 ```
 
+```
+aws ecs describe-task-definition \
+   --task-definition data-analyzer-family \
+   --query taskDefinition > infrastructure/task-definitions/aws/data-analyzer-container.json
+```
+
 #### 5. Create a Pull Request with the Task-Definition Change
 
 When the continuous integration checks pass, merge the pull request into the `main` branch. Merging into main will trigger the continuous deployment pipeline, which builds a new image, pushes it to ECR, and deploys the image to ECS.
