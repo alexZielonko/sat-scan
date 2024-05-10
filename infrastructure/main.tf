@@ -327,6 +327,26 @@ module "lambda_function_in_vpc" {
   attach_network_policy = true
 }
 
+resource "aws_cloudwatch_event_rule" "data_collector_lambda_trigger" {
+  name                = "data-collector-lambda-trigger"
+  description         = "Fires every 12 hours"
+  schedule_expression = "rate(12 hours)"
+}
+
+resource "aws_cloudwatch_event_target" "trigger_lambda_on_schedule" {
+  rule      = aws_cloudwatch_event_rule.data_collector_lambda_trigger.name
+  target_id = "lambda"
+  arn       = module.lambda_function_in_vpc.lambda_function_arn
+}
+
+resource "aws_lambda_permission" "allow_cloudwatch_to_call_split_lambda" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = module.lambda_function_in_vpc.lambda_function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.data_collector_lambda_trigger.arn
+}
+
 # -----------------------------------------
 # Data Analyzer SETUP
 # -----------------------------------------
