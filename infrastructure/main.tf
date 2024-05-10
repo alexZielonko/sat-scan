@@ -307,7 +307,7 @@ resource "aws_s3_bucket" "sat_scan_data_collector_s3" {
 module "lambda_function_in_vpc" {
   source = "terraform-aws-modules/lambda/aws"
 
-  function_name = "data-collector-lambda"
+  function_name = "data_collector_lambda"
   description   = "Sat Scan Data Collection Cron"
   handler       = "index.lambda_handler"
   runtime       = "python3.8"
