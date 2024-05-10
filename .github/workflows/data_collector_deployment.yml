@@ -3,7 +3,7 @@ name: Data Collector - Continuous Deployment to Lambda
 on:
   push:
     branches:
-      - lambda-clouddwatch-trigger
+      - main
 
 env:
   AWS_REGION: "us-east-2"
