@@ -79,7 +79,7 @@ resource "aws_security_group" "sat_scan_external_sg" {
 
   vpc_id = aws_vpc.sat_scan_vpc.id
 
-  // Allow inbound traffic to EC2 on TCP port 80
+  // Allow inbound traffic to ECS on TCP port 80
   ingress {
     description = "Allow all traffic through HTTP"
     from_port   = "80"
@@ -172,9 +172,12 @@ resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRole_policy" {
 # -----------------------------------------
 
 resource "aws_lb" "default" {
-  name            = "sat-scan-load-balancer"
-  subnets         = aws_subnet.sat_scan_public_subnet.*.id
-  security_groups = [aws_security_group.sat_scan_external_sg.id]
+  name    = "sat-scan-load-balancer"
+  subnets = aws_subnet.sat_scan_public_subnet.*.id
+  security_groups = [
+    aws_security_group.sat_scan_internal_sg.id,
+    aws_security_group.sat_scan_external_sg.id
+  ]
 }
 
 resource "aws_lb_target_group" "sat_scan_lb_target_group" {
@@ -250,10 +253,13 @@ resource "aws_security_group" "sat_scan_api_task_sg" {
   vpc_id = aws_vpc.sat_scan_vpc.id
 
   ingress {
-    protocol        = "tcp"
-    from_port       = 5000
-    to_port         = 5000
-    security_groups = [aws_security_group.sat_scan_external_sg.id]
+    protocol  = "tcp"
+    from_port = 5000
+    to_port   = 5000
+    security_groups = [
+      aws_security_group.sat_scan_internal_sg.id,
+      aws_security_group.sat_scan_external_sg.id
+    ]
   }
 
   egress {
@@ -410,13 +416,10 @@ resource "aws_security_group" "data_analyzer_task_sg" {
   vpc_id = aws_vpc.sat_scan_vpc.id
 
   ingress {
-    protocol  = "tcp"
-    from_port = 8000
-    to_port   = 8000
-    security_groups = [
-      aws_security_group.sat-scan-mq-broker-sg.id,
-      aws_security_group.sat_scan_internal_sg.id
-    ]
+    protocol        = "tcp"
+    from_port       = 8000
+    to_port         = 8000
+    security_groups = [aws_security_group.sat_scan_internal_sg.id]
   }
 
   egress {
@@ -435,7 +438,7 @@ resource "aws_ecs_service" "ecs_data_analyzer_service" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    security_groups = [aws_security_group.data_analyzer_task_sg.id]
+    security_groups = [aws_security_group.sat_scan_internal_sg.id]
     subnets         = aws_subnet.sat_scan_private_subnet.*.id
   }
 
@@ -585,6 +588,7 @@ resource "aws_security_group" "sat-scan-mq-broker-sg" {
     to_port     = "5671"
     protocol    = "tcp"
     security_groups = [
+      aws_security_group.data_analyzer_task_sg.id,
       aws_security_group.sat_scan_internal_sg.id,
     ]
   }
@@ -604,7 +608,8 @@ resource "aws_mq_broker" "sat-scan-mq-broker" {
   host_instance_type = "mq.t3.micro"
   security_groups = [
     aws_security_group.sat-scan-mq-broker-sg.id,
-    aws_security_group.sat_scan_internal_sg.id
+    aws_security_group.sat_scan_internal_sg.id,
+    aws_security_group.data_analyzer_task_sg.id
   ]
 
   subnet_ids = [element(aws_subnet.sat_scan_private_subnet.*.id, count.index)]

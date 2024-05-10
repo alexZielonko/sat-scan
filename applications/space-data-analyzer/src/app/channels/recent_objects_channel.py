@@ -71,22 +71,27 @@ class RecentObjectsChannel:
     }
 
   def _normalize_message_body(self, message_body) -> Dict[str, str]:
-    return {
-        "sat_id": message_body["INTLDES"],
-        "sat_catalog_number": message_body["NORAD_CAT_ID"],
-        "object_type": message_body["OBJECT_TYPE"],
-        "sat_name": message_body["SATNAME"],
-        "launch_country": message_body["COUNTRY"],
-        "launch_date": message_body["LAUNCH"],
-        "launch_site": message_body["SITE"],
-        "file_id": message_body["FILE"],
-        "launch_year": message_body["LAUNCH_YEAR"],
-        "launch_number": message_body["LAUNCH_NUM"],
-        "launch_piece": message_body["LAUNCH_PIECE"],
-        "object_name": message_body["OBJECT_NAME"],
-        "object_id": message_body["OBJECT_ID"],
-        "object_number": message_body["OBJECT_NUMBER"],
-    }
+    try:
+      return {
+          "sat_id": message_body["INTLDES"],
+          "sat_catalog_number": message_body["NORAD_CAT_ID"],
+          "object_type": message_body["OBJECT_TYPE"],
+          "sat_name": message_body["SATNAME"],
+          "launch_country": message_body["COUNTRY"],
+          "launch_date": message_body["LAUNCH"],
+          "launch_site": message_body["SITE"],
+          "file_id": message_body["FILE"],
+          "launch_year": message_body["LAUNCH_YEAR"],
+          "launch_number": message_body["LAUNCH_NUM"],
+          "launch_piece": message_body["LAUNCH_PIECE"],
+          "object_name": message_body["OBJECT_NAME"],
+          "object_id": message_body["OBJECT_ID"],
+          "object_number": message_body["OBJECT_NUMBER"],
+      }
+    except Exception:
+        print('Failed to normalize message body')
+        traceback.print_exc()
+        return {}
   
   def _get_space_objects_api_path(self) -> str:
     return f'{RecentObjectsChannel.BASE_API_URL}/space-objects'
@@ -95,8 +100,10 @@ class RecentObjectsChannel:
       try:          
         url = f'{self._get_space_objects_api_path()}/{satellite_id}'
         res = requests.get(url)
-        return bool(res.json()['sat_id'])
+        return 'sat_id' in res.json()
       except:
+         print('Failed to get space object')
+         traceback.print_exc()
          return False
   
   def _update_space_object(self, space_object) -> ResponseStatus:
@@ -114,7 +121,8 @@ class RecentObjectsChannel:
       else:
         return ResponseStatus(False)
     except Exception as err:
-      print(err)
+      print('Failed to update space object')
+      traceback.print_exc()
       return ResponseStatus(False)
     
   def _create_space_object(self, space_object) -> ResponseStatus:
@@ -132,23 +140,32 @@ class RecentObjectsChannel:
       else:
         return ResponseStatus(False)
     except Exception as err:
-      print(err)
+      print('Failed to create space object')
+      traceback.print_exc()
       return ResponseStatus(False)
   
   def _create_or_update(self, space_object) -> ResponseStatus:
-    if self._has_space_object(space_object["sat_id"]):
-      return self._update_space_object(space_object)
-    else:
-      return self._create_space_object(space_object)
+    try:
+      if self._has_space_object(space_object["sat_id"]):
+        return self._update_space_object(space_object)
+      else:
+        return self._create_space_object(space_object)
+    except Exception:
+      print('Failed to create or update space object')
+      traceback.print_exc()
 
   def _process_message(self, ch, method, properties, message_body):
-    print("Processing message: %r" % message_body)
+    try:
+      print("Processing message: %r" % message_body)
 
-    message_body = json.loads(message_body)
-    formatted_body = self._normalize_message_body(message_body=message_body)
-    response_status = self._create_or_update(space_object=formatted_body)
+      message_body = json.loads(message_body)
+      formatted_body = self._normalize_message_body(message_body=message_body)
+      response_status = self._create_or_update(space_object=formatted_body)
 
-    if response_status.success:
-      ch.basic_ack(delivery_tag = method.delivery_tag)
-    
+      if response_status.success:
+        print('Acknowledging message processing success')
+        ch.basic_ack(delivery_tag = method.delivery_tag)
+    except Exception:
+      print('Failed to process message')
+      traceback.print_exc()
 
