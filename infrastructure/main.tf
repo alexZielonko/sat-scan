@@ -88,15 +88,6 @@ resource "aws_security_group" "sat_scan_external_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  // Allow inbound traffic to ECS on TCP port 443
-  ingress {
-    description = "Allow all traffic through HTTP"
-    from_port   = "443"
-    to_port     = "443"
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
   // Limit SSH traffic to local IP
   ingress {
     description = "Allow SSH from my computer"
