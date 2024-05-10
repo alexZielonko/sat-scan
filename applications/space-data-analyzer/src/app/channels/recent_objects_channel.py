@@ -100,6 +100,8 @@ class RecentObjectsChannel:
       try:          
         url = f'{self._get_space_objects_api_path()}/{satellite_id}'
         res = requests.get(url)
+        print('response json')
+        print(res.json())
         return bool(res.json()['sat_id'])
       except:
          print('Failed to get space object')
