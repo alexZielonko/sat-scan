@@ -257,7 +257,6 @@ resource "aws_security_group" "sat_scan_api_task_sg" {
     from_port = 5000
     to_port   = 5000
     security_groups = [
-      aws_security_group.data_analyzer_task_sg.id,
       aws_security_group.sat_scan_internal_sg.id,
       aws_security_group.sat_scan_external_sg.id
     ]
@@ -439,12 +438,8 @@ resource "aws_ecs_service" "ecs_data_analyzer_service" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    security_groups = [
-      aws_security_group.sat_scan_internal_sg.id,
-      aws_security_group.data_analyzer_task_sg.id,
-      aws_security_group.sat-scan-mq-broker-sg.id
-    ]
-    subnets = aws_subnet.sat_scan_private_subnet.*.id
+    security_groups = [aws_security_group.sat_scan_internal_sg.id]
+    subnets         = aws_subnet.sat_scan_private_subnet.*.id
   }
 
   load_balancer {
