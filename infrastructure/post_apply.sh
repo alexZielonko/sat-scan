@@ -25,8 +25,6 @@ mq_broker_broker_id=`terraform output -json | jq -r ".mq_broker.value[0].id"`
 
 sat_scan_api_base_url="http://${load_balancer}"
 
-echo "$sat_scan_api_base_url"
-
 cat <<EOF > $OUTPUT_FILE_NAME
 [sat-scan-api]
 base_url=$sat_scan_api_base_url

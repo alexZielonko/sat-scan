@@ -47,9 +47,6 @@ def get_pika_connection_parameters():
 
         url = f"amqps://{config.user}:{config.password}@{config.broker_id}.mq.{config.region}.amazonaws.com:5671"
 
-        print('CONNECTION URL:')
-        print(url)
-
         parameters = pika.URLParameters(url)
         parameters.ssl_options = pika.SSLOptions(context=ssl_context)
         
