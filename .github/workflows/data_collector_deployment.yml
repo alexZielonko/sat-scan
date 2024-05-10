@@ -75,5 +75,5 @@ jobs:
         id: deploy-image
         run: |
           aws lambda update-function-code \
-            --function-name  data-collector-lambda \
+            --function-name  data_collector_lambda \
             --s3-bucket sat-scan-data-collector --s3-key lambda_code.zip
