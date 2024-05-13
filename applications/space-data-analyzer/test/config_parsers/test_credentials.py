@@ -17,6 +17,7 @@ class TestCredentials(unittest.TestCase):
     def test_it_exposes_a_sat_scan_api_key(self, mock):
         credentials = Credentials()
         self.assertEqual(credentials.sat_scan_api_key, TestCredentials.MOCK_KEY)
+        self.assertEqual(True, False)
 
 
 if __name__ == "__main__":
