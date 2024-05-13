@@ -7,10 +7,12 @@ from app.config_parsers.credentials import Credentials
 
 app = Flask(__name__)
 
-@app.route('/health-check')
-def health_check():
-  return 'Success', 200
 
-print('🏃🏻‍♂️ Space Data Analyzer is Running..')
+@app.route("/health-check")
+def health_check():
+    return "Success", 200
+
+
+print("🏃🏻‍♂️ Space Data Analyzer is Running..")
 sat_scan_api_key = Credentials().sat_scan_api_key
 RecentObjectsChannel(sat_scan_api_key=sat_scan_api_key)
