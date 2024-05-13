@@ -3,7 +3,7 @@
 from flask import Flask
 
 from app.channels.recent_objects_channel import RecentObjectsChannel
-from app.config_parsers.credentials import Credentials
+from config_parsers.credentials import Credentials
 
 app = Flask(__name__)
 

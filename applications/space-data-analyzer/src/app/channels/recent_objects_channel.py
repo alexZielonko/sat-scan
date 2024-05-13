@@ -2,8 +2,8 @@ import traceback
 from typing import Dict
 import pika, ssl, os, json, requests
 
-from app.config_parsers.credentials import Credentials
-from app.config_parsers.route_config import RouteConfig
+from config_parsers.credentials import Credentials
+from config_parsers.route_config import RouteConfig
 
 route_config = RouteConfig()
 
