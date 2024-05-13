@@ -29,6 +29,10 @@ Later:
 
 ## Notes
 
+### Code Formatting
+
+Run `black **/*.py` to format all Python files
+
 #### To run existing migrations
 
 ```
