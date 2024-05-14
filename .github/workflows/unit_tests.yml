@@ -24,3 +24,9 @@ jobs:
           cd applications/space-data-analyzer
           pip3 install -r requirements.txt
           make unit
+
+      - name: Run Data Collector Tests
+        run: |
+          cd applications/space-data-collector
+          pip3 install -r requirements.txt
+          make unit
