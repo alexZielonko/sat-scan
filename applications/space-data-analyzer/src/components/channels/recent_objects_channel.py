@@ -3,7 +3,9 @@ from typing import Dict
 import json, requests
 
 from components.interfaces.response_status import ResponseStatus
-from components.interfaces.rabbit_mq_connection_interface import RabbitMqConnectionInterface
+from components.interfaces.rabbit_mq_connection_interface import (
+    RabbitMqConnectionInterface,
+)
 
 
 class RecentObjectsChannel:

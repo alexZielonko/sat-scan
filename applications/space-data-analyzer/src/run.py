@@ -12,11 +12,9 @@ if __name__ == "__main__":
 
     app = Flask(__name__)
 
-
     @app.route("/health-check")
     def health_check():
         return "Success", 200
-
 
     print("🏃🏻‍♂️ Space Data Analyzer is Running..")
 

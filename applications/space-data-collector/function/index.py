@@ -7,11 +7,14 @@ from components.data_request import DataRequest
 from components.configuration_parser import ConfigurationParser, DataRequestConfig
 from components.rabbit_mq_connection_interface import RabbitMqConnectionInterface
 from components.mq_broker_config import MqBrokerConfig
-from components.get_auth_credentials_for_data_req import get_auth_credentials_for_data_req
+from components.get_auth_credentials_for_data_req import (
+    get_auth_credentials_for_data_req,
+)
 from components.get_config import get_config
 
 ROUTE_CONFIG_FILE_PATH = "../route-config.ini"
 CREDENTIALS_CONFIG_FILE_PATH = "../credentials.ini"
+
 
 def publish_messages(request_config: DataRequestConfig, data: Dict[str, str]) -> None:
     routing_key = request_config.routing_key
@@ -34,6 +37,7 @@ def publish_messages(request_config: DataRequestConfig, data: Dict[str, str]) ->
 
     connection.close()
 
+
 def lambda_handler(event, context):
     print("👉 Running space-data-collector")
 
@@ -43,8 +47,7 @@ def lambda_handler(event, context):
 
     for request_config in data_requests_config:
         auth = get_auth_credentials_for_data_req(
-            credentials_config=credentials_config,
-            data_request_name=request_config.name
+            credentials_config=credentials_config, data_request_name=request_config.name
         )
         data_request = DataRequest(request_config, auth)
         data = data_request.get()
