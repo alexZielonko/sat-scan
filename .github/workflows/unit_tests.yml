@@ -30,3 +30,9 @@ jobs:
           cd applications/space-data-collector
           pip3 install -r requirements.txt
           make unit
+
+      - name: Run Sat Scan API Tests
+        run: |
+          cd applications/sat-scan-api
+          pip3 install -r requirements.txt
+          make unit

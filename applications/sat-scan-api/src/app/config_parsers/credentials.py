@@ -4,7 +4,13 @@ from typing import List, Dict
 
 class Credentials:
     def __init__(self):
+        self.db_user = ""
+        self.db_pass = ""
+        self.api_keys = []
         self._parse_config()
+
+    def get_api_keys(self):
+        return self.api_keys
 
     def _parse_config(self):
         try:
