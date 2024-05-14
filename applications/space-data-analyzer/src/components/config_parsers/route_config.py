@@ -1,7 +1,6 @@
 import configparser, os
-from typing import Dict
 
-from app.config_parsers.credentials import Credentials
+from components.config_parsers.credentials import Credentials
 
 
 class MqBrokerConfig:

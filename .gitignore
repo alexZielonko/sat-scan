@@ -1,3 +1,6 @@
+# Ignore local development environment project settings
+.vscode/settings.json
+
 # Ignore local development caches
 .venv
 .docker-data

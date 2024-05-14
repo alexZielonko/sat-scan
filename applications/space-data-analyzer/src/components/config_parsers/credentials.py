@@ -10,7 +10,6 @@ class Credentials:
         try:
             directory = os.path.dirname(__file__)
             file = os.path.join(directory, "../../credentials.ini")
-
             config = configparser.ConfigParser()
             config.read_file(open(file))
 

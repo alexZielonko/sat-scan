@@ -64,7 +64,6 @@ jobs:
           # Copy configuration files
           cp route-config.ini function
           cp credentials.ini function
-          cp space_track_requests.yml function
 
           # Zip & upload build artifact to S3
           cd function

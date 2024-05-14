@@ -18,7 +18,6 @@ RUN crontab /etc/cron.d/cronjobs
 
 COPY credentials.ini .
 COPY route-config.ini .
-COPY space_track_requests.yml .
 COPY function/ .
 
 # Start cron service

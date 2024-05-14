@@ -5,6 +5,7 @@ This application periodically pulls satellite data from external APIs and publis
 ## TODO
 
 - Note example.credentials.ini
+- Detail how to add data sources / new space track api requests
 
 ## Data Sources
 

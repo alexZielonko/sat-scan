@@ -5,13 +5,15 @@ from components.configuration_parser import DataRequestConfig
 
 
 class DataRequest:
-    def __init__(self, DataRequestConfig: DataRequestConfig, auth: Dict[str, str]):
-        self.data_request = DataRequestConfig
+    SPACE_TRACK_API_SESSION_URL = "https://www.space-track.org/ajaxauth/login"
+
+    def __init__(self, data_request_config: DataRequestConfig, auth: Dict[str, str]):
+        self.data_request = data_request_config
         self._start_session(auth)
 
-    def _start_session(self, auth) -> None:
+    def _start_session(self, auth) -> bool:
         self.session = requests.Session()
-        res = self.session.post("https://www.space-track.org/ajaxauth/login", auth)
+        res = self.session.post(DataRequest.SPACE_TRACK_API_SESSION_URL, auth)
 
         if res.status_code == 200:
             print(
