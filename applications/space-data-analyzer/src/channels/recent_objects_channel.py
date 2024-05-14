@@ -2,8 +2,8 @@ import traceback
 from typing import Dict
 import json, requests
 
-from src.interfaces.response_status import ResponseStatus
-from src.interfaces.rabbit_mq_connection_interface import RabbitMqConnectionInterface
+from interfaces.response_status import ResponseStatus
+from interfaces.rabbit_mq_connection_interface import RabbitMqConnectionInterface
 
 
 class RecentObjectsChannel:
