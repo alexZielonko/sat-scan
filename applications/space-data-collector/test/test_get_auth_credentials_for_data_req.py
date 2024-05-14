@@ -20,3 +20,7 @@ class TestGetAuthCredentialsForDataReq(unittest.TestCase):
 
         config.get.assert_called_with(CONFIG_SECTION_KEY, "password")
         self.assertEqual(actual, expected)
+
+
+if __name__ == "__main__":
+    unittest.main()

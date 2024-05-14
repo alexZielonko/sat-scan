@@ -1,8 +1,13 @@
 import pika, ssl
 
+from components.mq_broker_config import MqBrokerConfig
+
 
 class RabbitMqConnectionInterface:
-    def __init__(self, broker_config):
+    PRODUCTION_ENVIRONMENT_KEY = "PROD"
+    DOCKER_COMPOSE_INSTANCE_NAME = "event-collaboration-messaging"
+
+    def __init__(self, broker_config: MqBrokerConfig):
         self.broker_config = broker_config
 
     def establish_connection(self):
@@ -14,7 +19,7 @@ class RabbitMqConnectionInterface:
     def _get_pika_connection_parameters(self):
         config = self.broker_config
 
-        if config.env == "PROD":
+        if config.env == RabbitMqConnectionInterface.PRODUCTION_ENVIRONMENT_KEY:
             # SSL Context for TLS configuration of Amazon MQ for RabbitMQ
             ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
             ssl_context.set_ciphers("ECDHE+AESGCM:!ECDSA")
@@ -27,5 +32,6 @@ class RabbitMqConnectionInterface:
             return parameters
 
         # Return default connection name in non-prod environments
-        docker_compose_instance_name = "event-collaboration-messaging"
-        return pika.ConnectionParameters(docker_compose_instance_name)
+        return pika.ConnectionParameters(
+            RabbitMqConnectionInterface.DOCKER_COMPOSE_INSTANCE_NAME
+        )
