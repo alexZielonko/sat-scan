@@ -2,9 +2,9 @@
 
 from flask import Flask
 
-from channels.recent_objects_channel import RecentObjectsChannel
-from config_parsers.credentials import Credentials
-from config_parsers.route_config import RouteConfig
+from components.channels.recent_objects_channel import RecentObjectsChannel
+from components.config_parsers.credentials import Credentials
+from components.config_parsers.route_config import RouteConfig
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 import configparser, os
 
-from config_parsers.credentials import Credentials
+from components.config_parsers.credentials import Credentials
 
 
 class MqBrokerConfig:
@@ -24,7 +24,7 @@ class RouteConfig:
     def _get_route_config(self):
         try:
             directory = os.path.dirname(__file__)
-            file = os.path.join(directory, "../route-config.ini")
+            file = os.path.join(directory, "../../route-config.ini")
 
             config = configparser.ConfigParser()
             config.read(file)

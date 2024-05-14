@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch, mock_open
 
-from src.config_parsers.credentials import Credentials
+from components.config_parsers.credentials import Credentials
 
 
 class TestCredentials(unittest.TestCase):

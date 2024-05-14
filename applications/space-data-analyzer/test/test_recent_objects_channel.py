@@ -6,15 +6,15 @@ from typing import Dict
 from contextlib import redirect_stderr
 from unittest.mock import patch, mock_open, MagicMock
 
-import src.config_parsers.route_config
-from src.interfaces.response_status import ResponseStatus
-from src.channels.recent_objects_channel import RecentObjectsChannel
+import components.config_parsers.route_config
+from components.interfaces.response_status import ResponseStatus
+from components.channels.recent_objects_channel import RecentObjectsChannel
 
 
 class TestRecentObjectsChannel(unittest.TestCase):
     MOCK_API_KEY = "__MOCK_API_KEY__"
 
-    @patch("src.config_parsers.route_config")
+    @patch("components.config_parsers.route_config")
     def test_it_sets_request_headers(self, route_config_mock):
         route_config = route_config_mock()
         channel = RecentObjectsChannel(
@@ -30,7 +30,7 @@ class TestRecentObjectsChannel(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
-    @patch("src.config_parsers.route_config")
+    @patch("components.config_parsers.route_config")
     def test_it_uses_the_expected_api_path(self, route_config_mock):
         MOCK_API_URL = "__API_URL__"
         route_config = route_config_mock()

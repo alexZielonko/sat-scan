@@ -1,57 +1,57 @@
 version: '3.8'
 
 services:
-  # api:
-  #   build: ./applications/sat-scan-api
-  #   ports: 
-  #     - "5000:5000"
-  #   links: 
-  #     - database
-  #   healthcheck:
-  #     test: curl http://localhost:5000/health-check
-  #     interval: 10s
-  #     timeout: 10s
-  #     retries: 5
+  api:
+    build: ./applications/sat-scan-api
+    ports: 
+      - "5000:5000"
+    links: 
+      - database
+    healthcheck:
+      test: curl http://localhost:5000/health-check
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
-  # database:
-  #   image: postgres:14.3
-  #   container_name: database
-  #   ports:
-  #     - "5432:5432"
-  #   environment:
-  #     POSTGRES_DB: "development"
-  #     POSTGRES_PASSWORD: "password"
-  #   volumes:
-  #     - ./.docker-data/.pg-data:/var/lib/postgresql/data
+  database:
+    image: postgres:14.3
+    container_name: database
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "development"
+      POSTGRES_PASSWORD: "password"
+    volumes:
+      - ./.docker-data/.pg-data:/var/lib/postgresql/data
 
-  # event-collaboration-messaging:
-  #   image: rabbitmq:3.12
-  #   ports:
-  #     - "5672:5672"
-  #     - "15692:15692"
-  #   healthcheck:
-  #     test: rabbitmq-diagnostics -q ping
-  #     interval: 10s
-  #     timeout: 10s
-  #     retries: 5
-  #     start_period: 10s
+  event-collaboration-messaging:
+    image: rabbitmq:3.12
+    ports:
+      - "5672:5672"
+      - "15692:15692"
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
 
   data-analyzer:
     build: ./applications/space-data-analyzer
     restart: on-failure
     ports: 
       - "8000:8000"    
-  #   depends_on:
-  #     api:
-  #       condition: service_healthy
-  #     event-collaboration-messaging:
-  #       condition: service_healthy
-  #   links: 
-  #     - api
+    depends_on:
+      api:
+        condition: service_healthy
+      event-collaboration-messaging:
+        condition: service_healthy
+    links: 
+      - api
 
-  # data-collector:
-  #   build: ./applications/space-data-collector
-  #   restart: on-failure
-  #   depends_on:
-  #     event-collaboration-messaging:
-  #       condition: service_healthy
+  data-collector:
+    build: ./applications/space-data-collector
+    restart: on-failure
+    depends_on:
+      event-collaboration-messaging:
+        condition: service_healthy
