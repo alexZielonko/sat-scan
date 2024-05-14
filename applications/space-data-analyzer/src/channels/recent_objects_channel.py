@@ -1,34 +1,25 @@
 import traceback
 from typing import Dict
-import pika, ssl, os, json, requests
+import json, requests
 
-from config_parsers.credentials import Credentials
-from config_parsers.route_config import RouteConfig
-
-route_config = RouteConfig()
-
-
-class ResponseStatus:
-    def __init__(self, success: bool):
-        self.success = bool
+from src.interfaces.response_status import ResponseStatus
+from src.interfaces.rabbit_mq_connection_interface import RabbitMqConnectionInterface
 
 
 class RecentObjectsChannel:
-    BASE_API_URL = route_config.api_url
 
-    def __init__(self, sat_scan_api_key):
+    def __init__(self, sat_scan_api_key, route_config):
+        self.route_config = route_config
+        self.request_headers = self._get_headers(sat_scan_api_key=sat_scan_api_key)
+
+    def start(self):
         try:
             print("📡 Subscribing to recent_objects channel")
 
-            self.credentials = Credentials()
-            self.request_headers = self._get_headers(sat_scan_api_key=sat_scan_api_key)
-
-            connection_parameters = self.get_pika_connection_parameters()
-
-            print("CONNECTION PARAMS")
-            print(connection_parameters)
-
-            connection = pika.BlockingConnection(connection_parameters)
+            rabbit_mq_connection_interface = RabbitMqConnectionInterface(
+                self.route_config
+            )
+            connection = rabbit_mq_connection_interface.establish_connection()
 
             channel = connection.channel()
             channel.queue_declare(queue="recent_objects")
@@ -38,33 +29,9 @@ class RecentObjectsChannel:
                 auto_ack=False,
             )
             channel.start_consuming()
-
-            print("Waiting for recent_objects messages")
         except Exception:
             print("Failed to create recent objects channel")
             traceback.print_exc()
-
-    def get_pika_connection_parameters(self):
-        print("GETTING PIKA CONNECTION PARAMS")
-        config = route_config.mq_broker
-
-        if config.env == "PROD":
-            # SSL Context for TLS configuration of Amazon MQ for RabbitMQ
-            ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-            ssl_context.set_ciphers("ECDHE+AESGCM:!ECDSA")
-
-            url = f"amqps://{config.user}:{config.password}@{config.broker_id}.mq.{config.region}.amazonaws.com:5671"
-
-            print("PIKE CONNECTION URL")
-            print(url)
-
-            parameters = pika.URLParameters(url)
-            parameters.ssl_options = pika.SSLOptions(context=ssl_context)
-
-            return parameters
-
-        docker_compose_instance_name = "event-collaboration-messaging"
-        return pika.ConnectionParameters(docker_compose_instance_name)
 
     def _get_headers(self, sat_scan_api_key) -> Dict[str, str]:
         return {
@@ -96,7 +63,7 @@ class RecentObjectsChannel:
             return {}
 
     def _get_space_objects_api_path(self) -> str:
-        return f"{RecentObjectsChannel.BASE_API_URL}/space-objects"
+        return f"{self.route_config.api_url}/space-objects"
 
     def _has_space_object(self, satellite_id) -> bool:
         try:
@@ -155,6 +122,7 @@ class RecentObjectsChannel:
         except Exception:
             print("Failed to create or update space object")
             traceback.print_exc()
+            return ResponseStatus(success=False)
 
     def _process_message(self, ch, method, properties, message_body):
         try:
