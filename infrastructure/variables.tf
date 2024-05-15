@@ -81,3 +81,25 @@ variable "mq_password" {
   type        = string
   sensitive   = true
 }
+
+variable "grafana_account_id" {
+  description = "This is the Grafana Cloud account id"
+  type        = string
+}
+
+variable "grafana_cloud_iam_role_name" {
+  description = "The name of the IAM role used by Grafana for the CloudWatch integration."
+  type        = string
+  default     = "GrafanaLabsCloudWatchIntegration"
+}
+
+variable "grafana_cloud_external_id" {
+  description = "ThGrafana Cloud identifier, used for security purposes."
+  type        = string
+  sensitive   = true
+
+  validation {
+    condition     = length(var.grafana_cloud_external_id) > 0
+    error_message = "grafana_cloud_external_id is required."
+  }
+}
