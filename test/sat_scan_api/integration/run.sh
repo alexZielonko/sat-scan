@@ -1,6 +1,8 @@
 #!/bin/bash
 
-docker-compose up api database --build -d
+docker-compose up -d api database
+
+alembic upgrade head
 
 pytest "${BASH_SOURCE%/*}" -x -rP
 
