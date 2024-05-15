@@ -7,6 +7,7 @@
 In Progress:
 
 - Production monitoring instrumenting
+  - Prometheus & Grafana
 
 Later:
 
