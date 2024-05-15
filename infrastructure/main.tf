@@ -178,6 +178,10 @@ resource "aws_lb" "default" {
     aws_security_group.sat_scan_internal_sg.id,
     aws_security_group.sat_scan_external_sg.id
   ]
+
+  tags = {
+    Environment = "production"
+  }
 }
 
 resource "aws_lb_target_group" "sat_scan_lb_target_group" {
@@ -383,6 +387,10 @@ resource "aws_lb" "data-analyzer-lb" {
   name            = "data-analyzer-load-balancer"
   subnets         = aws_subnet.sat_scan_private_subnet.*.id
   security_groups = [aws_security_group.sat_scan_internal_sg.id]
+
+  tags = {
+    Environment = "production"
+  }
 }
 
 resource "aws_lb_target_group" "data_analyzer_lb_target_group" {
