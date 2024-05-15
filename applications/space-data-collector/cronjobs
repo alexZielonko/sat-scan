@@ -1,2 +1,2 @@
-* * * * * echo "⏳ Cron Running"
+5 4 * * * echo "⏳ Cron Running"
 * * * * * python3 /app/docker_compose_runtime.py

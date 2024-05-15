@@ -1,0 +1,55 @@
+name: Test - Integration
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Setup environment
+        run: |
+          # Install docker-compose
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
+
+          python3 -m pip install --upgrade pip
+          pip3 install -r requirements.txt
+
+      - name: Create API credentials.ini
+        run: |
+          cd applications/sat-scan-api
+
+          cat <<EOF > credentials.ini
+          [api-keys]
+          keys=integration_test_key
+
+          [database]
+          database_user=postgres
+          database_password=password
+          EOF
+
+          echo "Created .credentials.ini"
+
+      - name: Run API Integration Tests
+        run: |
+          make integration
+          integration_test_status=$?
+
+          if [ $integration_test_status -eq 0 ]; then
+            echo "✅ [integration_tests.yml] Integration Tests Pass"
+            exit 0
+          else
+            echo "🚨 [integration_tests.yml] Integration Test Failure"
+            exit 1
+          fi
