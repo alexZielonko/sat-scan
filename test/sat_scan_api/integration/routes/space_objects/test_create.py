@@ -16,7 +16,7 @@ class TestCreate(RouteHelper):
             data=json.dumps(space_object),
         )
 
-        assert post_res.status_code == 404
+        assert post_res.status_code == 200
 
         cleanup_res = self.cleanup_test_object(space_object["sat_id"])
 
