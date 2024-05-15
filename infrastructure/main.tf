@@ -221,6 +221,11 @@ resource "aws_ecs_task_definition" "sat_scan_api_ecs_task_definition" {
 
   execution_role_arn = aws_iam_role.ecsTaskExecutionRole.arn
 
+  tags = {
+    Environment = "production"
+    Application = "sat-scan-api"
+  }
+
   container_definitions = <<DEFINITION
 [
   {
@@ -272,6 +277,11 @@ resource "aws_security_group" "sat_scan_api_task_sg" {
 
 resource "aws_ecs_cluster" "main" {
   name = "sat-scan-cluster"
+
+  tags = {
+    Environment = "production"
+    Application = "sat-scan-cluster"
+  }
 }
 
 resource "aws_ecs_service" "ecs_api_service" {
@@ -293,6 +303,10 @@ resource "aws_ecs_service" "ecs_api_service" {
   }
 
   depends_on = [aws_lb_listener.sat_scan_lb_listener]
+
+  tags = {
+    Environment = "production"
+  }
 }
 
 # -----------------------------------------
@@ -302,6 +316,10 @@ resource "aws_ecs_service" "ecs_api_service" {
 resource "aws_s3_bucket" "sat_scan_data_collector_s3" {
   bucket        = "sat-scan-data-collector"
   force_destroy = true
+
+  tags = {
+    Environment = "production"
+  }
 }
 
 module "lambda_function_in_vpc" {
@@ -325,6 +343,11 @@ module "lambda_function_in_vpc" {
     aws_security_group.sat-scan-mq-broker-sg.id
   ]
   attach_network_policy = true
+
+  tags = {
+    Environment = "production"
+    Application = "sat-scan-data-collector"
+  }
 }
 
 resource "aws_cloudwatch_event_rule" "data_collector_lambda_trigger" {
@@ -404,6 +427,11 @@ resource "aws_ecs_task_definition" "data_analyzer_ecs_task_definition" {
 
   execution_role_arn = aws_iam_role.ecsTaskExecutionRole.arn
 
+  tags = {
+    Environment = "production"
+    Application = "sat-scan-data-analyzer"
+  }
+
   container_definitions = <<DEFINITION
 [
   {
@@ -469,6 +497,10 @@ resource "aws_ecs_service" "ecs_data_analyzer_service" {
   }
 
   depends_on = [aws_lb_listener.data_analyzer_lb_listener]
+
+  tags = {
+    Environment = "production"
+  }
 }
 
 
@@ -523,12 +555,20 @@ resource "aws_db_instance" "sat_scan_database" {
   vpc_security_group_ids = [aws_security_group.sat_scan_db_sg.id]
 
   skip_final_snapshot = var.settings.database.skip_final_snapshot
+
+  tags = {
+    Environment = "production"
+  }
 }
 
 # Create bucket to hold uploaded routes, used during continuous deployments
 resource "aws_s3_bucket" "sat-scan-route-config" {
   bucket        = "sat-scan-route-config"
   force_destroy = true
+
+  tags = {
+    Environment = "production"
+  }
 }
 
 # -----------------------------------------
@@ -570,7 +610,7 @@ resource "aws_key_pair" "sat_scan_kp" {
 }
 
 // Create API EC2 Instance
-resource "aws_instance" "sat_scan_api" {
+resource "aws_instance" "sat_scan_ec2" {
   count = var.settings.api.count
 
   ami           = data.aws_ami.ubuntu.id
@@ -580,13 +620,17 @@ resource "aws_instance" "sat_scan_api" {
   key_name  = aws_key_pair.sat_scan_kp.key_name
 
   vpc_security_group_ids = [aws_security_group.sat_scan_internal_sg.id]
+
+  tags = {
+    Environment = "production"
+  }
 }
 
 // Create an Elastic IP for each API EC2 instance
 resource "aws_eip" "sat_scan_api_eip" {
   count = var.settings.api.count
 
-  instance = aws_instance.sat_scan_api[count.index].id
+  instance = aws_instance.sat_scan_ec2[count.index].id
 }
 
 # -----------------------------------------
@@ -614,7 +658,8 @@ resource "aws_security_group" "sat-scan-mq-broker-sg" {
   }
 
   tags = {
-    Name = "sat_scan_mq_broker_sg"
+    Environment = "production"
+    Name        = "sat_scan_mq_broker_sg"
   }
 }
 
@@ -641,5 +686,64 @@ resource "aws_mq_broker" "sat-scan-mq-broker" {
 
   logs {
     general = true
+  }
+
+  tags = {
+    Environment = "production"
+  }
+}
+
+# -----------------------------------------
+# Grafana Cloud Integration
+# -----------------------------------------
+
+data "aws_iam_policy_document" "trust_grafana" {
+  statement {
+    effect = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${var.grafana_account_id}:root"]
+    }
+    actions = ["sts:AssumeRole"]
+    condition {
+      test     = "StringEquals"
+      variable = "sts:ExternalId"
+      values   = [var.grafana_cloud_external_id]
+    }
+  }
+}
+resource "aws_iam_role" "grafana_labs_cloudwatch_integration" {
+  name        = var.grafana_cloud_iam_role_name
+  description = "Role used by Grafana CloudWatch integration."
+  # Allow Grafana Labs' AWS account to assume this role.
+  assume_role_policy = data.aws_iam_policy_document.trust_grafana.json
+
+  # This policy allows the role to discover metrics via tags and export them.
+  inline_policy {
+    name = var.grafana_cloud_iam_role_name
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Effect = "Allow"
+          Action = [
+            "tag:GetResources",
+            "cloudwatch:GetMetricData",
+            "cloudwatch:ListMetrics",
+            "apigateway:GET",
+            "aps:ListWorkspaces",
+            "autoscaling:DescribeAutoScalingGroups",
+            "dms:DescribeReplicationInstances",
+            "dms:DescribeReplicationTasks",
+            "ec2:DescribeTransitGatewayAttachments",
+            "ec2:DescribeSpotFleetRequests",
+            "shield:ListProtections",
+            "storagegateway:ListGateways",
+            "storagegateway:ListTagsForResource"
+          ]
+          Resource = "*"
+        }
+      ]
+    })
   }
 }
