@@ -35,7 +35,7 @@ jobs:
           keys=integration_test_key
 
           [database]
-          database_user=postgres
+          database_user=development
           database_password=password
           EOF
 
