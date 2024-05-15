@@ -1,4 +1,5 @@
 format:
+	black test
 	black applications
 
 integration:
