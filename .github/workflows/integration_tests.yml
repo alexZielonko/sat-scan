@@ -47,9 +47,9 @@ jobs:
           integration_test_status=$?
 
           if [ $integration_test_status -eq 0 ]; then
-            echo "✅ Integration Tests Pass"
+            echo "✅ [integration_tests.yml] Integration Tests Pass"
             exit 0
           else
-            echo "🚨 Integration Test Failure"
+            echo "🚨 [integration_tests.yml] Integration Test Failure"
             exit 1
           fi

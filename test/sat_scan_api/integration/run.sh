@@ -15,9 +15,9 @@ pytest_status=$?
 docker-compose down
 
 if [ $pytest_status -eq 0 ]; then
-  echo "✅ Integration Tests Pass"
+  echo "✅ [run.sh] Integration Tests Pass"
   exit 0
 else
-  echo "🚨 Integration Test Failure"
+  echo "🚨 [run.sh] Integration Test Failure"
   exit 1
 fi
