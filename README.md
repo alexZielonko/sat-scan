@@ -6,20 +6,18 @@
 
 In Progress:
 
-- Product environment
-- Continuous integration
-
+- Production monitoring instrumenting
 
 Later:
 
 - Web application basic form, reporting
-- Unit tests
-- Integration tests
-- Using mock objects or any test doubles
-- Production monitoring instrumenting
 
 ~Done:
 
+- ~~Product environment~~ 5/15
+- ~~Continuous integration~~ 5/15
+- ~~Unit tests~~ 5/15
+- ~~Integration tests~~ 5/15
 - ~~- Continuous delivery~~ 5/6 mvp
 - ~~- Data analyzer~~ 5/2 mvp
 - ~~Data collection~~ 4/30 mvp
