@@ -24,3 +24,12 @@ jobs:
       - name: Run API Integration Tests
         run: |
           make integration
+          integration_test_status=$?
+
+          if [ $integration_test_status -eq 0 ]; then
+            echo "✅ Integration Tests Pass"
+            exit 0
+          else
+            echo "🚨 Integration Test Failure"
+            exit 1
+          fi
