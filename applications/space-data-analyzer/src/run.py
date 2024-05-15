@@ -10,14 +10,6 @@ from components.config_parsers.route_config import RouteConfig
 if __name__ == "__main__":
     print("👉 Space Data Analyzer starting (🚀)")
 
-    app = Flask(__name__)
-
-    @app.route("/health-check")
-    def health_check():
-        return "Success", 200
-
-    print("🏃🏻‍♂️ Space Data Analyzer is Running..")
-
     sat_scan_api_key = Credentials().sat_scan_api_key
 
     channel = RecentObjectsChannel(
@@ -26,4 +18,11 @@ if __name__ == "__main__":
 
     channel.start()
 
+    app = Flask(__name__)
+
+    @app.route("/health-check")
+    def health_check():
+        return "Success", 200
+
     app.run(host="0.0.0.0", port=8000, debug=True)
+    print("🏃🏻‍♂️ Space Data Analyzer is Running..")
