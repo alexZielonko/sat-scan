@@ -23,8 +23,6 @@ jobs:
           sudo chmod +x /usr/local/bin/docker-compose
           docker-compose --version
 
-          mkdir ./.docker-data
-
           python3 -m pip install --upgrade pip
           pip3 install -r requirements.txt
 
@@ -45,8 +43,6 @@ jobs:
 
       - name: Run API Integration Tests
         run: |
-          make integration
-          make integration
           make integration
           integration_test_status=$?
 

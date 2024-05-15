@@ -2,6 +2,9 @@
 
 docker-compose up -d api database
 
+# Wait for database to create/mount volume
+sleep 2
+
 alembic upgrade head
 
 pytest "${BASH_SOURCE%/*}" -x -rP
