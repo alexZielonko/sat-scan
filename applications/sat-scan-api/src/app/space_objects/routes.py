@@ -32,6 +32,21 @@ def get_object(object_id):
         return {}, 500
 
 
+@space_object_routes.route("/space-objects/<string:object_id>", methods=["DELETE"])
+@require_auth
+def delete_object(object_id):
+    try:
+        result = SpaceObject.query.filter_by(sat_id=object_id).delete()
+        db.session.commit()
+
+        if result:
+            return {}, 200
+        else:
+            return {}, 404
+    except Exception:
+        return {}, 500
+
+
 @space_object_routes.route("/space-objects", methods=["POST"])
 @require_auth
 def create_object():
@@ -60,7 +75,7 @@ def update_object():
         result = SpaceObject.query.get(valid_object["sat_id"])
 
         if result == None:
-            abort(400)
+            abort(404)
 
         if result:
             SpaceObject.query.filter_by(sat_id=valid_object["sat_id"]).delete()

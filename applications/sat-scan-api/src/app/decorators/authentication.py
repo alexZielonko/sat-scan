@@ -11,8 +11,10 @@ def require_auth(f):
     def authentication_token_check(*args, **kwargs):
         print("Authenticating request")
         try:
+            print("keys:")
+            print(api_keys)
             token = request.headers["Authorization"].split("Bearer ")[1]
-
+            print(token)
             if token in api_keys:
                 return f(*args, **kwargs)
             else:
