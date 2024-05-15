@@ -46,6 +46,8 @@ jobs:
       - name: Run API Integration Tests
         run: |
           make integration
+          make integration
+          make integration
           integration_test_status=$?
 
           if [ $integration_test_status -eq 0 ]; then
