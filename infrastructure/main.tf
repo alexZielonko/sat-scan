@@ -352,8 +352,8 @@ module "lambda_function_in_vpc" {
 
 resource "aws_cloudwatch_event_rule" "data_collector_lambda_trigger" {
   name                = "data-collector-lambda-trigger"
-  description         = "Fires every 12 hours"
-  schedule_expression = "rate(12 hours)"
+  description         = "Fires every 5 minutes"
+  schedule_expression = "rate(5 minutes)"
 }
 
 resource "aws_cloudwatch_event_target" "trigger_lambda_on_schedule" {
