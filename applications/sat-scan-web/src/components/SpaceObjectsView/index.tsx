@@ -1,8 +1,10 @@
+import { useEffect, useState } from "react";
 import { Popover } from "@headlessui/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { CONTACT, PROJECT_INFO } from "@/constants/text";
 import { classNames } from "@/utils/classNames";
 import { RecentSpaceObjects } from "../RecentSpaceObjects";
+import { SpaceObject } from "@/types/spaceObject";
 
 const navigation: { name: string; href: string; current: boolean }[] = [
   // { name: "Home", href: "#", current: true },
@@ -10,6 +12,27 @@ const navigation: { name: string; href: string; current: boolean }[] = [
 ];
 
 export const SpaceObjectsView = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [spaceObjects, setSpaceObjects] = useState<SpaceObject[]>([]);
+
+  async function getData() {
+    setIsLoading(true);
+    const res = await fetch("http://127.0.0.1:5000/space-objects");
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch data");
+    }
+
+    const json = await res.json();
+
+    setSpaceObjects(json);
+    setIsLoading(false);
+  }
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     <>
       <div className="h-screen">
@@ -107,7 +130,21 @@ export const SpaceObjectsView = () => {
                 </h2>
                 <div className="max-h-[60vh] overflow-scroll rounded-lg bg-white shadow">
                   <div className="mb-8">
-                    <RecentSpaceObjects />
+                    {isLoading && (
+                      <div className="p-24 text-center text-lg text-gray-800">
+                        Loading space objects...
+                      </div>
+                    )}
+
+                    {!isLoading && spaceObjects.length == 0 && (
+                      <div className="p-24 text-center text-lg text-red-500">
+                        ⚠️ Something went wrong: unable to load space objects
+                      </div>
+                    )}
+
+                    {!isLoading && spaceObjects.length > 0 && (
+                      <RecentSpaceObjects spaceObjects={spaceObjects} />
+                    )}
                   </div>
                 </div>
               </section>

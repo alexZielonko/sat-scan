@@ -2,26 +2,11 @@ import { SpaceObject } from "@/types/spaceObject";
 import { useEffect, useState } from "react";
 import { SpaceObjectDetail } from "../SpaceObjectDetail";
 import { classNames } from "@/utils/classNames";
+import { RecentSpaceObjectsProps } from "./types";
 
-export const RecentSpaceObjects = () => {
-  const [spaceObjects, setSpaceObjects] = useState<SpaceObject[]>([]);
-
-  async function getData() {
-    const res = await fetch("http://127.0.0.1:5000/space-objects");
-
-    if (!res.ok) {
-      throw new Error("Failed to fetch data");
-    }
-
-    const json = await res.json();
-
-    setSpaceObjects(json);
-  }
-
-  useEffect(() => {
-    getData();
-  }, []);
-
+export const RecentSpaceObjects = ({
+  spaceObjects,
+}: RecentSpaceObjectsProps) => {
   const [selectedSpaceObjectId, setSelectedSpaceObjectId] = useState<
     string | null
   >(null);
