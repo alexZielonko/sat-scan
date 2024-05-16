@@ -47,7 +47,7 @@ export const RecentSpaceObjects = () => {
             "py-5 cursor-pointer",
             "hover:bg-indigo-50",
             isCurrentSpaceObjectSelected(spaceObject.sat_id)
-              ? "bg-indigo-100"
+              ? "bg-indigo-100 hover:bg-indigo-100"
               : ""
           )}
           onClick={() => handleSpaceObjectClick(spaceObject.sat_id)}

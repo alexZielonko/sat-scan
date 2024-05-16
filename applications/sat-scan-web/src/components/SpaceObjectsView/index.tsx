@@ -4,16 +4,16 @@ import { CONTACT, PROJECT_INFO } from "@/constants/text";
 import { classNames } from "@/utils/classNames";
 import { RecentSpaceObjects } from "../RecentSpaceObjects";
 
-const navigation = [
-  { name: "Home", href: "#", current: true },
-  { name: "About", href: "#", current: false },
+const navigation: { name: string; href: string; current: boolean }[] = [
+  // { name: "Home", href: "#", current: true },
+  // { name: "About", href: "#", current: false },
 ];
 
 export const SpaceObjectsView = () => {
   return (
     <>
       <div className="h-screen">
-        <Popover as="header" className="bg-indigo-500 pb-48">
+        <Popover as="header" className="bg-indigo-500 pb-48 pt-12">
           <>
             <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
               <div className="relative flex items-center justify-center py-5 lg:justify-between">
@@ -99,7 +99,7 @@ export const SpaceObjectsView = () => {
         </Popover>
         <main className="-mt-44 pb-8 h-fit max-h-fit">
           <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-            <h1 className="mb-8 text-2xl text-white">New Space Objects</h1>
+            <h1 className="mb-8 text-2xl text-white">Space Objects</h1>
             <div className="">
               <section aria-labelledby="section-1-title">
                 <h2 className="sr-only" id="section-1-title">
