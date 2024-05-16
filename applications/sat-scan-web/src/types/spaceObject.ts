@@ -1,4 +1,4 @@
-export type SpaceObject =   {
+export type SpaceObject = {
   file_id: string;
   launch_country: string;
   launch_date: string;

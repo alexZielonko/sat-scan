@@ -14,6 +14,9 @@ const navigation: { name: string; href: string; current: boolean }[] = [
 export const SpaceObjectsView = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [spaceObjects, setSpaceObjects] = useState<SpaceObject[]>([]);
+  const [filteredSpaceObjects, setFilteredSpaceObjects] = useState<
+    SpaceObject[]
+  >([]);
 
   async function getData() {
     setIsLoading(true);
@@ -32,6 +35,40 @@ export const SpaceObjectsView = () => {
   useEffect(() => {
     getData();
   }, []);
+
+  useEffect(() => {
+    setFilteredSpaceObjects(spaceObjects);
+  }, [spaceObjects]);
+
+  const filterSpaceObject = (spaceObject: SpaceObject, value: string) => {
+    const filterableFields: (keyof SpaceObject)[] = [
+      "sat_id",
+      "launch_country",
+      "sat_name",
+      "launch_date",
+      "object_type",
+    ];
+
+    return filterableFields.some((field) => {
+      return spaceObject[field].toLowerCase().includes(value.toLowerCase());
+    });
+  };
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const input = (event.target as HTMLInputElement)?.value;
+
+    if (input && input.length >= 2) {
+      const newFilteredSpaceObjects = filteredSpaceObjects.filter(
+        (spaceObject) => {
+          return filterSpaceObject(spaceObject, input);
+        }
+      );
+
+      setFilteredSpaceObjects(newFilteredSpaceObjects);
+    } else if (!input || input.length == 0) {
+      setFilteredSpaceObjects(spaceObjects);
+    }
+  };
 
   return (
     <>
@@ -111,6 +148,7 @@ export const SpaceObjectsView = () => {
                           placeholder="Search"
                           type="search"
                           name="search"
+                          onChange={handleSearch}
                         />
                       </div>
                     </div>
@@ -143,7 +181,7 @@ export const SpaceObjectsView = () => {
                     )}
 
                     {!isLoading && spaceObjects.length > 0 && (
-                      <RecentSpaceObjects spaceObjects={spaceObjects} />
+                      <RecentSpaceObjects spaceObjects={filteredSpaceObjects} />
                     )}
                   </div>
                 </div>
