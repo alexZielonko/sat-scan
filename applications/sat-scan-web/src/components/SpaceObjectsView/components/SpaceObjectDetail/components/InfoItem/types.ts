@@ -1,4 +1,4 @@
 export type InfoItemProps = {
-  title: string,
+  title: string;
   value: string;
-}
+};

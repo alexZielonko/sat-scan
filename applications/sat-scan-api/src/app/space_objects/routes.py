@@ -1,5 +1,6 @@
 from app import db
 from flask import Flask, jsonify, request, Blueprint, Response, abort
+from flask_cors import cross_origin
 from sqlalchemy import exc
 from marshmallow import ValidationError
 
@@ -11,6 +12,7 @@ space_object_routes = Blueprint("space-object", __name__)
 
 
 @space_object_routes.route("/space-objects", methods=["GET"])
+@cross_origin()
 def get_objects():
     try:
         raw_results = SpaceObject.query.all()
@@ -20,6 +22,7 @@ def get_objects():
 
 
 @space_object_routes.route("/space-objects/<string:object_id>", methods=["GET"])
+@cross_origin()
 def get_object(object_id):
     try:
         result = SpaceObject.query.get(object_id)
