@@ -1,9 +1,9 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:us-east-2:730335620736:task-definition/data-analyzer-family:2",
+    "taskDefinitionArn": "arn:aws:ecs:us-east-2:730335620736:task-definition/data-analyzer-family:52",
     "containerDefinitions": [
         {
             "name": "data-analyzer-family",
-            "image": "730335620736.dkr.ecr.us-east-2.amazonaws.com/data-analyzer-ecr-repo:latest",
+            "image": "730335620736.dkr.ecr.us-east-2.amazonaws.com/data-analyzer-ecr-repo:7dafea39331248d420b5f74be0982173299d5020",
             "cpu": 1024,
             "memory": 2048,
             "portMappings": [
@@ -31,7 +31,7 @@
     "family": "data-analyzer-family",
     "executionRoleArn": "arn:aws:iam::730335620736:role/sat-scan-ecs-execution-role",
     "networkMode": "awsvpc",
-    "revision": 2,
+    "revision": 52,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -67,6 +67,6 @@
     ],
     "cpu": "1024",
     "memory": "2048",
-    "registeredAt": "2024-05-09T11:34:16.597000-05:00",
+    "registeredAt": "2024-05-17T15:58:23.406000-05:00",
     "registeredBy": "arn:aws:iam::730335620736:root"
 }
