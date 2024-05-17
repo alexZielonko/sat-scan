@@ -81,9 +81,9 @@ def update_object():
             abort(404)
 
         if result:
-            SpaceObject.query.filter_by(sat_id=valid_object["sat_id"]).delete()
-            space_object = SpaceObject(**valid_object)
-            db.session.add(space_object)
+            SpaceObject.query.filter_by(sat_id=valid_object["sat_id"]).update(
+                valid_object,
+            )
             db.session.commit()
 
         return jsonify(valid_object), 200
