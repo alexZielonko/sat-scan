@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 
 from app.config_parsers.database_credentials import DatabaseCredentials
 
@@ -13,6 +14,7 @@ from app.space_objects.routes import space_object_routes
 # Register blueprint(s)
 app.register_blueprint(space_object_routes)
 
+CORS(app)
 
 @app.route("/")
 def home():
