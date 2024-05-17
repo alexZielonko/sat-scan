@@ -36,5 +36,9 @@
     "prettier": "^3.2.5",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
+  },
+  "resolutions": {
+    "wrap-ansi": "7.0.0",
+    "string-width": "4.2.3"
   }
 }
