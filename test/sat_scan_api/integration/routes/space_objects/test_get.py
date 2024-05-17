@@ -63,9 +63,18 @@ class TestGet(RouteHelper):
             f"{RouteHelper.BASE_ENDPOINT}/{space_object['sat_id']}",
             headers=self.get_headers(),
         )
+        response_space_object = get_res.json()
 
         assert get_res.status_code == 200
-        assert get_res.json() == space_object
+
+        # Date created/modified only exists on response space object,
+        # assert that each pre-request key persisted in returned response
+        for key in space_object:
+            assert space_object[key] == response_space_object[key]
+
+        # Assert date created and modified values exist
+        assert bool(response_space_object["date_created"])
+        assert bool(response_space_object["date_modified"])
 
         cleanup_res = self.cleanup_test_object(space_object["sat_id"])
 
