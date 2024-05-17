@@ -9,6 +9,7 @@ import { SpaceObject } from "@/types/spaceObject";
 import { doesSpaceObjectContainText } from "./utils/doesSpaceObjectContainText";
 import { fetchSpaceObjects } from "@/interfaces/spaceObject";
 import { SpaceObjectDetail } from "./components/SpaceObjectDetail";
+import { hasFilterResults } from "./utils/hasFilterResults";
 
 const navigation: { name: string; href: string; current: boolean }[] = [
   // { name: "Home", href: "#", current: true },
@@ -45,11 +46,16 @@ export const SpaceObjectsView = () => {
     setSelectedSpaceObject(newSelectedSpaceObject);
   }, [filteredSpaceObjects]);
 
+  const [currentFilterTerm, setCurrentFilterTerm] = useState<string | null>(
+    null
+  );
+
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const input = (event.target as HTMLInputElement)?.value || "";
     const searchTerm = input.trim();
 
     if (searchTerm && searchTerm.length >= 2) {
+      setCurrentFilterTerm(searchTerm);
       const newFilteredSpaceObjects = filteredSpaceObjects.filter(
         (spaceObject) => {
           return doesSpaceObjectContainText(spaceObject, searchTerm);
@@ -58,6 +64,7 @@ export const SpaceObjectsView = () => {
 
       setFilteredSpaceObjects(newFilteredSpaceObjects);
     } else if (!searchTerm || searchTerm.length == 0) {
+      setCurrentFilterTerm(null);
       setFilteredSpaceObjects(spaceObjects);
     }
   };
@@ -198,6 +205,18 @@ export const SpaceObjectsView = () => {
                           setSelectedSpaceObject(spaceObject)
                         }
                       />
+                    )}
+
+                    {!hasFilterResults(
+                      isLoading,
+                      filteredSpaceObjects,
+                      currentFilterTerm
+                    ) && (
+                      <div className="p-24 text-center text-lg">
+                        No space objects found for filter text: {'"'}
+                        <span className="text-bold">{currentFilterTerm}</span>
+                        {'"'}
+                      </div>
                     )}
                   </div>
                 </section>
