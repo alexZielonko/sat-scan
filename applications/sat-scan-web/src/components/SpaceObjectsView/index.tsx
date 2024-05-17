@@ -9,6 +9,8 @@ import { doesSpaceObjectContainText } from "./utils/doesSpaceObjectContainText";
 import { fetchSpaceObjects } from "@/interfaces/spaceObject";
 import { SpaceObjectDetail } from "./components/SpaceObjectDetail";
 import { hasFilterResults } from "./utils/hasFilterResults";
+import { Footer } from "./components/Footer";
+import { classNames } from "@/utils/classNames";
 
 export const SpaceObjectsView = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -43,7 +45,7 @@ export const SpaceObjectsView = () => {
   }, [filteredSpaceObjects]);
 
   const [currentFilterTerm, setCurrentFilterTerm] = useState<string | null>(
-    null
+    null,
   );
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,7 +57,7 @@ export const SpaceObjectsView = () => {
       const newFilteredSpaceObjects = filteredSpaceObjects.filter(
         (spaceObject) => {
           return doesSpaceObjectContainText(spaceObject, searchTerm);
-        }
+        },
       );
 
       setFilteredSpaceObjects(newFilteredSpaceObjects);
@@ -87,30 +89,6 @@ export const SpaceObjectsView = () => {
                       {PROJECT_INFO.NAME}
                     </span>
                   </a>
-                </div>
-
-                {/* Search */}
-                <div className="min-w-0 flex-1 px-12 lg:hidden">
-                  <div className="mx-auto w-full max-w-xs hidden">
-                    <label htmlFor="desktop-search" className="sr-only">
-                      Search
-                    </label>
-                    <div className="relative text-white focus-within:text-gray-600">
-                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                        <MagnifyingGlassIcon
-                          className="h-5 w-5"
-                          aria-hidden="true"
-                        />
-                      </div>
-                      <input
-                        id="desktop-search"
-                        className="block w-full rounded-md border-0 bg-white/20 py-1.5 pl-10 pr-3 text-white placeholder:text-white focus:bg-white focus:text-gray-900 focus:ring-0 focus:placeholder:text-gray-500 sm:text-sm sm:leading-6"
-                        placeholder="Search"
-                        type="search"
-                        name="search"
-                      />
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -159,7 +137,7 @@ export const SpaceObjectsView = () => {
                     New Space Objects List
                   </h2>
 
-                  <div className="max-h-[25vh] lg:max-h-[60vh] overflow-scroll rounded-lg bg-white shadow">
+                  <div className="max-h-[25vh] lg:max-h-[60vh] lg:h-[60vh] overflow-scroll rounded-lg bg-white shadow">
                     {isLoading && (
                       <div className="p-24 text-center text-lg text-gray-800">
                         Loading space objects...
@@ -186,7 +164,7 @@ export const SpaceObjectsView = () => {
                       !hasFilterResults(isLoading, filteredSpaceObjects) && (
                         <div className="p-24 text-center text-lg">
                           No space objects found for filter text: {'"'}
-                          <span className="text-bold">{currentFilterTerm}</span>
+                          <span className="font-bold">{currentFilterTerm}</span>
                           {'"'}
                         </div>
                       )}
@@ -200,8 +178,15 @@ export const SpaceObjectsView = () => {
                   <h2 className="sr-only" id="section-2-title">
                     Section title
                   </h2>
-                  <div className="overflow-hidden rounded-lg bg-white shadow">
-                    <div className="p-2">
+                  <div
+                    className={classNames(
+                      "overflow-hidden rounded-lg shadow",
+                      isLoading || selectedSpaceObject == null
+                        ? "bg-gray-100 opacity-90"
+                        : "bg-white",
+                    )}
+                  >
+                    <div className="p-2 min-h-[300px]">
                       {selectedSpaceObject && (
                         <SpaceObjectDetail spaceObject={selectedSpaceObject} />
                       )}
@@ -213,16 +198,7 @@ export const SpaceObjectsView = () => {
           </div>
         </main>
 
-        <footer>
-          <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-            <div className="border-t border-gray-200 py-8 text-center text-sm text-gray-500 sm:text-left">
-              <span className="block sm:inline">
-                &copy; {new Date().getFullYear()} {CONTACT.NAME}
-              </span>{" "}
-              <span className="block sm:inline">All rights reserved.</span>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </div>
     </>
   );
