@@ -6,6 +6,10 @@ describe("fetchSpaceObjects", () => {
     global.fetch = jest.fn();
   });
 
+  const mockRouteConfig = {
+    API_URL: "__MOCK_API_URL__",
+  };
+
   it("returns the request's json response", async () => {
     const mockSpaceObjects = [
       generateMockSpaceObject(),
@@ -19,10 +23,11 @@ describe("fetchSpaceObjects", () => {
       },
     })) as jest.Mock;
 
-    jest.spyOn(global, "fetch").mockImplementation(fetchMock);
+    const spy = jest.spyOn(global, "fetch").mockImplementation(fetchMock);
 
-    const actual = await fetchSpaceObjects();
+    const actual = await fetchSpaceObjects(mockRouteConfig);
 
     expect(actual).toBe(mockSpaceObjects);
+    expect(spy).toHaveBeenCalledWith("http://__MOCK_API_URL__/space-objects");
   });
 });
