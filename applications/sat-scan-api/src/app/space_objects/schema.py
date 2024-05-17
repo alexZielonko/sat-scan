@@ -16,3 +16,6 @@ class SpaceObjectSchema(Schema):
     object_name = fields.Str(required=True)
     object_id = fields.Str(required=True)
     object_number = fields.Str(required=True)
+
+    date_created = fields.AwareDateTime()
+    date_modified = fields.AwareDateTime()
