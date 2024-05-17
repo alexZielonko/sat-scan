@@ -3,7 +3,7 @@ name: Data Analyzer - Continuous Deployment to ECS
 on:
   push:
     branches:
-      - main
+      - analyzer-health-check-debug
 env:
   AWS_REGION: "us-east-2"
   ECR_REPOSITORY: "data-analyzer-ecr-repo" # Amazon ECR repository name
