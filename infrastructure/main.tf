@@ -455,13 +455,20 @@ resource "aws_ecs_task_definition" "data_analyzer_ecs_task_definition" {
       }
     ],
     "logConfiguration": {
-          "logDriver": "awslogs",
-          "options": {
-            "awslogs-group": "data-analyzer-log-group",
-            "awslogs-region": "${var.aws_region}",
-            "awslogs-stream-prefix": "data-analyzer"
-          }
-        }
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "data-analyzer-log-group",
+        "awslogs-region": "${var.aws_region}",
+        "awslogs-stream-prefix": "data-analyzer"
+      }
+    },
+    "healthCheck": {
+      "retries": 10,
+      "command": [ "CMD-SHELL", "curl -f http://localhost:8000/health-check || exit 1" ],
+      "timeout": 5,
+      "interval": 10,
+      "startPeriod": 10
+    }    
   }
 ]
 DEFINITION
