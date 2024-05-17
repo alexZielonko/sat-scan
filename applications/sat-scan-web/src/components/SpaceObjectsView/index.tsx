@@ -24,6 +24,7 @@ export const SpaceObjectsView = ({ routeConfig }: SpaceObjectsViewProps) => {
 
   async function loadSpaceObjects() {
     setIsLoading(true);
+
     const newSpaceObjects = await fetchSpaceObjects(routeConfig);
 
     setSpaceObjects(newSpaceObjects);
@@ -46,7 +47,7 @@ export const SpaceObjectsView = ({ routeConfig }: SpaceObjectsViewProps) => {
   }, [filteredSpaceObjects]);
 
   const [currentFilterTerm, setCurrentFilterTerm] = useState<string | null>(
-    null,
+    null
   );
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +59,7 @@ export const SpaceObjectsView = ({ routeConfig }: SpaceObjectsViewProps) => {
       const newFilteredSpaceObjects = filteredSpaceObjects.filter(
         (spaceObject) => {
           return doesSpaceObjectContainText(spaceObject, searchTerm);
-        },
+        }
       );
 
       setFilteredSpaceObjects(newFilteredSpaceObjects);
@@ -184,7 +185,7 @@ export const SpaceObjectsView = ({ routeConfig }: SpaceObjectsViewProps) => {
                       "overflow-hidden rounded-lg shadow",
                       isLoading || selectedSpaceObject == null
                         ? "bg-gray-100 opacity-90"
-                        : "bg-white",
+                        : "bg-white"
                     )}
                   >
                     <div className="p-2 min-h-[300px]">
