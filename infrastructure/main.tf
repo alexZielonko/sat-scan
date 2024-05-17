@@ -383,39 +383,6 @@ resource "aws_ecr_repository" "data_analyzer_ecr_repo" {
   force_delete = true
 }
 
-# resource "aws_lb" "data-analyzer-lb" {
-#   name            = "data-analyzer-load-balancer"
-#   subnets         = aws_subnet.sat_scan_private_subnet.*.id
-#   security_groups = [aws_security_group.sat_scan_internal_sg.id]
-
-#   tags = {
-#     Environment = "production"
-#   }
-# }
-
-# resource "aws_lb_target_group" "data_analyzer_lb_target_group" {
-#   name        = "data-analyzer-lb-target-group"
-#   port        = 80
-#   protocol    = "HTTP"
-#   vpc_id      = aws_vpc.sat_scan_vpc.id
-#   target_type = "ip"
-
-#   health_check {
-#     path = "/health-check"
-#   }
-# }
-
-# resource "aws_lb_listener" "data_analyzer_lb_listener" {
-#   load_balancer_arn = aws_lb.data-analyzer-lb.id
-#   port              = "8000"
-#   protocol          = "HTTP"
-
-#   default_action {
-#     target_group_arn = aws_lb_target_group.data_analyzer_lb_target_group.id
-#     type             = "forward"
-#   }
-# }
-
 resource "aws_cloudwatch_log_group" "data-analyzer-log-group" {
   name = "data-analyzer-log-group"
 
@@ -424,7 +391,6 @@ resource "aws_cloudwatch_log_group" "data-analyzer-log-group" {
     Application = "sat-scan-data-analyzer"
   }
 }
-
 
 resource "aws_ecs_task_definition" "data_analyzer_ecs_task_definition" {
   family                   = "data-analyzer-family"
@@ -504,14 +470,6 @@ resource "aws_ecs_service" "ecs_data_analyzer_service" {
     security_groups = [aws_security_group.sat_scan_internal_sg.id]
     subnets         = aws_subnet.sat_scan_private_subnet.*.id
   }
-
-  # load_balancer {
-  #   target_group_arn = aws_lb_target_group.data_analyzer_lb_target_group.id
-  #   container_name   = "data-analyzer-family"
-  #   container_port   = 8000
-  # }
-
-  # depends_on = [aws_lb_listener.data_analyzer_lb_listener]
 
   tags = {
     Environment = "production"
