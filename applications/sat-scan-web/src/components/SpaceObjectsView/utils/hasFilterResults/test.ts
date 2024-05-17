@@ -2,24 +2,32 @@ import { generateMockSpaceObject } from "@/test/mocks/generateMockSpaceObject";
 import { hasFilterResults } from ".";
 
 describe("hasFilterResults", () => {
+  const hasFilterSuccessConditions = {
+    isLoading: false,
+    filteredSpaceObjects: [generateMockSpaceObject()],
+  };
+
   it.each([
     {
       testCase:
         "returns true when there are filtered space object results for the filter term",
       expected: true,
-      isLoading: false,
-      filteredSpaceObjects: [generateMockSpaceObject()],
-      currentFilterTerm: "__MOCK_SEARCH_TERM__",
+      ...hasFilterSuccessConditions,
     },
-  ])(
-    "$testCase",
-    ({ expected, isLoading, filteredSpaceObjects, currentFilterTerm }) => {
-      const actual = hasFilterResults(
-        isLoading,
-        filteredSpaceObjects,
-        currentFilterTerm,
-      );
-      expect(actual).toBe(expected);
+    {
+      testCase: "returns false when loading",
+      expected: false,
+      ...hasFilterSuccessConditions,
+      isLoading: true,
     },
-  );
+    {
+      testCase: "returns false when there are not any filtered space objects",
+      expected: false,
+      ...hasFilterSuccessConditions,
+      filteredSpaceObjects: [],
+    },
+  ])("$testCase", ({ expected, isLoading, filteredSpaceObjects }) => {
+    const actual = hasFilterResults(isLoading, filteredSpaceObjects);
+    expect(actual).toBe(expected);
+  });
 });

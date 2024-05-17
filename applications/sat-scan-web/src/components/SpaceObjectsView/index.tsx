@@ -47,7 +47,7 @@ export const SpaceObjectsView = () => {
   }, [filteredSpaceObjects]);
 
   const [currentFilterTerm, setCurrentFilterTerm] = useState<string | null>(
-    null,
+    null
   );
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +59,7 @@ export const SpaceObjectsView = () => {
       const newFilteredSpaceObjects = filteredSpaceObjects.filter(
         (spaceObject) => {
           return doesSpaceObjectContainText(spaceObject, searchTerm);
-        },
+        }
       );
 
       setFilteredSpaceObjects(newFilteredSpaceObjects);
@@ -127,7 +127,7 @@ export const SpaceObjectsView = () => {
                           href={item.href}
                           className={classNames(
                             item.current ? "text-white" : "text-indigo-100",
-                            "rounded-md bg-white bg-opacity-0 px-3 py-2 text-sm font-medium hover:bg-opacity-10",
+                            "rounded-md bg-white bg-opacity-0 px-3 py-2 text-sm font-medium hover:bg-opacity-10"
                           )}
                           aria-current={item.current ? "page" : undefined}
                         >
@@ -197,7 +197,7 @@ export const SpaceObjectsView = () => {
                       </div>
                     )}
 
-                    {!isLoading && spaceObjects.length > 0 && (
+                    {!isLoading && filteredSpaceObjects.length > 0 && (
                       <RecentSpaceObjects
                         spaceObjects={filteredSpaceObjects}
                         selectedSpaceObject={selectedSpaceObject}
@@ -207,17 +207,14 @@ export const SpaceObjectsView = () => {
                       />
                     )}
 
-                    {!hasFilterResults(
-                      isLoading,
-                      filteredSpaceObjects,
-                      currentFilterTerm,
-                    ) && (
-                      <div className="p-24 text-center text-lg">
-                        No space objects found for filter text: {'"'}
-                        <span className="text-bold">{currentFilterTerm}</span>
-                        {'"'}
-                      </div>
-                    )}
+                    {!!currentFilterTerm &&
+                      !hasFilterResults(isLoading, filteredSpaceObjects) && (
+                        <div className="p-24 text-center text-lg">
+                          No space objects found for filter text: {'"'}
+                          <span className="text-bold">{currentFilterTerm}</span>
+                          {'"'}
+                        </div>
+                      )}
                   </div>
                 </section>
               </div>
