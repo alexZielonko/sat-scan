@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Popover } from "@headlessui/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { CONTACT, PROJECT_INFO } from "@/constants/text";
-import { classNames } from "@/utils/classNames";
 import { RecentSpaceObjects } from "./components/RecentSpaceObjects";
 import { SpaceObject } from "@/types/spaceObject";
 
@@ -10,11 +9,6 @@ import { doesSpaceObjectContainText } from "./utils/doesSpaceObjectContainText";
 import { fetchSpaceObjects } from "@/interfaces/spaceObject";
 import { SpaceObjectDetail } from "./components/SpaceObjectDetail";
 import { hasFilterResults } from "./utils/hasFilterResults";
-
-const navigation: { name: string; href: string; current: boolean }[] = [
-  // { name: "Home", href: "#", current: true },
-  // { name: "About", href: "#", current: false },
-];
 
 export const SpaceObjectsView = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -25,7 +19,7 @@ export const SpaceObjectsView = () => {
   const [selectedSpaceObject, setSelectedSpaceObject] =
     useState<SpaceObject | null>(null);
 
-  async function getData() {
+  async function loadSpaceObjects() {
     setIsLoading(true);
     const newSpaceObjects = await fetchSpaceObjects();
 
@@ -34,14 +28,16 @@ export const SpaceObjectsView = () => {
   }
 
   useEffect(() => {
-    getData();
+    loadSpaceObjects();
   }, []);
 
   useEffect(() => {
+    // Set the filtered space object list to an initial value when the space objects are fetched
     setFilteredSpaceObjects(spaceObjects);
   }, [spaceObjects]);
 
   useEffect(() => {
+    // Reset the selected space object when a user filters the results
     const [newSelectedSpaceObject] = filteredSpaceObjects;
     setSelectedSpaceObject(newSelectedSpaceObject);
   }, [filteredSpaceObjects]);
@@ -114,27 +110,6 @@ export const SpaceObjectsView = () => {
                         name="search"
                       />
                     </div>
-                  </div>
-                </div>
-              </div>
-              <div className="hidden border-t border-white border-opacity-20 py-5 lg:block">
-                <div className="grid grid-cols-3 items-center gap-8">
-                  <div className="col-span-2">
-                    <nav className="flex space-x-4">
-                      {navigation.map((item) => (
-                        <a
-                          key={item.name}
-                          href={item.href}
-                          className={classNames(
-                            item.current ? "text-white" : "text-indigo-100",
-                            "rounded-md bg-white bg-opacity-0 px-3 py-2 text-sm font-medium hover:bg-opacity-10"
-                          )}
-                          aria-current={item.current ? "page" : undefined}
-                        >
-                          {item.name}
-                        </a>
-                      ))}
-                    </nav>
                   </div>
                 </div>
               </div>
