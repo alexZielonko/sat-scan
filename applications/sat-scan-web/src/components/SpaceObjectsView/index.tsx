@@ -42,36 +42,17 @@ export const SpaceObjectsView = () => {
     setFilteredSpaceObjects(spaceObjects);
   }, [spaceObjects]);
 
-<<<<<<< Updated upstream
-  const filterSpaceObject = (spaceObject: SpaceObject, value: string) => {
-    const filterableFields: (keyof SpaceObject)[] = [
-      "sat_id",
-      "launch_country",
-      "sat_name",
-      "launch_date",
-      "object_type",
-    ];
-
-    return filterableFields.some((field) => {
-      return spaceObject[field].toLowerCase().includes(value.toLowerCase());
-    });
-  };
-=======
   const [currentSearchValue, setCurrentSearchValue] = useState<string | null>(
     null
   );
->>>>>>> Stashed changes
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const input = (event.target as HTMLInputElement)?.value || "";
     const searchTerm = input.trim();
 
-<<<<<<< Updated upstream
-    if (input && input.length >= 2) {
-=======
     if (searchTerm && searchTerm.length >= 2) {
       setCurrentSearchValue(searchTerm);
->>>>>>> Stashed changes
+
       const newFilteredSpaceObjects = filteredSpaceObjects.filter(
         (spaceObject) => {
           return doesSpaceObjectContainText(spaceObject, searchTerm);
