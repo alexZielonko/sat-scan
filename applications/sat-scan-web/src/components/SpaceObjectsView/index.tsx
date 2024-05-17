@@ -3,10 +3,11 @@ import { Popover } from "@headlessui/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { CONTACT, PROJECT_INFO } from "@/constants/text";
 import { classNames } from "@/utils/classNames";
-import { RecentSpaceObjects } from "../RecentSpaceObjects";
+import { RecentSpaceObjects } from "./components/RecentSpaceObjects";
 import { SpaceObject } from "@/types/spaceObject";
 
 import { doesSpaceObjectContainText } from "./utils/doesSpaceObjectContainText";
+import { fetchSpaceObjects } from "@/interfaces/spaceObject";
 
 const navigation: { name: string; href: string; current: boolean }[] = [
   // { name: "Home", href: "#", current: true },
@@ -22,15 +23,9 @@ export const SpaceObjectsView = () => {
 
   async function getData() {
     setIsLoading(true);
-    const res = await fetch("http://127.0.0.1:5000/space-objects");
+    const newSpaceObjects = await fetchSpaceObjects();
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch data");
-    }
-
-    const json = await res.json();
-
-    setSpaceObjects(json);
+    setSpaceObjects(newSpaceObjects);
     setIsLoading(false);
   }
 
