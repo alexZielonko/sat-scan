@@ -19,10 +19,10 @@ jobs:
       - name: Setup environment
         run: |
           python3 -m pip install --upgrade pip
-          sudo apt update
-          sudo apt install nodejs
-          sudo apt install npm
-          npm install --global yarn
+          # sudo apt update
+          # sudo apt install nodejs
+          # sudo apt install npm
+          # npm install --global yarn
 
       - name: Run Data Analyzer Tests
         run: |
@@ -45,4 +45,5 @@ jobs:
       - name: Run Sat Scan Web Tests
         run: |
           cd applications/sat-scan-web
+          yarn
           yarn test
