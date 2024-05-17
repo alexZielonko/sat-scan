@@ -1,5 +1,7 @@
 import { SpaceObject } from "@/types/spaceObject"
 
 export type RecentSpaceObjectsProps = {
-  spaceObjects: SpaceObject[]
+  spaceObjects: SpaceObject[];
+  selectedSpaceObject: SpaceObject | null;
+  onSpaceObjectClick: (spaceObject: SpaceObject) => void;
 }

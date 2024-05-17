@@ -1,26 +1,13 @@
-import { SpaceObject } from "@/types/spaceObject";
-import { useEffect, useState } from "react";
-import { SpaceObjectDetail } from "../SpaceObjectDetail";
 import { classNames } from "@/utils/classNames";
 import { RecentSpaceObjectsProps } from "./types";
 
 export const RecentSpaceObjects = ({
   spaceObjects,
+  selectedSpaceObject,
+  onSpaceObjectClick,
 }: RecentSpaceObjectsProps) => {
-  const [selectedSpaceObjectId, setSelectedSpaceObjectId] = useState<
-    string | null
-  >(null);
-
   const isCurrentSpaceObjectSelected = (spaceObjectId: string): boolean => {
-    return selectedSpaceObjectId === spaceObjectId;
-  };
-
-  const handleSpaceObjectClick = (spaceObjectId: string) => {
-    if (isCurrentSpaceObjectSelected(spaceObjectId)) {
-      setSelectedSpaceObjectId(null);
-    } else {
-      setSelectedSpaceObjectId(spaceObjectId);
-    }
+    return selectedSpaceObject?.sat_id === spaceObjectId;
   };
 
   return (
@@ -35,7 +22,7 @@ export const RecentSpaceObjects = ({
               ? "bg-indigo-100 hover:bg-indigo-100"
               : ""
           )}
-          onClick={() => handleSpaceObjectClick(spaceObject.sat_id)}
+          onClick={() => onSpaceObjectClick(spaceObject)}
         >
           <div className="flex justify-between gap-x-6 px-6">
             <div className="flex min-w-0 gap-x-4">
@@ -68,9 +55,6 @@ export const RecentSpaceObjects = ({
               )}
             </div>
           </div>
-          {selectedSpaceObjectId === spaceObject.sat_id && (
-            <SpaceObjectDetail spaceObject={spaceObject} />
-          )}
         </li>
       ))}
     </ul>
