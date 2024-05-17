@@ -1,7 +1,10 @@
-import { SpaceObject } from "@/types/spaceObject";
+import { RouteConfig, SpaceObject } from "@/types/spaceObject";
 
-export const fetchSpaceObjects = async (): Promise<SpaceObject[]> => {
-  const res = await fetch("http://127.0.0.1:5000/space-objects");
+export const fetchSpaceObjects = async (
+  routeConfig: RouteConfig,
+): Promise<SpaceObject[]> => {
+  const url = `${routeConfig.API_URL}/space-objects`;
+  const res = await fetch(url);
   const spaceObjects: SpaceObject[] = await res.json();
 
   return spaceObjects;

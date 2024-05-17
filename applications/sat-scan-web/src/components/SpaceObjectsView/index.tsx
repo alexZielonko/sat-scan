@@ -11,8 +11,9 @@ import { SpaceObjectDetail } from "./components/SpaceObjectDetail";
 import { hasFilterResults } from "./utils/hasFilterResults";
 import { Footer } from "./components/Footer";
 import { classNames } from "@/utils/classNames";
+import { SpaceObjectsViewProps } from "./types";
 
-export const SpaceObjectsView = () => {
+export const SpaceObjectsView = ({ routeConfig }: SpaceObjectsViewProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [spaceObjects, setSpaceObjects] = useState<SpaceObject[]>([]);
   const [filteredSpaceObjects, setFilteredSpaceObjects] = useState<
@@ -23,7 +24,7 @@ export const SpaceObjectsView = () => {
 
   async function loadSpaceObjects() {
     setIsLoading(true);
-    const newSpaceObjects = await fetchSpaceObjects();
+    const newSpaceObjects = await fetchSpaceObjects(routeConfig);
 
     setSpaceObjects(newSpaceObjects);
     setIsLoading(false);
@@ -83,12 +84,12 @@ export const SpaceObjectsView = () => {
               <div className="relative flex items-center justify-center py-5 lg:justify-between">
                 {/* Logo */}
                 <div className="absolute left-0 flex-shrink-0 lg:static">
-                  <a href="/" className="flex">
+                  <div className="flex">
                     <span className="text-6xl">🛰️</span>
                     <span className="text-2xl text-white font-weight-semibold my-auto ml-4">
                       {PROJECT_INFO.NAME}
                     </span>
-                  </a>
+                  </div>
                 </div>
               </div>
             </div>

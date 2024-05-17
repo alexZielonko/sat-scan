@@ -1,3 +1,7 @@
+export type RouteConfig = {
+  API_URL: String;
+};
+
 export type SpaceObject = {
   file_id: string;
   launch_country: string;
