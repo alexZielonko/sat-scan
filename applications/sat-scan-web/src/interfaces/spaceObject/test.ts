@@ -28,6 +28,6 @@ describe("fetchSpaceObjects", () => {
     const actual = await fetchSpaceObjects(mockRouteConfig);
 
     expect(actual).toBe(mockSpaceObjects);
-    expect(spy).toHaveBeenCalledWith("__MOCK_API_URL__/space-objects");
+    expect(spy).toHaveBeenCalledWith("http://__MOCK_API_URL__/space-objects");
   });
 });
