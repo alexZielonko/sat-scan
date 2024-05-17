@@ -6,6 +6,8 @@ import { classNames } from "@/utils/classNames";
 import { RecentSpaceObjects } from "../RecentSpaceObjects";
 import { SpaceObject } from "@/types/spaceObject";
 
+import { doesSpaceObjectContainText } from "./utils/doesSpaceObjectContainText";
+
 const navigation: { name: string; href: string; current: boolean }[] = [
   // { name: "Home", href: "#", current: true },
   // { name: "About", href: "#", current: false },
@@ -40,6 +42,7 @@ export const SpaceObjectsView = () => {
     setFilteredSpaceObjects(spaceObjects);
   }, [spaceObjects]);
 
+<<<<<<< Updated upstream
   const filterSpaceObject = (spaceObject: SpaceObject, value: string) => {
     const filterableFields: (keyof SpaceObject)[] = [
       "sat_id",
@@ -53,21 +56,39 @@ export const SpaceObjectsView = () => {
       return spaceObject[field].toLowerCase().includes(value.toLowerCase());
     });
   };
+=======
+  const [currentSearchValue, setCurrentSearchValue] = useState<string | null>(
+    null
+  );
+>>>>>>> Stashed changes
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const input = (event.target as HTMLInputElement)?.value;
+    const input = (event.target as HTMLInputElement)?.value || "";
+    const searchTerm = input.trim();
 
+<<<<<<< Updated upstream
     if (input && input.length >= 2) {
+=======
+    if (searchTerm && searchTerm.length >= 2) {
+      setCurrentSearchValue(searchTerm);
+>>>>>>> Stashed changes
       const newFilteredSpaceObjects = filteredSpaceObjects.filter(
         (spaceObject) => {
-          return filterSpaceObject(spaceObject, input);
+          return doesSpaceObjectContainText(spaceObject, searchTerm);
         }
       );
 
       setFilteredSpaceObjects(newFilteredSpaceObjects);
-    } else if (!input || input.length == 0) {
+    } else if (!searchTerm || searchTerm.length == 0) {
       setFilteredSpaceObjects(spaceObjects);
     }
+  };
+
+  const getResultCountMessage = () => {
+    const displayCount = filteredSpaceObjects.length;
+    const totalCount = spaceObjects.length;
+
+    return `Displaying ${displayCount} of ${totalCount} results`;
   };
 
   return (
@@ -160,7 +181,10 @@ export const SpaceObjectsView = () => {
         </Popover>
         <main className="-mt-44 pb-8 h-fit max-h-fit">
           <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-            <h1 className="mb-8 text-2xl text-white">Space Objects</h1>
+            <h1 className="mb-1 text-2xl text-white">Space Objects</h1>
+            <p className="text-gray-100 text-md mb-8">
+              {getResultCountMessage()}
+            </p>
             <div className="">
               <section aria-labelledby="section-1-title">
                 <h2 className="sr-only" id="section-1-title">
