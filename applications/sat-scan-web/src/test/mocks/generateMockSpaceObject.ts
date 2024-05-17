@@ -1,14 +1,14 @@
-import { SpaceObject } from '@/types/spaceObject';
-import { faker } from '@faker-js/faker';
+import { SpaceObject } from "@/types/spaceObject";
+import { faker } from "@faker-js/faker";
 
 export const generateMockSpaceObject = (): SpaceObject => {
-  const satelliteId = faker.string.uuid()
-  const satelliteName = `${faker.word.adverb()}-${faker.word.noun()}`
-  
+  const satelliteId = faker.string.uuid();
+  const satelliteName = `${faker.word.adverb()}-${faker.word.noun()}`;
+
   return {
     file_id: faker.string.uuid(),
-    launch_country: faker.location.countryCode('alpha-3'),
-    launch_date: `${faker.date.future()}`.split('T')[0],
+    launch_country: faker.location.countryCode("alpha-3"),
+    launch_date: `${faker.date.future()}`.split("T")[0],
     launch_number: `${faker.number.int()}`,
     launch_piece: faker.word.noun(),
     launch_site: faker.location.city(),
@@ -20,5 +20,5 @@ export const generateMockSpaceObject = (): SpaceObject => {
     sat_catalog_number: faker.string.uuid(),
     sat_id: satelliteId,
     sat_name: satelliteName,
-  }
-}
+  };
+};

@@ -20,7 +20,7 @@ export const RecentSpaceObjects = ({
             "hover:bg-indigo-50",
             isCurrentSpaceObjectSelected(spaceObject.sat_id)
               ? "bg-indigo-100 hover:bg-indigo-100"
-              : ""
+              : "",
           )}
           onClick={() => onSpaceObjectClick(spaceObject)}
         >

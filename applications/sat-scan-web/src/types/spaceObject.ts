@@ -13,4 +13,4 @@ export type SpaceObject = {
   sat_catalog_number: string;
   sat_id: string;
   sat_name: string;
-}
+};
