@@ -16,6 +16,7 @@ app.register_blueprint(space_object_routes)
 
 CORS(app)
 
+
 @app.route("/")
 def home():
     return "Welcome to Sat Scan", 200
