@@ -430,7 +430,7 @@ resource "aws_ecs_task_definition" "data_analyzer_ecs_task_definition" {
     },
     "healthCheck": {
       "retries": 10,
-      "command": [ "CMD-SHELL", "echo 'healthy' || exit 1" ],
+      "command": ["CMD-SHELL", "curl -f http://localhost:8000/health-check || exit 1"],
       "timeout": 5,
       "interval": 10,
       "startPeriod": 10
