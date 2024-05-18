@@ -30,5 +30,5 @@ if __name__ == "__main__":
         print("Health-Check Request")
         return "Success", 200
 
-    print('Running App')
+    print("Running App")
     app.run(host="0.0.0.0", port=8000, debug=True)
