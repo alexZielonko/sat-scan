@@ -5,6 +5,7 @@ import { SpaceObjectsView } from "@/components/SpaceObjectsView";
 
 import { SpaceObject } from "@/types/spaceObject";
 import { fetchSpaceObjects } from "@/interfaces/spaceObject";
+import { normalizeSpaceObjects } from "@/utils/normalizeSpaceObjects";
 
 export const getServerSideProps = (async () => {
   const routeConfig = {
@@ -12,8 +13,9 @@ export const getServerSideProps = (async () => {
   };
 
   const spaceObjects = await fetchSpaceObjects(routeConfig);
+  const normalizedSpaceObjects = normalizeSpaceObjects(spaceObjects);
 
-  return { props: { spaceObjects } };
+  return { props: { spaceObjects: normalizedSpaceObjects } };
 }) satisfies GetServerSideProps<{
   spaceObjects: SpaceObject[];
 }>;

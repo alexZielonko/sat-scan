@@ -1,7 +1,7 @@
-import { SpaceObject } from "@/types/spaceObject";
+import { RawSpaceObject, SpaceObject } from "@/types/spaceObject";
 import { faker } from "@faker-js/faker";
 
-export const generateMockSpaceObject = (): SpaceObject => {
+export const generateRawMockSpaceObject = (): RawSpaceObject => {
   const satelliteId = faker.string.uuid();
   const satelliteName = `${faker.word.adverb()}-${faker.word.noun()}`;
 

@@ -1,4 +1,4 @@
-import { generateMockSpaceObject } from "@/test/mocks/generateMockSpaceObject";
+import { generateRawMockSpaceObject } from "@/test/mocks/generateRawMockSpaceObject";
 import { doesSpaceObjectContainText } from ".";
 
 describe("doesSpaceObjectContainText", () => {
@@ -6,7 +6,7 @@ describe("doesSpaceObjectContainText", () => {
     "returns true if the field contains the search text",
     ({ field, value }) => {
       const spaceObject = {
-        ...generateMockSpaceObject(),
+        ...generateRawMockSpaceObject(),
         [field]: value,
       };
       const actual = doesSpaceObjectContainText(spaceObject, value);

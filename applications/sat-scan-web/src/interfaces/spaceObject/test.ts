@@ -1,4 +1,4 @@
-import { generateMockSpaceObject } from "@/test/mocks/generateMockSpaceObject";
+import { generateRawMockSpaceObject } from "@/test/mocks/generateRawMockSpaceObject";
 import { fetchSpaceObjects } from ".";
 import axios from "axios";
 import { SpaceObject } from "@/types/spaceObject";
@@ -10,9 +10,9 @@ describe("fetchSpaceObjects", () => {
 
   it("returns the request's json response", async () => {
     const mockSpaceObjects = [
-      generateMockSpaceObject(),
-      generateMockSpaceObject(),
-      generateMockSpaceObject(),
+      generateRawMockSpaceObject(),
+      generateRawMockSpaceObject(),
+      generateRawMockSpaceObject(),
     ];
 
     const spy = jest

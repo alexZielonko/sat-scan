@@ -6,7 +6,6 @@ import { RecentSpaceObjects } from "./components/RecentSpaceObjects";
 import { SpaceObject } from "@/types/spaceObject";
 
 import { doesSpaceObjectContainText } from "./utils/doesSpaceObjectContainText";
-import { fetchSpaceObjects } from "@/interfaces/spaceObject";
 import { SpaceObjectDetail } from "./components/SpaceObjectDetail";
 import { hasFilterResults } from "./utils/hasFilterResults";
 import { Footer } from "./components/Footer";
