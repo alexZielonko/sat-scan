@@ -1,9 +1,9 @@
-import { generateRawMockSpaceObject } from "@/test/mocks/generateRawMockSpaceObject";
+import { generateMockSpaceObject } from "@/test/mocks/generateMockSpaceObject";
 import { hasFilterResults } from ".";
 
 describe("hasFilterResults", () => {
   const hasFilterSuccessConditions = {
-    filteredSpaceObjects: [generateRawMockSpaceObject()],
+    filteredSpaceObjects: [generateMockSpaceObject()],
   };
 
   it.each([

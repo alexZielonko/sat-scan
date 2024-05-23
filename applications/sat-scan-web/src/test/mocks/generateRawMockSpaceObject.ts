@@ -1,4 +1,4 @@
-import { RawSpaceObject, SpaceObject } from "@/types/spaceObject";
+import { RawSpaceObject } from "@/types/spaceObject";
 import { faker } from "@faker-js/faker";
 
 export const generateRawMockSpaceObject = (): RawSpaceObject => {

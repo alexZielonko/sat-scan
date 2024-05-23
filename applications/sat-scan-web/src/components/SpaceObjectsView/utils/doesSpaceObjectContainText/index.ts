@@ -5,15 +5,15 @@ export const doesSpaceObjectContainText = (
   spaceObject: SpaceObject,
   searchText: string,
 ) => {
-  const filterableFields: (keyof SpaceObject)[] = [
-    "sat_id",
-    "launch_country",
-    "sat_name",
-    "launch_date",
-    "object_type",
+  const searchableValues = [
+    spaceObject.objectType,
+    spaceObject.launch.location.country,
+    spaceObject.launch.location.site,
+    spaceObject.launch.date,
+    spaceObject.satellite.name,
   ];
 
-  return filterableFields.some((field) => {
-    return spaceObject[field].toLowerCase().includes(searchText.toLowerCase());
-  });
+  return searchableValues.some((value) =>
+    value.toLowerCase().includes(searchText.toLowerCase()),
+  );
 };
