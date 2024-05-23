@@ -11,10 +11,17 @@ export const SpaceObjectDetail = ({ spaceObject }: SpaceObjectDetailProps) => {
       </div>
       <div className="border-t border-gray-100">
         <dl className="divide-y divide-gray-100">
-          <InfoItem title="Satellite Name" value={spaceObject.sat_name} />
-          <InfoItem title="Launch Date" value={spaceObject.launch_date} />
-          <InfoItem title="Launch Country" value={spaceObject.launch_country} />
-          <InfoItem title="Launch Site" value={spaceObject.launch_site} />
+          <InfoItem title="Satellite Name" value={spaceObject.satellite.name} />
+          <InfoItem title="Launch Date" value={spaceObject.launch.date} />
+          <InfoItem
+            title="Launch Country"
+            value={spaceObject.launch.location.country}
+          />
+          <InfoItem
+            title="Launch Site"
+            value={spaceObject.launch.location.site}
+          />
+          <InfoItem title="Space Object Type" value={spaceObject.objectType} />
         </dl>
       </div>
     </div>

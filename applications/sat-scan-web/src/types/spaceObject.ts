@@ -3,6 +3,25 @@ export type RouteConfig = {
 };
 
 export type SpaceObject = {
+  objectType: string;
+  launch: {
+    location: {
+      country: string;
+      site: string;
+    };
+    date: string;
+    number: string;
+    piece: string;
+    year: string;
+  };
+  satellite: {
+    catalogNumber: string;
+    id: string;
+    name: string;
+  };
+};
+
+export type RawSpaceObject = {
   file_id: string;
   launch_country: string;
   launch_date: string;
