@@ -40,11 +40,9 @@ export const SpaceObjectsView = ({ spaceObjects }: SpaceObjectsViewProps) => {
 
     if (searchTerm && searchTerm.length >= 2) {
       setCurrentFilterTerm(searchTerm);
-      const newFilteredSpaceObjects = filteredSpaceObjects.filter(
-        (spaceObject) => {
-          return doesSpaceObjectContainText(spaceObject, searchTerm);
-        },
-      );
+      const newFilteredSpaceObjects = spaceObjects.filter((spaceObject) => {
+        return doesSpaceObjectContainText(spaceObject, searchTerm);
+      });
 
       setFilteredSpaceObjects(newFilteredSpaceObjects);
     } else if (!searchTerm || searchTerm.length == 0) {
