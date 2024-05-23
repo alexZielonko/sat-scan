@@ -1,4 +1,4 @@
-import fetch from "node-fetch";
+const axios = require("axios");
 import { RouteConfig, SpaceObject } from "@/types/spaceObject";
 
 export const fetchSpaceObjects = async (
@@ -6,8 +6,7 @@ export const fetchSpaceObjects = async (
 ): Promise<SpaceObject[]> => {
   const url = `http://${routeConfig.API_URL}/space-objects`;
 
-  const response = await fetch(url);
-  const spaceObjects = await response.json();
+  const response = await axios.get(url);
 
-  return spaceObjects as SpaceObject[];
+  return response.data;
 };
