@@ -1,5 +1,5 @@
-import { RouteConfig } from "@/types/spaceObject";
+import { SpaceObject } from "@/types/spaceObject";
 
 export type SpaceObjectsViewProps = {
-  routeConfig: RouteConfig;
+  spaceObjects: SpaceObject[];
 };

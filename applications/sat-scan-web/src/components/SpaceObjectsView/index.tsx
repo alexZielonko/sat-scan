@@ -13,27 +13,12 @@ import { Footer } from "./components/Footer";
 import { classNames } from "@/utils/classNames";
 import { SpaceObjectsViewProps } from "./types";
 
-export const SpaceObjectsView = ({ routeConfig }: SpaceObjectsViewProps) => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [spaceObjects, setSpaceObjects] = useState<SpaceObject[]>([]);
+export const SpaceObjectsView = ({ spaceObjects }: SpaceObjectsViewProps) => {
   const [filteredSpaceObjects, setFilteredSpaceObjects] = useState<
     SpaceObject[]
   >([]);
   const [selectedSpaceObject, setSelectedSpaceObject] =
     useState<SpaceObject | null>(null);
-
-  async function loadSpaceObjects() {
-    setIsLoading(true);
-
-    const newSpaceObjects = await fetchSpaceObjects(routeConfig);
-
-    setSpaceObjects(newSpaceObjects);
-    setIsLoading(false);
-  }
-
-  useEffect(() => {
-    loadSpaceObjects();
-  }, []);
 
   useEffect(() => {
     // Set the filtered space object list to an initial value when the space objects are fetched
@@ -140,19 +125,13 @@ export const SpaceObjectsView = ({ routeConfig }: SpaceObjectsViewProps) => {
                   </h2>
 
                   <div className="max-h-[25vh] lg:max-h-[60vh] lg:h-[60vh] overflow-scroll rounded-lg bg-white shadow">
-                    {isLoading && (
-                      <div className="p-24 text-center text-lg text-gray-800">
-                        Loading space objects...
-                      </div>
-                    )}
-
-                    {!isLoading && spaceObjects.length == 0 && (
+                    {spaceObjects.length == 0 && (
                       <div className="p-24 text-center text-lg text-red-500">
                         ⚠️ Something went wrong: unable to load space objects
                       </div>
                     )}
 
-                    {!isLoading && filteredSpaceObjects.length > 0 && (
+                    {filteredSpaceObjects.length > 0 && (
                       <RecentSpaceObjects
                         spaceObjects={filteredSpaceObjects}
                         selectedSpaceObject={selectedSpaceObject}
@@ -163,7 +142,7 @@ export const SpaceObjectsView = ({ routeConfig }: SpaceObjectsViewProps) => {
                     )}
 
                     {!!currentFilterTerm &&
-                      !hasFilterResults(isLoading, filteredSpaceObjects) && (
+                      !hasFilterResults(filteredSpaceObjects) && (
                         <div className="p-24 text-center text-lg">
                           No space objects found for filter text: {'"'}
                           <span className="font-bold">{currentFilterTerm}</span>
@@ -183,7 +162,7 @@ export const SpaceObjectsView = ({ routeConfig }: SpaceObjectsViewProps) => {
                   <div
                     className={classNames(
                       "overflow-hidden rounded-lg shadow",
-                      isLoading || selectedSpaceObject == null
+                      selectedSpaceObject == null
                         ? "bg-gray-100 opacity-90"
                         : "bg-white",
                     )}

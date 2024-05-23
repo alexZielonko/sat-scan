@@ -1,11 +1,13 @@
+import fetch from "node-fetch";
 import { RouteConfig, SpaceObject } from "@/types/spaceObject";
 
 export const fetchSpaceObjects = async (
   routeConfig: RouteConfig,
 ): Promise<SpaceObject[]> => {
   const url = `http://${routeConfig.API_URL}/space-objects`;
-  const res = await fetch(url);
-  const spaceObjects: SpaceObject[] = await res.json();
 
-  return spaceObjects;
+  const response = await fetch(url);
+  const spaceObjects = await response.json();
+
+  return spaceObjects as SpaceObject[];
 };
