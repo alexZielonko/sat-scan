@@ -71,8 +71,13 @@ export const SpaceObjectsView = ({ spaceObjects }: SpaceObjectsViewProps) => {
                 <div className="absolute left-0 flex-shrink-0 lg:static">
                   <div className="flex">
                     <span className="text-6xl">🛰️</span>
-                    <span className="text-2xl text-white font-weight-semibold my-auto ml-4">
-                      {PROJECT_INFO.NAME}
+                    <span className=" text-white my-auto ml-4">
+                      <h1 className="text-3xl font-weight-semibold">
+                        {PROJECT_INFO.NAME}
+                      </h1>
+                      <p className="text-gray-100 max-w-[290px] text-sm">
+                        {PROJECT_INFO.DESCRIPTION}
+                      </p>
                     </span>
                   </div>
                 </div>
@@ -84,8 +89,8 @@ export const SpaceObjectsView = ({ spaceObjects }: SpaceObjectsViewProps) => {
           <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
             <div className="grid grid-cols-1 items-start lg:grid-cols-3 lg:gap-8">
               <div className="grid grid-cols-1 lg:col-span-2">
-                <h1 className="mb-1 text-2xl text-white">Space Objects</h1>
-                <p className="text-gray-100 text-md mb-4">
+                <h2 className=" text-xl text-white">Recent Space Objects</h2>
+                <p className="text-gray-100 text-sm mb-4">
                   {getResultCountMessage()}
                 </p>
               </div>
