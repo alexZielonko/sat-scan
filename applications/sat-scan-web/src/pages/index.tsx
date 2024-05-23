@@ -3,7 +3,7 @@
 import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
 import { SpaceObjectsView } from "@/components/SpaceObjectsView";
 
-import { RouteConfig, SpaceObject } from "@/types/spaceObject";
+import { SpaceObject } from "@/types/spaceObject";
 import { fetchSpaceObjects } from "@/interfaces/spaceObject";
 
 export const getServerSideProps = (async () => {
