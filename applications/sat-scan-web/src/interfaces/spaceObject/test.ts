@@ -1,11 +1,9 @@
 import { generateMockSpaceObject } from "@/test/mocks/generateMockSpaceObject";
 import { fetchSpaceObjects } from ".";
+import axios from "axios";
+import { SpaceObject } from "@/types/spaceObject";
 
 describe("fetchSpaceObjects", () => {
-  beforeAll(() => {
-    global.fetch = jest.fn();
-  });
-
   const mockRouteConfig = {
     API_URL: "__MOCK_API_URL__",
   };
@@ -17,13 +15,9 @@ describe("fetchSpaceObjects", () => {
       generateMockSpaceObject(),
     ];
 
-    const fetchMock = jest.fn(async () => ({
-      json: async () => {
-        return mockSpaceObjects;
-      },
-    })) as jest.Mock;
-
-    const spy = jest.spyOn(global, "fetch").mockImplementation(fetchMock);
+    const spy = jest
+      .spyOn(axios, "get")
+      .mockReturnValue({ data: mockSpaceObjects } as any);
 
     const actual = await fetchSpaceObjects(mockRouteConfig);
 
