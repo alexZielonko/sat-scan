@@ -1,72 +1,67 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:us-east-2:730335620736:task-definition/data-analyzer-family:52",
-    "containerDefinitions": [
+  "taskDefinitionArn": "arn:aws:ecs:us-east-2:730335620736:task-definition/data-analyzer-family:60",
+  "containerDefinitions": [
+    {
+      "name": "data-analyzer-family",
+      "image": "730335620736.dkr.ecr.us-east-2.amazonaws.com/data-analyzer-ecr-repo:latest",
+      "cpu": 1024,
+      "memory": 2048,
+      "portMappings": [
         {
-            "name": "data-analyzer-family",
-            "image": "730335620736.dkr.ecr.us-east-2.amazonaws.com/data-analyzer-ecr-repo:7dafea39331248d420b5f74be0982173299d5020",
-            "cpu": 1024,
-            "memory": 2048,
-            "portMappings": [
-                {
-                    "containerPort": 8000,
-                    "hostPort": 8000,
-                    "protocol": "tcp"
-                }
-            ],
-            "essential": true,
-            "environment": [],
-            "mountPoints": [],
-            "volumesFrom": [],
-            "logConfiguration": {
-                "logDriver": "awslogs",
-                "options": {
-                    "awslogs-group": "data-analyzer-log-group",
-                    "awslogs-region": "us-east-2",
-                    "awslogs-stream-prefix": "data-analyzer"
-                }
-            },
-            "systemControls": []
+          "containerPort": 8000,
+          "hostPort": 8000,
+          "protocol": "tcp"
         }
-    ],
-    "family": "data-analyzer-family",
-    "executionRoleArn": "arn:aws:iam::730335620736:role/sat-scan-ecs-execution-role",
-    "networkMode": "awsvpc",
-    "revision": 52,
-    "volumes": [],
-    "status": "ACTIVE",
-    "requiresAttributes": [
-        {
-            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
-        },
-        {
-            "name": "ecs.capability.execution-role-awslogs"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.ecr-auth"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
-        },
-        {
-            "name": "ecs.capability.execution-role-ecr-pull"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
-        },
-        {
-            "name": "ecs.capability.task-eni"
+      ],
+      "essential": true,
+      "environment": [],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "data-analyzer-log-group",
+          "awslogs-region": "us-east-2",
+          "awslogs-stream-prefix": "data-analyzer"
         }
-    ],
-    "placementConstraints": [],
-    "compatibilities": [
-        "EC2",
-        "FARGATE"
-    ],
-    "requiresCompatibilities": [
-        "FARGATE"
-    ],
-    "cpu": "1024",
-    "memory": "2048",
-    "registeredAt": "2024-05-17T15:58:23.406000-05:00",
-    "registeredBy": "arn:aws:iam::730335620736:root"
+      },
+      "systemControls": []
+    }
+  ],
+  "family": "data-analyzer-family",
+  "executionRoleArn": "arn:aws:iam::730335620736:role/sat-scan-ecs-execution-role",
+  "networkMode": "awsvpc",
+  "revision": 60,
+  "volumes": [],
+  "status": "ACTIVE",
+  "requiresAttributes": [
+    {
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "name": "ecs.capability.execution-role-ecr-pull"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    },
+    {
+      "name": "ecs.capability.task-eni"
+    }
+  ],
+  "placementConstraints": [],
+  "compatibilities": ["EC2", "FARGATE"],
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "2048",
+  "registeredAt": "2024-05-23T15:47:33.402000-05:00",
+  "registeredBy": "arn:aws:iam::730335620736:root"
 }
