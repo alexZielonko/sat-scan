@@ -2,6 +2,31 @@
 
 **Sat Scan** helps users discover recently launched satellites and unidentified space objects.
 
+To support this mission, the system periodically consumes data from a [Space-Track.org](https://www.space-track.org/auth/login) API to ingest, normalize, and maintain a database of recently launched satellites and other unidentified space objects. As the source and origin of recently discovered space objects is often unknown upon initial detection, Sat-Scan's data collection process updates existing space object records with new information as it becomes available.
+
+Sat-Scan exposes the recently launched satellites and space objects to users view a web-based application. This client-facing application allows users to learn more about the origins of recently launched satellites, such as the country of origin and satellite launch site.
+
+- [CSCA 5028 Final Project: 🛰️ Sat Scan](#csca-5028-final-project-️-sat-scan)
+  - [Project Rubric Requirements](#project-rubric-requirements)
+  - [Continuous Integration](#continuous-integration)
+    - [Linting](#linting)
+      - [Code Formatting](#code-formatting)
+    - [Tests](#tests)
+  - [Production Infrastructure](#production-infrastructure)
+    - [Applying Terraform Changes](#applying-terraform-changes)
+      - [1. Plan the change](#1-plan-the-change)
+      - [2. Apply the change](#2-apply-the-change)
+      - [3. Run the post-apply script](#3-run-the-post-apply-script)
+      - [4. Generate a new task definition](#4-generate-a-new-task-definition)
+      - [5. Generate a task definition](#5-generate-a-task-definition)
+      - [6. Create a Pull Request with the Task-Definition Change](#6-create-a-pull-request-with-the-task-definition-change)
+      - [Note: Creating an SSH Key](#note-creating-an-ssh-key)
+  - [Database Migrations](#database-migrations)
+    - [Local Database Migrations](#local-database-migrations)
+    - [Production Database Migrations](#production-database-migrations)
+      - [Notes on EC2 "JumpBox" Setup](#notes-on-ec2-jumpbox-setup)
+
+
 ## Project Rubric Requirements
 
 | Requirement                                 | Present | Notes                                                                             | Reference                                                                                                                                                                                                                                                   |

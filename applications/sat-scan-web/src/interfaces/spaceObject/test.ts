@@ -1,7 +1,6 @@
 import { generateRawMockSpaceObject } from "@/test/mocks/generateRawMockSpaceObject";
 import { fetchSpaceObjects } from ".";
 import axios from "axios";
-import { SpaceObject } from "@/types/spaceObject";
 
 describe("fetchSpaceObjects", () => {
   const mockRouteConfig = {
