@@ -1,66 +1,56 @@
-# CSCA 5028 Final Project: Sat Scan
+# CSCA 5028 Final Project: 🛰️ Sat Scan
 
-**Sat Scan** displays the location of recently launched satellites. 
+**Sat Scan** helps users discover recently launched satellites and unidentified space objects.
 
-## Project Requirements
+## Project Rubric Requirements
 
-In Progress:
+| Requirement                                 | Present | Notes                                                                             | Reference                                                                                                                                                                                                                                                   |
+|---------------------------------------------|---------|-----------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Web application, Report                     | ✅       | Next.js, Vercel                                                                   | [sat-scan-web](applications/sat-scan-web), [Report Ref](report/final-report.md#sat-scan-web)                                                                                                                                                                |
+| Data collector                              | ✅       | Python, AWS Lambda                                                                | [space-data-collector](applications/space-data-collector), [Report Ref](report/final-report.md#data-collector)                                                                                                                                              |
+| Data analyzer                               | ✅       | Python, AWS ECS                                                                   | [space-data-analyzer](applications/space-data-analyzer), [Report Ref](report/final-report.md#data-analyzer)                                                                                                                                                 |
+| Unit test                                   | ✅       | All Apps                                                                          | [sat-scan-web] `yarn test` [data collector, analyzer, and API] `make unit`                                                                                                                                                                                  |
+| Data persistence                            | ✅       | Local Development & Production                                                    | [docker-compose.yml](docker-compose.yml), [infrastructure/main.tf](/infrastructure/main.tf)                                                                                                                                                                 |
+| Rest collaboration internal or API endpoint | ✅       | Dedicated API, internally and publicly accessible                                 | [sat-scan-api](applications/sat-scan-api)                                                                                                                                                                                                                   |
+| Product environment                         | ✅       | Terraform, AWS & Vercel via Continuous Deployment                                 | [infrastructure/main.tf](/infrastructure/main.tf)                                                                                                                                                                                                           |
+| Integration tests                           | ✅       | API & Database interaction, dockerized, runs during continuous integration checks | From root directory: `make integration`                                                                                                                                                                                                                      |
+| Using mock objects or any test doubles      | ✅       | Used as needed throughout tests                                                   | [spy](applications/sat-scan-web/src/interfaces/spaceObject/test.ts), [object mock](applications/sat-scan-web/src/test/mocks/generateRawMockSpaceObject.ts), [interface mock](applications/space-data-collector/test/test_rabbit_mq_connection_interface.py) |
+| Continuous integration                      | ✅       | GitHub Actions to lint & test                                                     | [GitHub Action Workflows](.github/workflows)                                                                                                                                                                                                           |
+| Production monitoring                       | ✅       | AWS CloudWatch                                                                    | [Report Ref](report/final-report.md#production-monitoring)                                                                                                                                                                                                  |
+| Event collaboration messaging               | ✅       | Local Development & Production                                                    | [docker-compose.yml](docker-compose.yml), [infrastructure/main.tf](/infrastructure/main.tf)                                                                                                                                                                 |
+| Continuous delivery                         | ✅       | GitHub Actions, deployed to AWS & Vercel                                          | [GitHub Action Workflows](.github/workflows)                                                                                                                                                                                                           |
 
-- Production monitoring instrumenting
-  - Prometheus & Grafana
+## Continuous Integration
 
-Later:
+### Linting
 
-- Web application basic form, reporting
+#### Code Formatting
 
-~Done:
+Run `make format` to format the Python code locally. 
 
-- ~~Product environment~~ 5/15
-- ~~Continuous integration~~ 5/15
-- ~~Unit tests~~ 5/15
-- ~~Integration tests~~ 5/15
-- ~~- Continuous delivery~~ 5/6 mvp
-- ~~- Data analyzer~~ 5/2 mvp
-- ~~Data collection~~ 4/30 mvp
-- ~~Event collaboration messaging~~ 4/30 mvp
-- ~~Data persistence any data store~~ 5/1 mvp
-- ~~Rest collaboration internal or API endpoint~~ 5/1 mvp
+To format [sat-scan-web](applications/sat-scan-web/), `cd` into the application directory, run `yarn`, and the run `yarn format`.
 
-## Notes
+### Tests
 
-### Code Formatting
+Unit tests are located in their respective `/applications/*` directory.
 
-Run `black **/*.py` to format all Python files
+Integration tests can be ran from the root directory using `make integration`.
 
-#### To run existing migrations
+## Production Infrastructure
 
-```
-alembic upgrade head
-```
+All of the production backend infrastructure is provisioned using Terraform, which can be found in the `/infrastructure` directory.
 
-#### To reverse migration
+### Applying Terraform Changes
 
-```
-alembic downgrade -1
-```
-
-
-### Terraform
-
-To make a terraform change:
-
-*Run each command from within the `/infrastructure` directory
-
+To make changes to the production infrastructure, `cd` into the `/infrastructure` directory.
 
 #### 1. Plan the change
-
 
 ```
 terraform plan -var-file="secrets.tfvars"
 ```
 
 #### 2. Apply the change
-
 
 ```
 terraform apply -var-file="secrets.tfvars"
@@ -78,9 +68,9 @@ This pushes route configuration information for the provisioned infrastructure t
 
 Then output endpoints to file used by ci/cd
 
-#### Generate a task definition
+#### 5. Generate a task definition
 
-Run after plan
+After applying the, new task definitions can be generated using the following commands (run from root project directory):
 
 ```
 aws ecs describe-task-definition \
@@ -94,66 +84,34 @@ aws ecs describe-task-definition \
    --query taskDefinition > infrastructure/task-definitions/aws/data-analyzer-container.json
 ```
 
-#### 5. Create a Pull Request with the Task-Definition Change
+#### 6. Create a Pull Request with the Task-Definition Change
 
 When the continuous integration checks pass, merge the pull request into the `main` branch. Merging into main will trigger the continuous deployment pipeline, which builds a new image, pushes it to ECR, and deploys the image to ECS.
 
-### Terraform Notes
+#### Note: Creating an SSH Key
 
-#### Creating an SSH Key
-
-Consider the following if you need to create an SSH key
+The following command can be used to regenerated an SSH key:
 
 ```
 ssh-keygen -t rsa -b 4096 -m pem -f sat_scan_kp && openssl rsa -in sat_scan_kp -outform pem && chmod 400 sat_scan_kp.pem
 ```
 
-## Database Migration
+## Database Migrations
 
-### EC2 Setup
+### Local Database Migrations
 
-Currently using an EC2 instance to manually apply database migration changes. A more mature system should apply database migrations alongside deployments, with the ability to rollback the migration should the deploy fail.
+Local database migrations and rollbacks can be managed using `alembic upgrade head` and `alembic downgrade -1`
 
-For now, we'll maintain the system's security posture by continuing to restrict database access to within the VPC. We'll create an EC2 instance that only allows ingress SSH traffic from a local IP address. As this EC2 exists within the VPC, it can communicate with the RDS instance and apply schema changes.
+### Production Database Migrations
+
+Production database migrations are applied using the [post_apply.sh](/infrastructure/post_apply.sh) script.
+
+The `post_apply.sh` script handles SSHing into the EC2 instance to run the database migrations using alembic.
+
+#### Notes on EC2 "JumpBox" Setup
+
+This project currently uses an AWS EC2 instance to manually apply database migration changes. A more mature system should apply database migrations alongside deployments, with the ability to rollback the migration should the deploy fail.
+
+Using an EC2 allows for a better security posture by restricting database access to within the VPC and only allowing SSH ingress from a local IP address. As this EC2 exists within the VPC, it can communicate with the RDS instance and apply schema changes.
 
 This represents an incremental step towards DB migration automation, as these steps can be migrated to a GitHub Action or alternative workflow as time allows.
-
-#### Copy Migrations to EC2 instance
-
-SSH into the EC2 and run `mkdir database-migration`
-
-Move the relevant migration files onto the EC2:
-
-```
-scp -r -i infrastructure/sat_scan_kp.pem alembic.ini ubuntu@ec2-18-223-42-178.us-east-2.compute.amazonaws.com:~/database-migration
-scp -r -i infrastructure/sat_scan_kp.pem ./databases ubuntu@ec2-18-223-42-178.us-east-2.compute.amazonaws.com:~/database-migration
-```
-
-Connect to EC2 instance:
-
-```
-ssh -i "infrastructure/sat_scan_kp.pem" ubuntu@ec2-18-223-42-178.us-east-2.compute.amazonaws.com
-```
-
-Install python and deps:
-
-```
-sudo apt-get update
-sudo apt install python3-pip \
-   python3.8-venv \
-   libpq-dev
-
-
-
-python3 -m venv .venv && source .venv/bin/activate
-
-pip3 install alembic psycopg2 
-```
-
-Then, edit the `alembic.ini` file to use the RDS connection string.
-
-Finally, apply the migrations:
-
-```
-alembic upgrade head
-```
