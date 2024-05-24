@@ -237,6 +237,7 @@ As such, newly identified space objects are often lacking detail when they are i
 To do this, the Data Analyzer checks for existing space object records with the same id. If a record is returned, the Data Analyzer enriches the existing record by making a PUT request to the Sat Scan API. If a record is not found, the Data Analyzer creates a new record by making a POST request to the API.
 
 The request/response flow between the Data Analyzer, Sat Scan API, and Sat Scan Database is outlined in the diagrams below.
+
 ##### Data Analyzer: Create New Space Object Request/Response Diagram
 
 ![](images/res-response-diagram-create-space-object.png)
