@@ -2,9 +2,9 @@
 
 **Sat Scan** helps users discover recently launched satellites and unidentified space objects.
 
-To support this mission, the system periodically consumes data from a [Space-Track.org](https://www.space-track.org/auth/login) API to ingest, normalize, and maintain a database of recently launched satellites and other unidentified space objects. As the source and origin of recently discovered space objects is often unknown upon initial detection, Sat-Scan's data collection process updates existing space object records with new information as it becomes available.
+To support this mission, the system periodically consumes data from a [Space-Track.org](https://www.space-track.org/auth/login) API to ingest, normalize, and maintain a database of recently launched satellites and other unidentified space objects. As the source and origin of recently discovered space objects is often unknown upon initial detection, Sat Scan's data collection process updates existing space object records with new information as it becomes available.
 
-Sat-Scan exposes the recently launched satellites and space objects to users view a web-based application. This client-facing application allows users to learn more about the origins of recently launched satellites, such as the country of origin and satellite launch site.
+Sat Scan exposes the recently launched satellites and space objects to users via a web-based application. This client-facing application allows users to learn more about the origins of recently launched satellites, such as the country of origin and launch site.
 
 > [!IMPORTANT]  
 > This readme provides an overview of relevant development details. See this project's [Final Report](report/final-report.md) for an in-depth discussion of the project.
@@ -14,6 +14,7 @@ Sat-Scan exposes the recently launched satellites and space objects to users vie
 - [CSCA 5028 Final Project: 🛰️ Sat Scan](#csca-5028-final-project-️-sat-scan)
   - [Table of Contents](#table-of-contents)
   - [Project Rubric Requirements](#project-rubric-requirements)
+  - [Project Structure](#project-structure)
   - [Local Development](#local-development)
     - [Initial Local Development Setup](#initial-local-development-setup)
     - [1. Create the necessary secret configuration files](#1-create-the-necessary-secret-configuration-files)
@@ -62,6 +63,34 @@ Below is a table created based on the requirements published in CSCA5028's Week 
 | Production monitoring                       | ✅       | AWS CloudWatch                                                                    | [Report Ref](report/final-report.md#production-monitoring)                                                                                                                                                                                                  |
 | Event collaboration messaging               | ✅       | Local Development & Production                                                    | [docker-compose.yml](docker-compose.yml), [infrastructure/main.tf](/infrastructure/main.tf)                                                                                                                                                                 |
 | Continuous delivery                         | ✅       | GitHub Actions, deployed to AWS & Vercel                                          | [GitHub Action Workflows](.github/workflows)                                                                                                                                                                                                           |
+
+
+## Project Structure
+
+This project contains multiple applications in a "monorepo" structure.
+
+```
+├── applications
+│   ├── sat-scan-api
+│   ├── sat-scan-web
+│   ├── space-data-analyzer
+│   └── space-data-collector
+├── databases
+├── infrastructure
+│   ├── database-migrations
+│   └── task-definitions
+└── test
+    └── sat_scan_api
+        └── integration
+```
+
+All of the "applications" are grouped within the `/applications` directory. 
+
+The `/infrastructure` directory contains all of the Terraform code to provision the production environment. It also contains the post-provisioning scripts to setup the database and publish production routing configurations. 
+
+Database migrations are located within the `/databases` directory.
+
+While application level unit tests can be found within their respective `/application/*` directories, integration tests are located within the `/test` directory.
 
 ## Local Development
 
