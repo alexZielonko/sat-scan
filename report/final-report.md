@@ -1,7 +1,7 @@
-# Sat Scan Final Report
+# 🛰️ Sat Scan Final Report
 
-- [Sat Scan Final Report](#sat-scan-final-report)
-	- [🛰️ Project Overview](#️-project-overview)
+- [🛰️ Sat Scan Final Report](#️-sat-scan-final-report)
+	- [Project Overview](#project-overview)
 	- [Project Architecture](#project-architecture)
 	- [High-Level System Design](#high-level-system-design)
 		- [Sat-Scan Data Ingestion](#sat-scan-data-ingestion)
@@ -52,7 +52,7 @@
 	- [Resources \& References](#resources--references)
 
 
-## 🛰️ Project Overview
+## Project Overview
 
 “Sat-Scan” helps users discover recently launched satellites and unidentified space objects.
 
