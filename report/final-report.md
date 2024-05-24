@@ -92,7 +92,7 @@ The **Data Analyzer** listens to the broker for new space object messages. When 
 
 Once the space object has been normalized, the Data Analyzer makes a GET request to the **Sat Scan API**, which reads from the **Sat Scan Database** to determine if any matching records already exist.
 
-If the space object does not exist, a new database record is created via the Sat Scan API. If an entry already exists, the record is updated via the API. This process allows the Sat Scan system to track newly discovered/launched space objects and update existing space objects as more information comes available.
+If the space object does not exist, a new database record is created via the Sat Scan API. If an entry already exists, the record is updated via the API. This process allows the Sat Scan system to track newly discovered/launched space objects and update existing space objects as more information becomes available.
 
 ### Sat-Scan User Flow
 
@@ -130,6 +130,8 @@ Sat Scan's production backend system runs on [Amazon Web Services](https://aws.a
 	- Support database schema migrations 
 
 ### Sat Scan Frontend
+
+Sat Scan's frontend application runs on [Vercel's](https://vercel.com/) Platform-as-a-Service free "Hobby Tier" offering. 
 
 ## Sat Scan Applications and Services
 
@@ -224,7 +226,7 @@ An alternative architecture could utilize Amazon Elastic Compute Cloud (EC2) res
 
 ### Data Analyzer
 
-At it's core, the Data Analyzer consumes messages from the broker, normalizes them, and saves them in the database via the Sat Scan API.
+At its core, the Data Analyzer consumes messages from the broker, normalizes them, and saves them in the database via the Sat Scan API.
 
 ![](images/data-analyzer-infrastructure-overview-diagram.png)
 
@@ -272,7 +274,7 @@ The Sat Scan API is the only way new records can be created, read, updated, or d
 
 Restricting programmatic database access to the API helps simplify the system architecture as the functionality expands, such as when new data collection and analysis applications are added. 
 
-Rather than establish a new database connection, new applications can communicate directly with the API to interact with the data. This helps decouple database and application logic, as application are not concerned with establishing database connections or managing queries.
+Rather than establish a new database connection, new applications can communicate directly with the API to interact with the data. This helps decouple database and application logic, as applications are not concerned with establishing database connections or managing queries.
 
 The pattern further supports future extensibility by simplifying the introduction of breaking schema changes. When the database requires breaking schema changes, the API can be versioned or extended with new routes. This vastly simplifies the adoption of schema changes in a system with many database dependent applications, as applications can be individually updated to adopt the latest API version and schema changes. 
 
@@ -284,7 +286,7 @@ The Sat Scan Database exists within a private subnet in the Virtual Private Clou
 
 The API provides public GET request access without requiring any authorization.
 
-The API limits requests to create, update, or delete records by requiring an API key in the the request header's bearer token.
+The API limits requests to create, update, or delete records by requiring an API key in the request header's bearer token.
 
 ```js
 headers: {
@@ -344,9 +346,9 @@ Database migrations can be applied in production and locally using [Alembic](htt
 
 As previously discussed, the Sat Scan Database exists within a private subnet in the Virtual Private Cloud (VPC), and it only accepts ingress from traffic within the VPC. This networking decision helps prevent the database from direct exposure to the public internet, which improves the system's security posture.
 
-To support database migrations in production, the system utilizes a "JumpBox" running on an AWS EC2 instance. The networking configuration for the JumpBox allows for SSH ingress from a specified IP address. In practice, this allows for database migration scrips to run without providing direct public internet database access.
+To support database migrations in production, the system utilizes a "JumpBox" running on an AWS EC2 instance. The networking configuration for the JumpBox allows for SSH ingress from a specified IP address. In practice, this allows for database migration scripts to run without providing direct public internet database access.
 
-As of this report's writing, migrations are ran against the production database after applying Terraform changes. These migrations run as part of the `/infrastructure/post_apply.sh` script. While this approach is sufficient for the immediate project needs, subsequent platform work is necessary to support database changes alongside rolling or blue-green deployments.
+As of this report's writing, migrations are run against the production database after applying Terraform changes. These migrations run as part of the `/infrastructure/post_apply.sh` script. While this approach is sufficient for the immediate project needs, subsequent platform work is necessary to support database changes alongside rolling or blue-green deployments.
 
 #### Sat Scan Database: Supporting Future Frontend Development
 
@@ -393,7 +395,7 @@ All of the applications and services share a single git repository.
 
 This "monorepo" structure groups all of the "applications" within the `/applications` directory. 
 
-The `/infrastructure` directory contains all of the Terraform code to provision the production environment. It also contains the post-provisioning scripts to setup the database and publish production routing configurations. 
+The `/infrastructure` directory contains all of the Terraform code to provision the production environment. It also contains the post-provisioning scripts to set up the database and publish production routing configurations. 
 
 Database migrations are located within the `/databases` directory.
 
@@ -403,11 +405,11 @@ I have enjoyed developing this project within a monorepo, as it simplifies local
 
 ### Local Development Environment
 
-The `docker-compose.yml` file located at the project's root allows for the entire backend Sat System to be ran locally. The Data Collector, Data Analzyer, and Sat Scan API dockerfiles can be found in their respective directory, within `/applications`.
+The `docker-compose.yml` file located at the project's root allows for the entire backend Sat System to be run locally. The Data Collector, Data Analyzer, and Sat Scan API dockerfiles can be found in their respective directory, within `/applications`.
 
 Alongside the three backend applications, the `docker-compose.yml` starts RabbitMQ and Database services. The configuration also supports the necessary local networking between the applications and services. 
 
-Local Next.js application development doesn't require (nor considerably benefit from) running within a Docker container. As such, local development instructions for the Web application can found within the project and app's `README.md`.
+Local Next.js application development doesn't require (nor considerably benefit from) running within a Docker container. As such, local development instructions for the Web application can be found within the project and app's `README.md`.
 
 Detailed instructions to run the Sat Scan system locally can be found in the project's main `README.md` file, located at the root directory level.
 
@@ -435,7 +437,7 @@ Additional information on linting can be found in the project's root `README.md`
 
 #### Testing
 
-Separate GItHub actions exist for both the unit and integration tests. The unit and integration tests can also be ran locally, and instructions should be available in each application's `README.md`.
+Separate GItHub actions exist for both the unit and integration tests. The unit and integration tests can also be run locally, and instructions should be available in each application's `README.md`.
 
 ##### Unit Tests
 
@@ -447,9 +449,9 @@ The unit tests use a variety of mocks and spies to validate software functionali
 
 Similar to the project's unit tests, the integration tests execute as part of the continuous integration checks, anytime a new commit is pushed to an open GitHub pull request. The integration tests can be found in the "Integration Test" GitHub Action.
 
-The existing integration tests make use of the project's docker-compose file to execute the tests against a simulated production environment. This simplifies integration test development, as each applications dockerfile can be used to run images on the same machine that the tests are executed against. This approaches allows for multiple applications and services to be tested simultaneously, such as the API & Database or the Data Collector, broker, and the Data Analyzer.
+The existing integration tests make use of the project's docker-compose file to execute the tests against a simulated production environment. This simplifies integration test development, as each application's dockerfile can be used to run images on the same machine that the tests are executed against. This approach allows for multiple applications and services to be tested simultaneously, such as the API & Database or the Data Collector, broker, and the Data Analyzer.
 
-While the integration test coverage for the project is less robust than the unit test coverage, the existing integration tests for the API is particularly valuable. These tests validate all of the existing API endpoints and validate handling of API response failure conditions, such as unauthorized access and malformed payloads.
+While the integration test coverage for the project is less robust than the unit test coverage, the existing integration tests for the API are particularly valuable. These tests validate all of the existing API endpoints and validate handling of API response failure conditions, such as unauthorized access and malformed payloads.
 
 Further information on running the project's integration tests can be found in the root `README.md`.
 
@@ -479,7 +481,7 @@ Prior to building new images during the continuous deployment process, applicati
 
 Production monitoring for the Sat Scan system is supported natively through [Amazon CloudWatch](https://aws.amazon.com/cloudwatch/). The monitoring is enhanced through application specific logging configurations, which are specified within the project's Terraform configuration.
 
-I created two CloudWatch dashboard to surface critical system metrics and application logs. 
+I created two CloudWatch dashboards to surface critical system metrics and application logs. 
 
 #### Production Monitoring: Sat-Scan-Metrics Dashboard
 
@@ -504,7 +506,7 @@ The screenshot below highlights a unique space object as it flows from the Data 
 
 I love the capabilities and flexibility provided by Prometheus and Grafana, and both are worth eventually employing as the Sat Scan system grows. However, given the existing complexity of the project's cloud infrastructure, I want to use a monitoring and observability solution that does not require additional infrastructure overhead. Specifically, it's reasonable to avoid independently hosting a separate Prometheus EC2 instance for this project in the short term.
 
-I initially opted to utilize [Grafana Cloud](https://grafana.com/products/cloud/) to implement production monitoring. I successfully configured the Grafana Cloud integration via Terraform, and starting creating a monitoring dashboard. While I initially appreciated the ability to integrate with Grafana Cloud via the project's Terraform configuration, I felt like I was duplicating functionality already provided by Amazon CloudWatch.
+I initially opted to utilize [Grafana Cloud](https://grafana.com/products/cloud/) to implement production monitoring. I successfully configured the Grafana Cloud integration via Terraform, and started creating a monitoring dashboard. While I initially appreciated the ability to integrate with Grafana Cloud via the project's Terraform configuration, I felt like I was duplicating functionality already provided by Amazon CloudWatch.
 
 With this in mind, I dropped the Grafana Cloud integration and quickly built out a CloudWatch dashboard. After monitoring the production application using this setup for several days, I am happy with the decision and look forward to improving the systems observability, monitoring, and alerting setup.
 
@@ -535,16 +537,16 @@ As the system has been running for several days, the Data Collector has ingested
 
 As with many software projects, I have more ideas for enhancements than time to implement them.
 
-There are plenty of opportunities to improve the Sat Scan system. I want to briefly catalog a few, as I they represent pertinent next steps for development.
+There are plenty of opportunities to improve the Sat Scan system. I want to briefly catalog a few, as they represent pertinent next steps for development.
 
 - Enhance Sat Scan Web
-	- As previously mentioned, this project was originally borne from the idea that it would be cool to visualize the positions of orbiting satellites on a dimensional rendering of earth. Unfortunately, generating a 3D rendered earth using [Three.js](https://threejs.org/) proved outside the scope of this project. I would love to enhance to frontend web application to provide a greater value proposition for users. 
+	- As previously mentioned, this project was originally born from the idea that it would be cool to visualize the positions of orbiting satellites on a dimensional rendering of earth. Unfortunately, generating a 3D rendered earth using [Three.js](https://threejs.org/) proved outside the scope of this project. I would love to enhance the frontend web application to provide a greater value proposition for users. 
 - Providing HTTPS network access
-	- I didn't purchase  a domain name for this project, which is necessary for to provision and manage SSL/TLS certificates using AWS Certificate Manager. A cert is necessary to enable HTTPS traffic. 
+	- I didn't purchase  a domain name for this project, which is necessary to provision and manage SSL/TLS certificates using AWS Certificate Manager. A cert is necessary to enable HTTPS traffic. 
 	- Sat Scan Web is served via HTTPS automatically using Vercel. Due to browser security features, the production Vercel application is unable to make client-side requests directly to the API via HTTP.
 	- HTTPS ingress should be added to enhance the frontend application's capabilities while improving system security.
 - Terraform organization
-	- This is my first foray into configuring a Terraform project from scratch, and I think immense opportunity to improve the `/infrastructure` directory's organization. I picked up the book [Terraform: Up & Running](https://www.terraformupandrunning.com/), and I'm looking forward to implementing more Terraform best practices into this project.
+	- This is my first foray into configuring a Terraform project from scratch, and I think it is an immense opportunity to improve the `/infrastructure` directory's organization. I picked up the book [Terraform: Up & Running](https://www.terraformupandrunning.com/), and I'm looking forward to implementing more Terraform best practices into this project.
 
 ## Resources & References
 
