@@ -25,8 +25,7 @@ Sat-Scan exposes the recently launched satellites and space objects to users vie
     - [5. Run the Sat Scan backend system](#5-run-the-sat-scan-backend-system)
     - [6. Start the Frontend](#6-start-the-frontend)
   - [Continuous Integration](#continuous-integration)
-    - [Linting](#linting)
-      - [Code Formatting](#code-formatting)
+    - [Linting - Code Formatting](#linting---code-formatting)
     - [Tests](#tests)
   - [Continuous Delivery](#continuous-delivery)
   - [Production Infrastructure](#production-infrastructure)
@@ -166,9 +165,7 @@ Continuous integration checks are ran using GitHub Actions. The following CI che
 | Unit Tests                   | [unit_tests.yml](.github/workflows/unit_tests.yml)               |
 | Integration Tests            | [integration_tests.yml](.github/workflows/integration_tests.yml) |
 
-### Linting
-
-#### Code Formatting
+### Linting - Code Formatting
 
 Run `make format` to format the Python code locally. 
 
