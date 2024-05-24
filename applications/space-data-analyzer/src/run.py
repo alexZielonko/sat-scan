@@ -27,6 +27,8 @@ if __name__ == "__main__":
 
     @app.route("/health-check")
     def health_check():
+        print("Health-Check Request")
         return "Success", 200
 
+    print("Running App")
     app.run(host="0.0.0.0", port=8000, debug=True)

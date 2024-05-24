@@ -383,39 +383,6 @@ resource "aws_ecr_repository" "data_analyzer_ecr_repo" {
   force_delete = true
 }
 
-resource "aws_lb" "data-analyzer-lb" {
-  name            = "data-analyzer-load-balancer"
-  subnets         = aws_subnet.sat_scan_private_subnet.*.id
-  security_groups = [aws_security_group.sat_scan_internal_sg.id]
-
-  tags = {
-    Environment = "production"
-  }
-}
-
-resource "aws_lb_target_group" "data_analyzer_lb_target_group" {
-  name        = "data-analyzer-lb-target-group"
-  port        = 80
-  protocol    = "HTTP"
-  vpc_id      = aws_vpc.sat_scan_vpc.id
-  target_type = "ip"
-
-  health_check {
-    path = "/health-check"
-  }
-}
-
-resource "aws_lb_listener" "data_analyzer_lb_listener" {
-  load_balancer_arn = aws_lb.data-analyzer-lb.id
-  port              = "80"
-  protocol          = "HTTP"
-
-  default_action {
-    target_group_arn = aws_lb_target_group.data_analyzer_lb_target_group.id
-    type             = "forward"
-  }
-}
-
 resource "aws_cloudwatch_log_group" "data-analyzer-log-group" {
   name = "data-analyzer-log-group"
 
@@ -424,7 +391,6 @@ resource "aws_cloudwatch_log_group" "data-analyzer-log-group" {
     Application = "sat-scan-data-analyzer"
   }
 }
-
 
 resource "aws_ecs_task_definition" "data_analyzer_ecs_task_definition" {
   family                   = "data-analyzer-family"
@@ -455,13 +421,20 @@ resource "aws_ecs_task_definition" "data_analyzer_ecs_task_definition" {
       }
     ],
     "logConfiguration": {
-          "logDriver": "awslogs",
-          "options": {
-            "awslogs-group": "data-analyzer-log-group",
-            "awslogs-region": "${var.aws_region}",
-            "awslogs-stream-prefix": "data-analyzer"
-          }
-        }
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "data-analyzer-log-group",
+        "awslogs-region": "${var.aws_region}",
+        "awslogs-stream-prefix": "data-analyzer"
+      }
+    },
+    "healthCheck": {
+      "retries": 10,
+      "command": ["CMD-SHELL", "curl -f http://localhost:8000/health-check || exit 1"],
+      "timeout": 5,
+      "interval": 10,
+      "startPeriod": 10
+    }
   }
 ]
 DEFINITION
@@ -497,14 +470,6 @@ resource "aws_ecs_service" "ecs_data_analyzer_service" {
     security_groups = [aws_security_group.sat_scan_internal_sg.id]
     subnets         = aws_subnet.sat_scan_private_subnet.*.id
   }
-
-  load_balancer {
-    target_group_arn = aws_lb_target_group.data_analyzer_lb_target_group.id
-    container_name   = "data-analyzer-family"
-    container_port   = 8000
-  }
-
-  depends_on = [aws_lb_listener.data_analyzer_lb_listener]
 
   tags = {
     Environment = "production"
@@ -698,60 +663,5 @@ resource "aws_mq_broker" "sat-scan-mq-broker" {
 
   tags = {
     Environment = "production"
-  }
-}
-
-# -----------------------------------------
-# Grafana Cloud Integration
-# -----------------------------------------
-
-data "aws_iam_policy_document" "trust_grafana" {
-  statement {
-    effect = "Allow"
-    principals {
-      type        = "AWS"
-      identifiers = ["arn:aws:iam::${var.grafana_account_id}:root"]
-    }
-    actions = ["sts:AssumeRole"]
-    condition {
-      test     = "StringEquals"
-      variable = "sts:ExternalId"
-      values   = [var.grafana_cloud_external_id]
-    }
-  }
-}
-resource "aws_iam_role" "grafana_labs_cloudwatch_integration" {
-  name        = var.grafana_cloud_iam_role_name
-  description = "Role used by Grafana CloudWatch integration."
-  # Allow Grafana Labs' AWS account to assume this role.
-  assume_role_policy = data.aws_iam_policy_document.trust_grafana.json
-
-  # This policy allows the role to discover metrics via tags and export them.
-  inline_policy {
-    name = var.grafana_cloud_iam_role_name
-    policy = jsonencode({
-      Version = "2012-10-17"
-      Statement = [
-        {
-          Effect = "Allow"
-          Action = [
-            "tag:GetResources",
-            "cloudwatch:GetMetricData",
-            "cloudwatch:ListMetrics",
-            "apigateway:GET",
-            "aps:ListWorkspaces",
-            "autoscaling:DescribeAutoScalingGroups",
-            "dms:DescribeReplicationInstances",
-            "dms:DescribeReplicationTasks",
-            "ec2:DescribeTransitGatewayAttachments",
-            "ec2:DescribeSpotFleetRequests",
-            "shield:ListProtections",
-            "storagegateway:ListGateways",
-            "storagegateway:ListTagsForResource"
-          ]
-          Resource = "*"
-        }
-      ]
-    })
   }
 }
