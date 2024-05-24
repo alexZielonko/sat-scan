@@ -13,7 +13,14 @@ export const getServerSideProps = (async () => {
     API_URL: process.env.API_URL || "",
   };
 
-  // [TODO] Note usage of hardcode data in report
+  /**
+   * 👉 This App is currently returning a snapshot of the production system's
+   * data to minimize cloud hosting costs, which are ~$5 per day for the
+   * existing AWS infrastructure. This topic is discussed in further
+   * detail in the project's Final Report, which can be found in
+   * `report/final-report.md`.
+   */
+
   // const spaceObjects = await fetchSpaceObjects(routeConfig);
   const spaceObjects = dataSnapshot;
   const normalizedSpaceObjects = normalizeSpaceObjects(spaceObjects);
