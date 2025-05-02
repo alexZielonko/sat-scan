@@ -1,3 +1,10 @@
+> [!IMPORTANT]  
+> 👋 Welcome!
+>
+> This is documentation for my "CSCA 5028: Applications of Software Architecture for Big Data" final project submission at the University of Colorado Boulder.
+> 
+> This readme provides an overview of relevant development details. See this project's [Final Report](report/final-report.md) for a more in-depth discussion of the technical considerations.
+
 # CSCA 5028 Final Project: 🛰️ Sat Scan
 
 **Sat Scan** helps users discover recently launched satellites and unidentified space objects.
@@ -5,9 +12,6 @@
 To support this mission, the system periodically consumes data from a [Space-Track.org](https://www.space-track.org/auth/login) API to ingest, normalize, and maintain a database of recently launched satellites and other unidentified space objects. As the source and origin of recently discovered space objects is often unknown upon initial detection, Sat Scan's data collection process updates existing space object records with new information as it becomes available.
 
 Sat Scan exposes the recently launched satellites and space objects to users via a web-based application. This client-facing application allows users to learn more about the origins of recently launched satellites, such as the country of origin and launch site.
-
-> [!IMPORTANT]  
-> This readme provides an overview of relevant development details. See this project's [Final Report](report/final-report.md) for an in-depth discussion of the project.
 
 ## Table of Contents
 
@@ -46,7 +50,7 @@ Sat Scan exposes the recently launched satellites and space objects to users via
 
 ## Project Rubric Requirements
 
-Below is a table created based on the requirements published in CSCA5028's Week 1 "Project Rubric" reading.
+Below is a table created based on the requirements published in CSCA5028's Week 1 "Project Rubric" reading. This ruberic is used to assess and grade the project. 
 
 | Requirement                                 | Present | Notes                                                                             | Reference                                                                                                                                                                                                                                                   |
 |---------------------------------------------|---------|-----------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
